@@ -3,10 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MCIFramework.Models;
+using System.Data;
+using Microsoft.Practices.Prism.Commands;
+using System.Windows.Input;
+
 
 namespace MCIFramework.ViewModels
 {
-    class DashboardModel
+    public class DashboardModel 
     {
+        private DelegateCommand _searchCommand;
+
+        public DelegateCommand SearchCommand
+        {
+            get
+            {
+                return _searchCommand;
+            }
+            set
+            {
+                _searchCommand = value;
+            }
+        }
     }
+
 }

@@ -23,5 +23,7 @@ namespace MCIFramework.Views
         {
             InitializeComponent();
         }
+
+
     }
 }

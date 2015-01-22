@@ -30,9 +30,9 @@ namespace MCIFramework
         {
             try
             {
-                NorthwindContext context = new NorthwindContext();
-                context.FbPosts.OrderBy(c => c.ID).Load();
-                this.dataGrid.ItemsSource = context.FbPosts.Local;
+                //NorthwindContext context = new NorthwindContext();
+                //context.FbPosts.OrderBy(c => c.ID).Load();
+                //this.dataGrid.ItemsSource = context.FbPosts.Local;
             }
             catch (Exception ex)
             {
@@ -41,21 +41,5 @@ namespace MCIFramework
         }
     }
     
-    /// <summary>6
-    /// Entity framework context
-    /// </summary>
-    public class NorthwindContext : DbContext
-    {
-        public DbSet<FacebookPost> FbPosts { get; set; }
-    }
 
-    /// <summary>
-    /// Employee class
-    /// </summary>
-    public class FacebookPost
-    {
-        public int ID { get; set; }
-        public int FacebookId { get; set; }
-        public string Post { get; set; }
-    }
 }

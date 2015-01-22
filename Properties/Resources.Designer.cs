@@ -25,9 +25,8 @@ namespace MCIFramework.Properties
     internal class Resources
     {
 
-        private static global::System.Resources.ResourceManager resourceMan;
-
-        private static global::System.Globalization.CultureInfo resourceCulture;
+        private static global::System.Resources.ResourceManager resourceMan ;
+        private static global::System.Globalization.CultureInfo resourceCulture ;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources()
@@ -45,7 +44,7 @@ namespace MCIFramework.Properties
                 if ((resourceMan == null))
                 {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MCIFramework.Properties.Resources", typeof(Resources).Assembly);
-                    resourceMan = temp;
+                    resourceMan = temp ;
                 }
                 return resourceMan;
             }
