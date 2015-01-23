@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,9 +112,152 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="app_header" xml:space="preserve">
+    <value>Digital Comms Diagnostics</value>
+    <comment>blue bar header</comment>
+  </data>
+  <data name="assessment_create_new_title" xml:space="preserve">
+    <value>Create New Assessment</value>
+  </data>
+  <data name="assessment_detail_window_title" xml:space="preserve">
+    <value>Assessment Details</value>
+  </data>
+  <data name="assessment_edit_title" xml:space="preserve">
+    <value>Assessment for:</value>
+  </data>
+  <data name="assessment_tab_1" xml:space="preserve">
+    <value>Assessment Details</value>
+  </data>
+  <data name="assessment_tab_1_fb_chkBox" xml:space="preserve">
+    <value>Include Facebook Assessment</value>
+  </data>
+  <data name="assessment_tab_1_fb_txtBox_lbl" xml:space="preserve">
+    <value>Facebook Page ID/Username</value>
+  </data>
+  <data name="assessment_tab_1_organisation_lbl" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="assessment_tab_1_social_chkBox" xml:space="preserve">
+    <value>Social Media Assessment</value>
+  </data>
+  <data name="assessment_tab_1_strategy_chkBox" xml:space="preserve">
+    <value>Strategy Assessment</value>
+  </data>
+  <data name="assessment_tab_1_title_lbl" xml:space="preserve">
+    <value>Title (e.g. June 2015)</value>
+  </data>
+  <data name="assessment_tab_1_twitter_chkBox" xml:space="preserve">
+    <value>Include Twitter Assessment</value>
+  </data>
+  <data name="assessment_tab_1_twitter_txtBox_lbl" xml:space="preserve">
+    <value>Twitter Username</value>
+  </data>
+  <data name="assessment_tab_1_website_audience1" xml:space="preserve">
+    <value>Audience 1</value>
+  </data>
+  <data name="assessment_tab_1_website_audience2" xml:space="preserve">
+    <value>Audience 2</value>
+  </data>
+  <data name="assessment_tab_1_website_audience3" xml:space="preserve">
+    <value>Audience 3</value>
+  </data>
+  <data name="assessment_tab_1_website_chkBox" xml:space="preserve">
+    <value>Website Assessment</value>
+  </data>
+  <data name="assessment_tab_1_website_home_lbl" xml:space="preserve">
+    <value>Website Address (Home Page)</value>
+  </data>
+  <data name="assessment_tab_1_website_keywords" xml:space="preserve">
+    <value>Keywords</value>
+  </data>
+  <data name="assessment_tab_1_website_page_url" xml:space="preserve">
+    <value>Page URL</value>
+  </data>
+  <data name="assessment_tab_1_website_scenario" xml:space="preserve">
+    <value>Scenario</value>
+  </data>
+  <data name="assessment_tab_1_website_top_pages" xml:space="preserve">
+    <value>Top Pages</value>
+  </data>
+  <data name="assessment_tab_1_youtube_chkBox" xml:space="preserve">
+    <value>Include Youtube Assessment</value>
+  </data>
+  <data name="assessment_tab_1_youtube_txtBox_lbl" xml:space="preserve">
+    <value>Youtube Channel ID</value>
+  </data>
+  <data name="assessment_tab_2" xml:space="preserve">
+    <value>Export Worksheets</value>
+  </data>
+  <data name="assessment_tab_2_col_1_lbl" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
+  <data name="assessment_tab_2_col_2_lbl" xml:space="preserve">
+    <value>Social Media</value>
+  </data>
+  <data name="assessment_tab_2_col_3_lbl" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="assessment_tab_2_notes" xml:space="preserve">
+    <value>Notes:
+ 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+ 
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</value>
+  </data>
+  <data name="assessment_tab_3" xml:space="preserve">
+    <value>Generate Report</value>
+  </data>
+  <data name="assessment_tab_3_row1_titlle" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
+  <data name="assessment_tab_3_row2_titlle" xml:space="preserve">
+    <value>Social</value>
+  </data>
+  <data name="assessment_tab_3_row3_titlle" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="assessment_tab_3_titlle" xml:space="preserve">
+    <value>Import Worksheets</value>
+  </data>
+  <data name="btn_create_new_assessment" xml:space="preserve">
+    <value>Create New Assessment</value>
+  </data>
+  <data name="btn_search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="btn_tab_1_save" xml:space="preserve">
+    <value>Save and Continue</value>
+  </data>
+  <data name="btn_tab_2_download_column_1" xml:space="preserve">
+    <value>Download Strategy Worksheet</value>
+  </data>
+  <data name="btn_tab_2_download_column_2" xml:space="preserve">
+    <value>Download Social Media Worksheet</value>
+  </data>
+  <data name="btn_tab_2_import_column_2" xml:space="preserve">
+    <value>Import Social Media Data</value>
+  </data>
+  <data name="btn_tab_3_downloadreport" xml:space="preserve">
+    <value>Download Report</value>
+  </data>
+  <data name="btn_tab_3_download_column_3" xml:space="preserve">
+    <value>Download Web Worksheet</value>
+  </data>
+  <data name="btn_tab_3_uploadworksheets" xml:space="preserve">
+    <value>Upload Worksheets</value>
+  </data>
+  <data name="dashboard_search_title" xml:space="preserve">
+    <value>Search Organisation / Title</value>
+  </data>
+  <data name="dashboard_title" xml:space="preserve">
+    <value>Assessment Dashboard</value>
+  </data>
+  <data name="dashboard_window_title" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
 </root>

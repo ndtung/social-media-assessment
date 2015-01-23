@@ -14,6 +14,9 @@ namespace MCIFramework.ViewModels
     public class DashboardModel 
     {
         private DelegateCommand _searchCommand;
+        private DelegateCommand _newAssessmentCommand;
+        private string _searchTextBox;
+        private List<Assessment> _assessments;
 
         public DelegateCommand SearchCommand
         {
