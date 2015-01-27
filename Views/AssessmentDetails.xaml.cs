@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MCIFramework.Models;
+using System.Collections.Generic;
+using MCIFramework.ViewModels;
 
 namespace MCIFramework.Views
 {
@@ -22,8 +25,9 @@ namespace MCIFramework.Views
         public AssessmentDetails()
         {
             InitializeComponent();
+            AssessmentDetailsModel vm = new AssessmentDetailsModel(1);
+            this.DataContext = vm;
+            
         }
-
-
     }
 }

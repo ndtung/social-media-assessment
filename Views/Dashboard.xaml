@@ -2,9 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prop="clr-namespace:MCIFramework.Properties"
-        Title="x:Static prop:Resources.Dashboard" Height="768" Width="1280" MinWidth="750" MinHeight="450"
+        Title="{x:Static prop:Resources.dashboard_window_title}" Height="1005" Width="1280" MinWidth="1000" MinHeight="650"
+        Top="0" Left="0"
         ResizeMode="CanResizeWithGrip">
-
+    <Window.Resources>
+        <SolidColorBrush x:Key="GrayGridLine" Color="#DBDBF8" />
+    </Window.Resources>
     <Grid Margin="0,0,0,30" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="500"></ColumnDefinition>
@@ -14,55 +17,233 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        <Button Grid.Row ="0" Style="{StaticResource BlueButton}" Content="{x:Static prop:Resources.btn_search}" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Top" Width="91" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" />
         <Rectangle HorizontalAlignment="Stretch" Height="40" Margin="0,0,0,0" VerticalAlignment="Top"  Fill="#FF3773C9" Grid.ColumnSpan="2" />
         <Label Grid.ColumnSpan="2"  Content="{x:Static prop:Resources.app_header}" HorizontalAlignment="Left" Margin="40,3,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.684,-1.192" FontSize="20"  Foreground="#FFFFFF" FontFamily="Arial"/>
-        <TextBox Grid.Row ="2" HorizontalAlignment="Left" Margin="40,117,0,0" VerticalAlignment="Top" Width="220" Height="31"/>
-        <Label Grid.Row ="1"  Content="{x:Static prop:Resources.dashboard_title}" HorizontalAlignment="Left" Margin="37,48,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.684,-1.192" FontSize="24" FontFamily="Arial"/>
-        <Label Grid.Row ="1"  Content="{x:Static prop:Resources.dashboard_search_title}" HorizontalAlignment="Left" Margin="37,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.684,-1.192" FontSize="14" FontFamily="Arial" Foreground="#FF7A7070"/>
-        
-        <Button Grid.Row ="2" Content="Search" HorizontalAlignment="Left" Margin="298,113,0,0" VerticalAlignment="Top" Width="91" Background="#FF3773C9" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0"/>
-        <Button Grid.Row ="2" Grid.Column="2" Content="Create New Assessment" HorizontalAlignment="Right" Margin="0,113,40,0" VerticalAlignment="Top" Width="159" Background="#FF4DA067" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0"/>
-        
-        <DataGrid Grid.Row ="2" Grid.ColumnSpan="2" x:Name="dataGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="40,170,40,0" AutoGenerateColumns="False" >
+        <TextBox Grid.Row ="1" Text="{Binding SearchBoxText}"  HorizontalAlignment="Left" Margin="40,93,0,0" VerticalAlignment="Top" Width="220" Height="31" FontSize="14" >
+
+        </TextBox>
+        <Label Grid.Row ="1"  Content="{x:Static prop:Resources.dashboard_title}" HorizontalAlignment="Left" Margin="40,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.684,-1.192" FontSize="24" FontFamily="Arial"/>
+        <Label Grid.Row ="1"  Content="{x:Static prop:Resources.dashboard_search_title}" HorizontalAlignment="Left" Margin="37,62,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.684,-1.192" FontSize="14" FontFamily="Arial" Foreground="#FF7A7070"/>
+
+        <Button Grid.Row ="1" Style="{StaticResource BlueButton}" Command="{Binding SearchCommand}" IsDefault="true" Content="{x:Static prop:Resources.btn_search}" HorizontalAlignment="Left" Margin="280,88,0,0" VerticalAlignment="Top" Width="91" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" />
+        <Button Grid.Row ="2" Style="{StaticResource GreenButton}" Command="{Binding SearchCommand}" Grid.Column="2" Content="{x:Static prop:Resources.btn_create_new_assessment}" HorizontalAlignment="Right" Margin="0,88,40,0" VerticalAlignment="Top" Width="159" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0"/>
+
+        <DataGrid Grid.Row ="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Margin="40,170,40,30" AutoGenerateColumns="False" ItemsSource="{Binding Path=Assessments,NotifyOnTargetUpdated=True}" 
+                  IsReadOnly="True" ColumnHeaderHeight="30" HeadersVisibility="Column"
+                  VerticalGridLinesBrush="{StaticResource GrayGridLine}"
+                  HorizontalGridLinesBrush="{StaticResource GrayGridLine}"
+                  Sorting="AssessmentsDataGrid_Sorting"
+                  TargetUpdated="AssessmentsDataGrid_TargetUpdated"
+                  Loaded="AssessmentsDataGrid_Loaded"
+                  >
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="IsHitTestVisible" Value="true" />
+                </Style>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                   Color="#E6E6E6"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+            </DataGrid.Resources>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Organisation" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Title" Binding="{Binding Birthday}" />
-                <DataGridTextColumn Header="Strategy" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Facebook" Binding="{Binding Birthday}" />
-                <DataGridTextColumn Header="Twitter" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Youtube" Binding="{Binding Birthday}" />
-                <DataGridTextColumn Header="Web" Binding="{Binding Birthday}" />
-                <DataGridTextColumn Header="Completion Date" Binding="{Binding Birthday}" />
-                <DataGridTextColumn Header="Actions" Binding="{Binding Birthday}" />
+                <DataGridTextColumn Header="Organisation" Binding="{Binding Organisation}" Width="*" MinWidth="100">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Left" />
+                            <Setter Property="Margin" Value="15,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" MinWidth="80">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Left" />
+                            <Setter Property="Margin" Value="15,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Strategy" Width="70" MinWidth="40">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image x:Name="IMG" Source="../Resources/Images/checked-23x23-blue.png" Width="23" Height="23" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsStrategy}" Value="False">
+                                    <Setter Property="Source" Value="../Resources/Images/blank.png" TargetName="IMG"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Facebook"  Width="70" MinWidth="40" >
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image x:Name="IMG" Source="../Resources/Images/checked-23x23-blue.png" Width="23" Height="23" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsFacebook}" Value="False">
+                                    <Setter Property="Source" Value="../Resources/Images/blank.png" TargetName="IMG"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Twitter"  Width="70" MinWidth="40">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image x:Name="IMG" Source="../Resources/Images/checked-23x23-blue.png" Width="23" Height="23" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsTwitter}" Value="False">
+                                    <Setter Property="Source" Value="../Resources/Images/blank.png" TargetName="IMG"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Youtube"  Width="70" MinWidth="40">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image x:Name="IMG" Source="../Resources/Images/checked-23x23-blue.png" Width="23" Height="23" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsYoutube}" Value="False">
+                                    <Setter Property="Source" Value="../Resources/Images/blank.png" TargetName="IMG"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Web"  Width="70" MinWidth="40">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image x:Name="IMG" Source="../Resources/Images/checked-23x23-blue.png" Width="23" Height="23" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsWeb}" Value="False">
+                                    <Setter Property="Source" Value="../Resources/Images/blank.png" TargetName="IMG"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Completion Date" Binding="{Binding ReportGenerationDate}"  Width="150" MinWidth="70" SortDirection="Descending">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Left" />
+                            <Setter Property="Margin" Value="15,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Actions" Width="350" MinWidth="200">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid Width="Auto">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="Edit Assessment" Style="{StaticResource GreenButton}" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
+                                <Button Content="Generate Report" Style="{StaticResource GreenButton}" Grid.Column="1" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
+                                <Button Content="Delete" Style="{StaticResource RedButton}" Grid.Column="2" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
+                            </Grid>
+
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
-            
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <DockPanel Background="GhostWhite">
-                        <Image DockPanel.Dock="Left" Source="{Binding ImageUrl}" Height="64" Margin="10" />
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="ID: " FontWeight="Bold" />
-                            <TextBlock Text="{Binding Id}" Grid.Column="1" />
-                            <TextBlock Text="Name: " FontWeight="Bold" Grid.Row="1" />
-                            <TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="1" />
-                            <TextBlock Text="Birthday: " FontWeight="Bold" Grid.Row="2" />
-                            <TextBlock Text="{Binding Birthday, StringFormat=d}" Grid.Column="1" Grid.Row="2" />
-
-                        </Grid>
-                    </DockPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
         </DataGrid>
+        <StackPanel
+            Margin="0,0,0,4"
+            Grid.Row="1" Grid.ColumnSpan="2"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center" Height="23" VerticalAlignment="Bottom">
+            <Button                
+                Margin="4,0"
+                Content="&lt;&lt;"
+                Command="{Binding FirstCommand}"/>
+            <Button
+                Margin="4,0"
+                Content="&lt;"
+                Command="{Binding PreviousCommand}"/>
+            <StackPanel
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="{Binding Start}"/>
+                <TextBlock
+                    Text=" to "/>
+                <TextBlock
+                    Text="{Binding End}"/>
+                <TextBlock
+                    Text=" of "/>
+                <TextBlock
+                    Text="{Binding TotalItems}"/>
+            </StackPanel>
+            <Button
+                Margin="4,0"
+                Content=">"
+                Command="{Binding NextCommand}"/>
+            <Button
+                Margin="4,0"
+                Content=">>"
+                Command="{Binding LastCommand}"/>
+        </StackPanel>
 
     </Grid>
 </Window>

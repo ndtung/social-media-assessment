@@ -112,6 +112,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFTextBoxAutoComplete">
+      <HintPath>packages\WPFTextBoxAutoComplete.1.0.0\lib\net40\WPFTextBoxAutoComplete.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -131,6 +134,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Assessment.cs" />
+    <Compile Include="Models\Database.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
@@ -200,6 +204,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Home-icon-small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\tick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\blank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\checked-23x23-blue.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

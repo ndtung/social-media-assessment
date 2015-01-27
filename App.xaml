@@ -4,14 +4,74 @@
              StartupUri="Views/AssessmentDetails.xaml">
     <Application.Resources>
 
-        <Style x:Key="HoverButton" TargetType="{x:Type Control}">
+        <Style x:Key="BlueButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF3773C9"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle Margin="2" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            
+                        </Border>
+                        
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2C5CA1"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+
+                </Trigger>
+
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GreenButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF4DA067"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3E8052"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+
+                </Trigger>
+
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="RedButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF0000"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#CC0000"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+
+                </Trigger>
+
+            </Style.Triggers>
         </Style>
 
     </Application.Resources>

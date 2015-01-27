@@ -477,5 +477,32 @@ namespace MCIFramework.Properties {
                 return ResourceManager.GetString("dashboard_window_title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ReportGenerationDate.
+        /// </summary>
+        public static string value_dasboard_grid_default_sort_column {
+            get {
+                return ResourceManager.GetString("value_dasboard_grid_default_sort_column", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to descending.
+        /// </summary>
+        public static string value_dasboard_grid_default_sort_direction {
+            get {
+                return ResourceManager.GetString("value_dasboard_grid_default_sort_direction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7.
+        /// </summary>
+        public static string value_dashboard_page_default_row_count {
+            get {
+                return ResourceManager.GetString("value_dashboard_page_default_row_count", resourceCulture);
+            }
+        }
     }
 }

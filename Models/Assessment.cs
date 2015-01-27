@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace MCIFramework.Models
 {
     public class Assessment
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Organisation { get; set; }
         public string Title { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public Boolean IsStrategy { get; set; }
+        public Boolean IsSocialMedia { get; set; }
         public Boolean IsFacebook { get; set; }
+        public Boolean IsTwitter { get; set; }
         public Boolean IsYoutube { get; set; }
         public Boolean IsWeb { get; set; }
         public string FacebookUsername { get; set; }
@@ -52,9 +55,14 @@ namespace MCIFramework.Models
         public string Audience3Keyword1 { get; set; }
         public string Audience3Keyword2 { get; set; }
         public string Audience3Keyword3 { get; set; }
-        public DateTime ReportGenerationDate { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public DateTime? ReportGenerationDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
+ 
+        public Assessment()
+        {
+
+        }
     }
 }

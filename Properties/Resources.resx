@@ -260,4 +260,13 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="dashboard_window_title" xml:space="preserve">
     <value>Dashboard</value>
   </data>
+  <data name="value_dashboard_page_default_row_count" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="value_dasboard_grid_default_sort_column" xml:space="preserve">
+    <value>ReportGenerationDate</value>
+  </data>
+  <data name="value_dasboard_grid_default_sort_direction" xml:space="preserve">
+    <value>descending</value>
+  </data>
 </root>
