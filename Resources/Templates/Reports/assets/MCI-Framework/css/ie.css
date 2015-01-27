@@ -1,0 +1,49 @@
+/**
+ * Functions
+ */
+/* =======================================================================
+Legacy IE
+========================================================================== */
+.lt-ie9 .icon-toggle {
+  background: transparent url("/assets/MCI-Framework/images/sprite.png") no-repeat -59px -59px !important;
+  height: 13px;
+  top: 8px;
+  width: 13px; }
+  .lt-ie9 .icon-toggle:before, .lt-ie9 .icon-toggle:after {
+    display: none; }
+.lt-ie9 #primary-nav ul li, .lt-ie9 #secondary-nav ul li {
+  float: left; }
+.lt-ie9 #secondary-nav .controls li {
+  margin: 0 2px; }
+  .lt-ie9 #secondary-nav .controls li:last-child {
+    margin: 0 0 0 2px; }
+.lt-ie9 #main .lvl1-bar .icon-chevron {
+  position: relative;
+  top: -5px; }
+.lt-ie9 #main .lvl2-bar {
+  margin-left: 45px; }
+.lt-ie9 #main .lvl3-bar {
+  margin-left: 70px;
+  max-width: 1060px; }
+.lt-ie9 #main .bar {
+  zoom: 1;
+  /* For IE 6/7 (trigger hasLayout) */ }
+  .lt-ie9 #main .bar:before, .lt-ie9 #main .bar:after {
+    content: "";
+    display: table; }
+  .lt-ie9 #main .bar:after {
+    clear: both; }
+  .lt-ie9 #main .bar.active .icon-toggle {
+    background: transparent url("/assets/MCI-Framework/images/sprite.png") no-repeat -85px -59px !important;
+    height: 20px;
+    width: 20px; }
+  .lt-ie9 #main .bar .rate {
+    border-right: 1px solid #000; }
+  .lt-ie9 #main .bar .note {
+    clear: both;
+    float: none; }
+.lt-ie9 #main .standard-bar .control a,
+.lt-ie9 #main .standard-bar .control button {
+  top: -5px; }
+
+/*# sourceMappingURL=ie.css.map */

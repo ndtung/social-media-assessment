@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using MCIFramework.Models;
+using MCIFramework.Helper;
 
 
 namespace MCIFramework.ViewModels
@@ -15,6 +16,10 @@ namespace MCIFramework.ViewModels
         private Assessment _assessment;
         private ObservableCollection<Assessment> _assessments;
         private ICommand _submitCommand;
+
+        private ICommand _uploadWorksheet;
+        private ICommand _downloadReport;
+        
 
         public Assessment Assessment
         {
@@ -53,8 +58,38 @@ namespace MCIFramework.ViewModels
                 }
                 return _submitCommand;
             }
-        } 
+        }
+//============================================================================================================================================
+        //upload Worksheets, need to check and validate if all files are uploaded before generating report
+        public ICommand uploadWorksheet
 
+        {
+            get
+            {
+                if (_uploadWorksheet == null)
+                {
+                    _uploadWorksheet = new RelayCommand(param => this.Submit(),
+                        null);
+                }
+                return _uploadWorksheet;
+            }
+        }
+
+        //Download generated Report
+        public ICommand downloadReport
+
+        {
+            get
+            {
+                if (_downloadReport == null)
+                {
+                    _downloadReport = new RelayCommand(param => this.Submit(),
+                        null);
+                }
+                return _downloadReport;
+            }
+        }
+//============================================================================================================================================
         public AssessmentDetailsModel()
         {
             Assessment = new Assessment();
@@ -75,5 +110,20 @@ namespace MCIFramework.ViewModels
             Assessments.Add(Assessment);
             Assessment = new Assessment();
         }
+
     }
+
+
+//============================================================================================================================================
+
+
+//============================================================================================================================================
+
+
+//============================================================================================================================================
+
+
+//============================================================================================================================================
+
+
 }

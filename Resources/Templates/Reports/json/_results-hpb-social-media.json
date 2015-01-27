@@ -1,0 +1,291 @@
+[
+    {
+        "title": "Social Media",
+        "desc" : "Assesses the organisation's performance in social media communications over the 3 months prior to the time of assessment."
+    },
+    {
+        "lvl1": {
+            "title" : "Facebook",
+            "rate" : "6.5",
+            "link" : null,
+            "info" : null
+        },
+        "lvl2" : [
+            {
+                "title" : "Publishing",
+                "rate" : "6.9",
+                "note" : "Looks at the organisation's one-way communications on Facebook, treating all content with the same weightage, whether original or shared.",
+                "lvl3" : [
+                    {
+                        "title" : "Set Up",
+                        "note" : null,
+                        "rate" : "7.0",
+                        "comments" : {
+                            "criteria" : "Has the organisation set up its Facebook page appropriately?",
+                            "highscore" : "Does the organisation post on Facebook regularly (qualified by the organisation's level of access to quality content)?",
+                            "recommendations" : "Include links to your website and your other social media presences in the About section and under Settings / Page Info.<br/><br/>Use a URL shortener for the links you share on Facebook. You can either use a publicly available URL shortener or set up your own version based on an open source version, running under your own domain. The latter option bears less risk of link rot as you are not dependent on an external organisation. Using a URL shortener allows you to track the usage of the links you post, including detailed analytics.",
+                            "assessor" : null
+                        }
+                        },
+                    {
+                        "title" : "Post Frequency",
+                        "note" : null,
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "Does the organisation post on Facebook regularly (qualified by the organisation's level of access to quality content)?",
+                            "highscore" : "A well organised social media team/manager with proper content sourcing, editing and publishing process.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                        },
+                    {
+                        "title" : "Post interaction",
+                        "note" : "Likes, comments and shares are weighted with a factor of 1, 2, and 3, respectively, based on the value they represent to you. Added up they form the interaction score for each post. The average score should be 0.005 per fan for the interaction score to reach 10.",
+                        "rate" : "4.3",
+                        "comments" : {
+                            "criteria" : "How many likes, comments and shares do the organisation's posts receive on Facebook?",
+                            "highscore" : "Attractive content that strikes a chord with the organisation's audience.",
+                            "recommendations" : "Post interaction (people liking, commenting on and sharing your content) is an important indicator of whether your content is interesting, relevant, thought-provoking or controversial. There are numerous ways to create content that strikes a chord. Ending posts with a question that invites users to contribute their own take on things or tell their story are one powerful tool. Research content strategy for engagement for further ideas. It is recommended that you track the interaction score for your posts over time. Find out which types of posts (based on content, wording, call-to-action, and other criteria) get higher interaction. Consider doing more of these types of posts to increase interaction.",
+                            "assessor" : null
+                        }
+                        },
+                    {
+                        "title" : "Sentiment",
+                        "note" : null,
+                        "rate" : "6.5",
+                        "comments" : {
+                            "criteria" : "Ratio of positive to negative comments on the organisation's posts. Determined by comments that actually mention the organisation in question.",
+                            "highscore" : "Well-received content.",
+                            "recommendations" : "You want people to have a positive response to your messages. Continuously monitor and review the posts and responses you get on Facebook and determine which type of messages consistently receive a positive response. Plan more content along these lines.",
+                            "assessor" : null
+                        }
+                    }
+                ]
+            },
+            {
+                "title" : "Responding",
+                "rate" : "6.1",
+                "note" : "Looks at the organisation's two-way communications on Facebook.",
+                "lvl3" : [
+                    {
+                        "title" : "Responsiveness",
+                        "note" : null,
+                        "rate" : "1.4",
+                        "comments" : {
+                            "criteria" : "Do user posts and comments left on the organisation's Facebook wall get responses from the organisation where appropriate?",
+                            "highscore" : "An established and responsive community management (person or team) on Facebook.",
+                            "recommendations" : "As social media is inherently a two-way communications channel, it is important that you respond to questions, concerns and comments of users where merited. Make sure that you are automatically alerted to any new posts on your Facebook page (e.g. through email settings) and that your community manager/s can respond to all that expect a reply or comment from you.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Timeliness",
+                        "note" : "There were only 17 positive/negative comments made during the assessment period, neutral comments were not accounted for. Low sample size can lead to extreme results and the results here should be viewed in this context.",
+                        "rate" : "3.1",
+                        "comments" : {
+                            "criteria" : "How fast does the organisation respond to comments and posts on Facebook.",
+                            "highscore" : "A team with a working alerting mechanism and defined response times for feedback on Facebook.",
+                            "recommendations" : "Ensure you respond to Facebook posts and comments that need a response within 24 hours of receiving them. Delegating the authority to respond to your social media community manager/s, setting clear boundaries, and defining an escalation path are good ways of setting up your responding practice. If you cannot provide a concrete response within 24 hours, immediately reply telling the poster by when you will have a response for them.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Relevance",
+                        "note" : "There were only 22 posts that require responses in the assessment period. Low sample size can lead to extreme results and the results here should be viewed in this context.",
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "How relevant are the responses from the organisation with regards to the concerns raised.",
+                            "highscore" : "A community management team that understands both the organisation and the needs of the users.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Actionability",
+                        "note" : "There were only 2 responses that could have been actionable in the assessment period. Low sample size can lead to extreme results and the results here should be viewed in this context.",
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "Can the users act upon the response from the organisation to address their concerns?",
+                            "highscore" : "A team that understands and can answer the concerns of users.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "Twitter",
+            "rate" : "6.0",
+            "link" : null,
+            "info" : null
+        },
+        "lvl2" : [
+            {
+                "title" : "Publishing",
+                "rate" : "6.0",
+                "note" : "Looks at the organisation's one-way communications on Twitter.",
+                "lvl3" : [
+                    {
+                        "title" : "Set Up",
+                        "note" : null,
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "Has the organisation set up its Twitter page appropriately?",
+                            "highscore" : "A well thought-out Twitter presence which is easy to find and use for people.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Tweet Frequency",
+                        "note" : null,
+                        "rate" : "4.5",
+                        "comments" : {
+                            "criteria" : "Does the organisation post on Twitter regularly (qualified by the organisation's level of access to quality content)?",
+                            "highscore" : "A well organised social media team/manager with proper content sourcing, editing and publishing process.",
+                            "recommendations" : "Twitter users expect to hear from you on a regular basis. Aim to tweet at least once every day or two. If you have steady access to high quality content of public interest, aim to post at least three times a day. Set up an editorial calendar to schedule posts some weeks in advance to minimise the risk of running out of content to publish.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Tweet Interaction",
+                        "note" : "Favourites, replies and retweets are weighted with a factor of 1, 2 and 3, respectively, based on the value they represent to you. Added up they form the interaction score for each tweet. The average score should be 0.001 per follower for the interaction score to reach 10.",
+                        "rate" : "3.5",
+                        "comments" : {
+                            "criteria" : "How many favourites, replies and retweets do the organisation's posts receive on Twitter?",
+                            "highscore" : "Attractive content that strikes a chord with the organisation's audience.",
+                            "recommendations" : "Tweet interaction (people favouriting, replying to and retweeting your content) is an important indicator of whether your content is interesting, relevant, thought-provoking or controversial. There are numerous ways to create content that strikes a chord. Posing questions that invite users to contribute their own take on things or tell their story are one powerful tool. Research content strategy for engagement for further ideas. It is recommended that you track the interaction score for your tweets over time. Find out which types of tweets (based on content, wording, call-to-action, and other criteria) get higher interaction. Consider doing more of these types of tweets to increase interaction.",
+                            "assessor" : null
+                        }
+                    }
+                ]
+            },
+            {
+                "title" : "Responding",
+                "rate" : "N.A.",
+                "note" : "Looks at the organisation's one-way communications on Twitter.",
+                "lvl3" : [
+                    {
+                        "title" : "Responsiveness",
+                        "note" : null,
+                        "rate" : "N.A.",
+                        "comments" : {
+                            "criteria" : "Do tweets directed at the organisation get responses?",
+                            "highscore" : "An established and responsive community management (person or team) on Twitter.",
+                            "recommendations" : "As social media is inherently a two-way communications channel, it is important that you respond to tweets directed at you where merited. Make sure that you are automatically alerted to any new tweets mentioning your organisation (either via @mentions or through setting up monitoring in a commercial tool) and that your community manager/s can respond to everyone who expects a reply or comment from you",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Timeliness",
+                        "note" : null,
+                        "rate" : "N.A.",
+                        "comments" : {
+                            "criteria" : "How fast does the internal team for Twitter management respond to comments and feedback on the channel.",
+                            "highscore" : "A team with a working alerting mechanism and defined response times for feedback on Twitter.",
+                            "recommendations" : "Ensure you respond to tweets that need a response within 1 hour of them being made. Delegating the authority to respond to your social media community manager/s, setting clear boundaries, and defining an escalation path are good ways of setting up your responding practice. If you cannot provide a concrete response within 1 hour, immediately reply telling the Twitter user by when you will have a response for them.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Relevance",
+                        "note" : null,
+                        "rate" : "N.A.",
+                        "comments" : {
+                            "criteria" : "How relevant are the responses from the organisation with regards to the concerns raised.",
+                            "highscore" : "A community management team that understands both the organisation and the needs of the users.",
+                            "recommendations" : "Your responses to questions and comments made on Twitter should never be generic or prefabricated. Each response must address the user directly and engage with his/her tweet directly. Make sure your responses are always relevant and helpful.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Actionability",
+                        "note" : null,
+                        "rate" : "N.A.",
+                        "comments" : {
+                            "criteria" : "Can the users act upon the response from the organisation to address their concerns?",
+                            "highscore" : "A team that understands and can answer the concerns of users.",
+                            "recommendations" : "Any response to a question must provide the asker with the means to solve the problem or at least take the next step towards a resolution. A mere acknowledgement of their question or complaint is not enough.",
+                            "assessor" : null
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "YouTube",
+            "rate" : "8.1",
+            "link" : null,
+            "info" : null
+        },
+        "lvl2" : [
+            {
+                "title" : "Publishing",
+                "rate" : "8.1",
+                "note" : "Looks at the organisation's one-way communications on YouTube with inclusion of subscribers and video reach with the former assessing the reach of the channel and the latter assessing the quality of content based on subscribers, as a balance.",
+                "lvl3" : [
+                    {
+                        "title" : "Set Up",
+                        "note" : null,
+                        "rate" : "5.6",
+                        "comments" : {
+                            "criteria" : "Has the organisation set up its YouTube page appropriately?",
+                            "highscore" : "A well thought-out YouTube presence which is easy to find and use for people",
+                            "recommendations" : "Set up both a profile photo and a picture header in the right size and file format for your YouTube channel (<a href=\"https:\/\/support.google.com/youtube/answer/2972003?hl=en\" target=\"_blank\">https://support.google.com/youtube/answer/2972003?hl=en)</a><br/><br/>Fill out the About section of your channel. Make sure you include all names your organisation is commonly known by as well as all acronyms in the description.<br/><br/>Set up playlists for your videos to group videos of similar type or belonging to a sequence.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Video Uploads",
+                        "note" : null,
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "Does the organisation post videos on YouTube regularly (qualified by the organisation's level of access to quality content)?",
+                            "highscore" : "A well organised social media team/manager with proper content sourcing, editing and publishing process.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Video Reach",
+                        "note" : null,
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "How many video views do the organisation's videos receive compared to its subscriber numbers?",
+                            "highscore" : "Good reach of content to the channel's subscribers and beyond.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "Like/Dislike Ratio",
+                        "note" : null,
+                        "rate" : "10.0",
+                        "comments" : {
+                            "criteria" : "Do the videos posted garner more likes than dislikes from viewers?",
+                            "highscore" : "Attractive content that strikes a chord with the organisation's audience.",
+                            "recommendations" : "No recommendations.",
+                            "assessor" : null
+                        }
+                    },
+                    {
+                        "title" : "No. of Subscribers",
+                        "note" : null,
+                        "rate" : "4.8",
+                        "comments" : {
+                            "criteria" : "Does the channel have an appropriate number of subscribers based on its popularity and profile?",
+                            "highscore" : "Appealing content and effective promotion of the YouTube channel.",
+                            "recommendations" : "Use promotional efforts to get viewers to subscribe to your channel. You can encourage them at the end of each video, in the description box of each video, in the channel description and in all your mentions of your YouTube channel on- and offline.",
+                            "assessor" : null
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

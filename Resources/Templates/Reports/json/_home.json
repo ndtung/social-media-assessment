@@ -1,0 +1,30 @@
+[
+    {
+        "title": "How to read the framework results</h1>",
+        "desc" : "Every metric is a score from 0-10. </p><p>A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation's nature.  <a href=\"#\">More <i class=\"icon icon-chevron\"></i></a>"
+    },
+    {
+        "lvl1": {
+            "title": "Strategy Results",
+            "rate": 1.4,
+            "link": "/pages/strategy/",
+            "info": "Assesses any written expression of strategic intent relating to digital communications the organisation has, even if it is not explicitly labelled \"digital strategy\". This is based on the opinion that a digital strategy should be documented for concreteness and transferability of knowledge. Declaring a strategy is the groundwork for carrying out digital communications in a sustained manner."
+        }
+    },
+    {
+        "lvl1": {
+            "title": "Social Media Results",
+            "rate": 6.9,
+            "link": "/pages/social-media/",
+            "info": "Looks at elements of digital strategy that apply to the organisation's social media engagement."
+        }
+    },
+    {
+        "lvl1": {
+            "title": "Web results",
+            "rate": 7.1,
+            "link": "/pages/web/",
+            "info": "Looks at elements of digital strategy that apply to the organisation's website(s)."
+        }
+    }
+]

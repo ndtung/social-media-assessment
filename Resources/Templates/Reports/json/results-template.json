@@ -1,0 +1,33 @@
+[
+    {
+        "title": "<h1></h1>",
+        "desc" : "<p></p>"
+    },
+    {
+        "lvl1": {
+            "title" : "<h2></h2>",
+            "rate" : "",
+            "link" : null,
+            "info" : ""
+        },
+        "lvl2" : [
+            {
+                "title" : "<h2></h2>",
+                "rate" : "",
+                "note" : "",
+                "lvl3" : [
+                    {
+                        "title" : "<h3></h3>",
+                        "note" : null,
+                        "rate" : "",
+                        "comments" : {
+                            "criteria" : "<p></p>",
+                            "highscore" : "<p></p>",
+                            "others" : ""
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

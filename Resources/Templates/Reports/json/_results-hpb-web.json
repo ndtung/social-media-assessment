@@ -1,0 +1,135 @@
+[
+    {
+        "title": "Web",
+        "desc" : "Assesses the organisation's performance on their website according to global standards and understanding of target audience groups' needs."
+    },
+    {
+        "lvl1": {
+            "title" : "Findability",
+            "rate" : "5.0",
+            "link" : null,
+            "info" : "Looks at elements of SEO that affect the users' ability to find the organisation's website."
+        },
+        "lvl2" : [
+            {
+                "title" : "By organisation name",
+                "rate" : "10.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Do search results on Google for the organisation's name and acronym return the website near the top?",
+                    "highscore" : "Effective SEO efforts for the organisation name.",
+                    "recommendations" : "No recommendations.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "By keywords",
+                "rate" : "4.4",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Do search results on Google on search terms that target audience groups would use return the website near the top?",
+                    "highscore" : "Clear understanding of target audience groups' needs and effective SEO efforts based on it.",
+                    "recommendations" : "Through research, identify the commonly used keywords that your top audience groups are likely to use in a search when trying to find information about or content from your organisation. Ensure that you use those keywords prominently in the copy of your content.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Technical SEO",
+                "rate" : "0.6",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Is the website technically configured to enhance its searchability?",
+                    "highscore" : "Good set-up and technical configuration of the website for search",
+                    "recommendations" : "Add a robots.txt file to your website to indicate to search engines, which pages they should and should not index.<br/><br/>Ensure the robots.txt file does not disallow robots to crawl the website.<br/><br/>Add a sitemap.xml file to the website to help search engines understand the structure of your site.<br/><br/>Ensure the URLs to your web pages are in legible, friendly and recognisable URLs that are easy for crawling. Research canonical URLs for further information.",
+                    "assessor" : null
+                }
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "Usability",
+            "rate" : "7.1",
+            "link" : null,
+            "info" : "Looks at elements of usability that affect how easy a website is to navigate by its target audience groups."
+        },
+        "lvl2" : [
+            {
+                "title" : "Accessibility",
+                "rate" : "6.7",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Is your website adhering to global accessibility best practice, such as visibility of text and navigation hierarchy?",
+                    "highscore" : "Understanding and implementation of accessibility best practice.",
+                    "recommendations" : "Ensure all font sizes used are at least as big as or bigger than Arial font point 10.<br/><br/>Ensure all hyperlinks are visually distinct from body text such as via underlining or colour treatment.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Site usability",
+                "rate" : "7.6",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the website's navigation allow users from its primary audience groups to quickly and easily understand the navigation and find the content they are looking for?",
+                    "highscore" : "Clear understanding of the needs of primary target audience groups and the language used by them and implementation through appropriate information architecture.",
+                    "recommendations" : "Provide your third target audience group (job seeker) with clearer calls to action or clearer labelling to complete the third scenario of finding out the working environment in HPB.<br/><br/>Ensure that the pages are optimised for site search, especially for your third target audience group (job seeker) with respect to the third scenario of finding out the working environment in HPB.<br/><br/>Ensure the website is mobile optimised and not just displaying a miniaturised version of the desktop website. This means the design of the website conforms to the resolution and size of the screen it is being displayed on.",
+                    "assessor" : null
+                }
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "Content Quality",
+            "rate" : "9.3",
+            "link" : null,
+            "info" : "Looks at the elements of quality in the content published on the website, including text and images."
+        },
+        "lvl2" : [
+            {
+                "title" : "Contactability",
+                "rate" : "10.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the website place contact details prominently, allowing users to contact the organisation easily?",
+                    "highscore" : "Customer-focused attitude.",
+                    "recommendations" : "No recommendations",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Content design",
+                "rate" : "10.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Is the content on the most important pages easy to scan by users and does it use people's language for labels and headings?",
+                    "highscore" : "A well thought-out content hierarchy and use of intuitive language in key sections of pages.",
+                    "recommendations" : "No recommendations",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Writing style",
+                "rate" : "9.1",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "How easily understandable is the writing style of the content for its target audience groups?",
+                    "highscore" : "Appealing content that is easy to read and employs its users' language.",
+                    "recommendations" : "No recommendations",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Imagery",
+                "rate" : "7.9",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Are images used on the website clear, relevant and in the right formats?",
+                    "highscore" : "Understanding of the appropriate use of images to support content.",
+                    "recommendations" : "Ensure the GIF or PNG format is used for line drawings and diagrams. Unlike PNG or GIF, JPEG loses quality and information each time it is saved and becomes less focused.",
+                    "assessor" : null
+                }
+            }
+        ]
+    }
+]
