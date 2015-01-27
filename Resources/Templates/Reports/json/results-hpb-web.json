@@ -1,0 +1,67 @@
+{
+    "title": "Web",
+    "description": "Assesses the organisation's performance on their website according to global standards and understanding of target audience groups' needs.",
+    "results": [
+        {
+			"title" : "Findability",
+			"description" : "Looks at elements of SEO that affect the users' ability to find the organisation's website.",
+			"link" : "",
+			"score" : "5.0",
+			"details_level_1":[
+				{
+					"title": "By organisation name",
+					"description" : "",
+					"link" : "",
+					"criteria": "Do search results on Google for the organisation's name and acronym return the website near the top?",
+					"recommendations": "No recommendations.",
+					"score": "10.0",
+					"details_level_2":[]
+				},
+				{
+					"title": "By keywords",
+					"description" : "",
+					"link" : "",
+					"criteria": "Do search results on Google on search terms that target audience groups would use return the website near the top?",
+					"recommendations": "Through research, identify the commonly used keywords that your top audience groups are likely to use in a search when trying to find information about or content from your organisation. Ensure that you use those keywords prominently in the copy of your content.",
+					"score": "4.4",
+					"details_level_2":[]
+				},
+				{
+					"title": "Technical SEO",
+					"description" : "",
+					"link" : "",
+					"criteria": "Is the website technically configured to enhance its searchability?",
+					"recommendations": "Add a robots.txt file to your website to indicate to search engines, which pages they should and should not index.<br/><br/>Ensure the robots.txt file does not disallow robots to crawl the website.<br/><br/>Add a sitemap.xml file to the website to help search engines understand the structure of your site.<br/><br/>Ensure the URLs to your web pages are in legible, friendly and recognisable URLs that are easy for crawling. Research canonical URLs for further information.",
+					"score": "0.6",
+					"details_level_2":[]
+				}
+			]
+		},
+		{
+			"title" : "Usability",
+			"description" : "Looks at elements of usability that affect how easy a website is to navigate by its target audience groups.",
+			"link" : "",
+			"score" : "7.1",
+			"details_level_1":[
+				{
+					"title": "Accessibility",
+					"description" : "",
+					"link" : "",
+					"criteria": "Is your website adhering to global accessibility best practice, such as visibility of text and navigation hierarchy?",
+					"recommendations": "Ensure all font sizes used are at least as big as or bigger than Arial font point 10.<br/><br/>Ensure all hyperlinks are visually distinct from body text such as via underlining or colour treatment.",
+					"score": "6.7",
+					"details_level_2":[]
+				},
+				{
+					"title": "Site usability",
+					"description" : "",
+					"link" : "",
+					"criteria": "Does the website's navigation allow users from its primary audience groups to quickly and easily understand the navigation and find the content they are looking for?",
+					"recommendations": "Provide your third target audience group (job seeker) with clearer calls to action or clearer labelling to complete the third scenario of finding out the working environment in HPB.<br/><br/>Ensure that the pages are optimised for site search, especially for your third target audience group (job seeker) with respect to the third scenario of finding out the working environment in HPB.<br/><br/>Ensure the website is mobile optimised and not just displaying a miniaturised version of the desktop website. This means the design of the website conforms to the resolution and size of the screen it is being displayed on.",
+					"score": "7.6",
+					"details_level_2":[]
+				}
+			]
+		}
+    ]
+}

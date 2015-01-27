@@ -1,0 +1,167 @@
+[
+    {
+        "title": "Strategy",
+        "desc" : "Assesses any written expression of strategic intent relating to digital communications the organisation has, even if it is not explicitly labelled “digital strategy”. This is based on the opinion that a digital strategy should be documented for concreteness and transferability of knowledge. Declaring a strategy is the groundwork for carrying out digital communications in a sustained manner."
+    },
+    {
+        "lvl1": {
+            "title" : "Overall Strategy",
+            "rate" : "4.3",
+            "link" : null,
+            "info" : "Looks at elements of digital strategy that apply across channels (web, mobile, social media)."
+        },
+        "lvl2" : [
+            {
+                "title" : "Business Objectives",
+                "rate" : "5.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation base its digital strategy on overall strategic business objectives? Has it set KPIs for measuring success?",
+                    "highscore" : null,
+                    "recommendations" : "Identify KPIs for tracking the success of your digital communications. Ensure these are based on business objectives and are specific, measurable, attainable, realistic and time-bound (SMART goals).",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Audience",
+                "rate" : "10.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation identify its varied audiences for digital communications? Does it address them differently?",
+                    "highscore" : null,
+                    "recommendations" : "No recommendations.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Amplify",
+                "rate" : "6.7",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation have a plan for amplifying its reach in digital communications in owned media, paid media and earned media?",
+                    "highscore" : null,
+                    "recommendations" : "Assess and document your approach to amplifying your digital content through paid media (including online and traditional mass media advertising spend) as cross-promotion for your digital conten.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Data",
+                "rate" : "0.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation have plans to regularly analyse data, analytics and metrics to understand its performance in digital communications? Does it have processes for improvement based on metrics?",
+                    "highscore" : null,
+                    "recommendations" : "Identify that analytics are being monitored or tracked either via Google Analytics or other tracking tools on digital communications channels.<br/><br/>Define the process of improving digital performance on communications channels using data from analytics tools.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Moderation",
+                "rate" : "0.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation have a policy for moderating user generated content on its digital channels (even if that policy is not to moderate)?",
+                    "highscore" : null,
+                    "recommendations" : "Define your business rules for the moderation of user-generated content. Approaches range from disallowing user-generated content through pre-moderation, post-moderation to completely open acceptance of user-generated content. Consider the impact on your organisation's workload as well as the effect your policy will have on the likelihood of users to contribute comments or other content.",
+                    "assessor" : null
+                }
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "Website",
+            "rate" : "0.0",
+            "link" : null,
+            "info" : "Looks at elements of digital strategy that apply to the organisation's website(s)."
+        },
+        "lvl2" : [
+            {
+                "title" : "Content",
+                "rate" : "0.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Has the organisation defined how content is created for placement on the website? Does it have one or more defined workflows for editing, reviewing and publishing web content? Does the strategy identify different content types to use on the website? Does the content strategy explain the tone of voice to adopt or any writing guidelines for website content?",
+                    "highscore" : null,
+                    "recommendations" : "Define how the content for your website(s) are sourced, created or curated. This can include whether the content is being driven by campaigns or curated from other offline channels.<br/><br/>Investigate and document the creation and approval workflows for content in your organisation. Include steps like sourcing, creating, editing, reviewing, approving, publishing and culling content.<br/><br/>Identify the different types of content to use on the website. This can include text, images, video and interactive content. Define which role each content type will play and how it helps support your strategic goals.<br/><br/>Define guidelines for the tone of voice to adopt on your website(s). Base this on your organisation's brand guidelines, but take into account potential differences in the audiences of your online channels.",
+                    "assessor" : null
+                }
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "Social Media",
+            "rate" : "1.1",
+            "link" : null,
+            "info" : "Looks at elements of digital strategy that apply to the organisation's social media engagement."
+        },
+        "lvl2" : [
+            {
+                "title" : "Channels",
+                "rate" : "3.3",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation identify the different social media channels it chooses and doesn't choose to engage in? Does it recognise how it plans to use these channels in different ways? Has the organisation considered platforms other than Facebook, Twitter and YouTube, even if just to state that they will not be used?",
+                    "highscore" : null,
+                    "recommendations" : "Identify and differentiate the usage of existing social media channels such as how they target different audience groups and serve up different content<br/><br/>Acknowledge other social media channels other than Facebook, Twitter and YouTube. Mention could include the choice of the organisation to not use other social media channels.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Content",
+                "rate" : "0.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation have a content plan or editorial calendar for social media publishing? Is there a mention of the tone of voice to adopt in social media channels?",
+                    "highscore" : null,
+                    "recommendations" : "Define a schedule with which content on social media channels have to be published according. This could include monthly, weekly or daily schedule that is aligned to the overall content schedule of all digital channels used by your organisation.<br/><br/>Identify how staff tasked with managing social media channels are meant to accomplish that. Include workflow and approval process along with monitoring and response.<br/><br/>Define guidelines for the tone of voice to adopt on your social media channels. Base this on your organisation's brand guidelines, but take into account potential differences in the audiences of your social media channels.",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Response",
+                "note" : null,
+                "rate" : "0.0",
+                "comments" : {
+                    "criteria" : "Does the organisation have a policy for responding in social channels? Does it guide staff in the handling of complaints and comments made by users in social media channels?",
+                    "highscore" : "null",
+                    "recommendations" : "Define a organisation-wide policy for responding on social channels. This could include response time, personnel tasked to respond and response etiquette.<br/><br/>Define how staff who are tasked with community management should respond to complaints on social media channels. This could include a workflow or approval process wherein the complaint and response gets approved by certain personnel before being published.",
+                    "assessor" : null
+                }
+            }
+        ]
+    },
+    {
+        "lvl1": {
+            "title" : "Mobile",
+            "rate" : "0.0",
+            "link" : null,
+            "info" : "Looks at elements of digital strategy that apply to the organisation's mobile engagement. Even if a mobile strategy has been considered and a decision made not to engage in mobile, that decision and the reason should be documented."
+        },
+        "lvl2" : [
+            {
+                "title" : "Overall Mobile Strategy",
+                "rate" : "0.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Has the organisation defined objectives for mobile communication? Is there a recognition of different types of content served on the mobile platform? Are specific KPIs defined for mobile?",
+                    "highscore" : null,
+                    "recommendations" : "Identify business objectives specifically catered towards mobile communications that are aligned to the business objectives of digital communications of your organisation.<br/><br/>Define the types of content that are being served on mobile platforms owned by the organisation. This could include specific content types or content subject matter types.<br/><br/>Identify KPIs for tracking the success of your mobile communications. Ensure these are based on business objectives and are specific, measurable, attainable, realistic and time-bound (SMART goals).",
+                    "assessor" : null
+                }
+            },
+            {
+                "title" : "Content",
+                "rate" : "0.0",
+                "note" : null,
+                "comments" : {
+                    "criteria" : "Does the organisation have a content plan or editorial calendar for social media publishing? Is there a mention of the tone of voice to adopt in social media channels?",
+                    "highscore" : null,
+                    "recommendations" : "Define a schedule with which content on social media channels have to be published according. This could include monthly, weekly or daily schedule that is aligned to the overall content schedule of all digital channels used by your organisation.<br/><br/>Identify how staff tasked with managing social media channels are meant to accomplish that. Include workflow and approval process along with monitoring and response.<br/><br/>Define guidelines for the tone of voice to adopt on your social media channels. Base this on your organisation's brand guidelines, but take into account potential differences in the audiences of your social media channels.",
+                    "assessor" : null
+                }
+            }
+        ]
+    }
+]

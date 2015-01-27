@@ -1,4 +1,5 @@
-﻿using System;
+﻿//using MCIFramework.Helper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ using MCIFramework.Models;
 using System.Collections.Generic;
 using MCIFramework.ViewModels;
 
+
 namespace MCIFramework.Views
 {
     /// <summary>
@@ -24,9 +26,13 @@ namespace MCIFramework.Views
     {
         public AssessmentDetails()
         {
-            InitializeComponent();
-            AssessmentDetailsModel vm = new AssessmentDetailsModel(1);
-            this.DataContext = vm;
+            InitializeComponent();            
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //ExcelData exceldata = new ExcelData();
+            //this.dataGrid1.DataContext = exceldata;
             
         }
     }

@@ -59,10 +59,64 @@ namespace MCIFramework.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
- 
-        public Assessment()
-        {
 
-        }
     }
+
+    public class dataUploaded
+    {
+        public int level { get; set; }
+        public string title { get; set; }
+        public string score { get; set; }
+        public string description { get; set; }
+        public string criteria { get; set; }
+        public string indicator { get; set; }
+        public string recommendations { get; set; }
+        public string assessor { get; set; }
+    }
+
+    //jason
+    public class DetailsLevel2
+    {
+        public string title { get; set; }
+        public string description { get; set; }
+        public string link { get; set; }
+        public string criteria { get; set; }
+        public string recommendations { get; set; }
+        public string score { get; set; }
+        public string indicator_for { get; set; }
+        public string assessor { get; set; }
+    }
+
+    public class DetailsLevel1
+    {
+        public string title { get; set; }
+        public string description { get; set; }
+        public string link { get; set; }
+        public string criteria { get; set; }
+        public string recommendations { get; set; }
+        public string score { get; set; }
+        public List<DetailsLevel2> details_level_2 { get; set; }
+        //public List<object> details_level_2 { get; set; }
+    }
+
+    public class Result
+    {
+        public string title { get; set; }
+        public string description { get; set; }
+        public string link { get; set; }
+        public string score { get; set; }
+        public List<DetailsLevel1> details_level_1 { get; set; }
+    }
+
+    public class RootObject
+    {
+        public string title { get; set; }
+        public string description { get; set; }
+        public List<Result> results { get; set; }
+    }
+
+
+
+
+
 }

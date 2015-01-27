@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using MCIFramework.Models;
+//using MCIFramework.Helper;
 
 
 namespace MCIFramework.ViewModels
@@ -22,6 +23,15 @@ namespace MCIFramework.ViewModels
             else
             { }
         }
+        
+        public AssessmentDetailsModel()
+        {
+
+        }
+
+        private ICommand _uploadWorksheet;
+        private ICommand _downloadReport;
+        
 
         public Assessment Assessment
         {
@@ -601,6 +611,7 @@ namespace MCIFramework.ViewModels
             }
         }
 
+
         public string Audience3Keyword2
         {
             get { return _assessment.Audience3Keyword2; }
@@ -674,7 +685,49 @@ namespace MCIFramework.ViewModels
         {
             OnPropertyChanged("Assessments");
         }
+        //upload Worksheets, need to check and validate if all files are uploaded before generating report
+        //public ICommand uploadWorksheet
+        //{
+        //    get
+        //    {
+        //        if (_uploadWorksheet == null)
+        //        {
+        //            _uploadWorksheet = new RelayCommand(param => this.Submit(),
+        //                null);
+        //        }
+        //        return _uploadWorksheet;
+        //    }
+        //}
+
+        //Download generated Report
+        //public ICommand downloadReport
+        //{
+        //    get
+        //    {
+        //        if (_downloadReport == null)
+        //        {
+        //            _downloadReport = new RelayCommand(param => this.Submit(),
+        //                null);
+        //        }
+        //        return _downloadReport;
+        //    }
+        //}
 
         #endregion
+
     }
+
+
+//============================================================================================================================================
+
+
+//============================================================================================================================================
+
+
+//============================================================================================================================================
+
+
+//============================================================================================================================================
+
+
 }

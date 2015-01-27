@@ -159,7 +159,7 @@
                 <Grid Margin="18,0,18,18">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
-                        
+
                         <ColumnDefinition Width="*"/>
 
                     </Grid.ColumnDefinitions>
@@ -169,7 +169,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
-                        
+
                     </Grid.RowDefinitions>
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_titlle}" HorizontalAlignment="Left" Margin="48,24,0,0" VerticalAlignment="Top" FontSize="24" FontFamily="Arial" Padding="0,5,5,5"/>
                     <Line Stroke="Black"
@@ -178,19 +178,46 @@
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
-                    <Button Content="Browse" HorizontalAlignment="Left" Margin="331,41,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75"/>
-                    <Button Content="Browse" HorizontalAlignment="Left" Margin="331,101,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75"/>
-                    <Button Content="Browse" HorizontalAlignment="Left" Margin="331,166,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75"/>
-                    <Button Content="{x:Static prop:Resources.btn_tab_3_downloadreport}" Style="{StaticResource GreenButton}" HorizontalAlignment="Left" Margin="48,311,0,0" Grid.Row="3" Width="168" Height="41" VerticalAlignment="Top" BorderBrush="{x:Null}" Foreground="White"/>
-                    <Button Content="{x:Static prop:Resources.btn_tab_3_uploadworksheets}" Style="{StaticResource BlueButton}" HorizontalAlignment="Left" Margin="48,231,0,0" Grid.Row="3" Width="168" Height="41" VerticalAlignment="Top" BorderBrush="{x:Null}" Foreground="White"/>
+
+                    <Button Content="Browse" 
+                            Command="{Binding UpdateStudentNameCommand}" CommandParameter="{Binding ElementName=ListViewStudentDetails,Path=SelectedItem}" 
+                            HorizontalAlignment="Left" Margin="331,41,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
+                            ToolTip="Browse Strategy Assessment.xlsx"  />
+
+                    <Button Content="Browse" 
+                            Command="{Binding UpdateStudentNameCommand}" CommandParameter="{Binding ElementName=ListViewStudentDetails,Path=SelectedItem}"
+                            HorizontalAlignment="Left" Margin="331,101,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
+                            ToolTip="Browse Social Media Assessment.xlsx"/>
+
+                    <Button Content="Browse" 
+                            Command="{Binding UpdateStudentNameCommand}" CommandParameter="{Binding ElementName=ListViewStudentDetails,Path=SelectedItem}"
+                            HorizontalAlignment="Left" Margin="331,166,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
+                            ToolTip="Browse Website Assessment.xlsx"/>
+
+                    <Button Content="{x:Static prop:Resources.btn_tab_3_downloadreport}" HorizontalAlignment="Left" Margin="48,311,0,0" Grid.Row="3" Width="168" Height="41" VerticalAlignment="Top" Background="#FF4DA067" BorderBrush="{x:Null}" Foreground="White" 
+                            Command="{Binding downloadReport}" CommandParameter="{Binding ElementName=ListViewStudentDetails,Path=SelectedItem}"
+                            ToolTip="Download generated report" Click="Button_Click"/>
+
+                    <Button Content="{x:Static prop:Resources.btn_tab_3_uploadworksheets}" HorizontalAlignment="Left" Margin="48,231,0,0" Grid.Row="3" Width="168" Height="41" VerticalAlignment="Top" Background="#FF3773C9" BorderBrush="{x:Null}" Foreground="White" 
+                            Command="{Binding uploadWorksheet}" CommandParameter="{Binding ElementName=ListViewStudentDetails,Path=SelectedItem}"
+                            ToolTip="Upload Worksheet for report generation"/>
+
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row3_titlle}" HorizontalAlignment="Left" Margin="48,139,0,0" Grid.Row="3" VerticalAlignment="Top"/>
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row2_titlle}" HorizontalAlignment="Left" Margin="48,74,0,0" Grid.Row="3" VerticalAlignment="Top"/>
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row1_titlle}" HorizontalAlignment="Left" Margin="48,14,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+
+                    <DataGrid Name="dataGrid1" ItemsSource="{Binding Data}" HorizontalAlignment="Left" Margin="48,386,0,0" Grid.Row="3" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="310" Width="807"/>
+                    
+                    
                 </Grid>
+
+
+
+
             </TabItem>
 
         </TabControl>
-      
+        
 
     </Grid>
 
