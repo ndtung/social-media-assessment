@@ -16,40 +16,35 @@ using System.Data.Entity;
 using System.ComponentModel;
 using MCIFramework.ViewModels;
 
-namespace MCIFramework
+namespace MCIFramework.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class Dashboard : Window
+    public partial class Dashboard : UserControl
     {
         private DataGridColumn currentSortColumn;
         private ListSortDirection currentSortDirection;
         public Dashboard()
         {
             InitializeComponent();
-            this.Loaded += MainWindow_Loaded;
+            DashboardModel vm = new DashboardModel();
+            this.DataContext = vm;
+            
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                DashboardModel vm = new DashboardModel();
-                this.DataContext = vm;
-            }
-            catch (Exception ex)
-            {
-                var a = ex.Message;
-            }
-        }
         private void AssessmentsDataGrid_Loaded(object sender, RoutedEventArgs e)
         {
             DataGrid dataGrid = (DataGrid)sender;
  
             // The current sorted column must be specified in XAML.
-            currentSortColumn = dataGrid.Columns.Where(c => c.SortDirection.HasValue).Single();
-            currentSortDirection = currentSortColumn.SortDirection.Value;
+            var currentSortColumns = dataGrid.Columns.Where(c => c.SortDirection.HasValue);
+            if (currentSortColumns != null)
+            {
+                currentSortColumn = currentSortColumns.ToList()[0];
+                currentSortDirection = currentSortColumn.SortDirection.Value;
+            }
+            else
+            {
+                currentSortColumn = dataGrid.Columns.Where(c => c.Header.ToString() == "Completion Date").Single();
+            }
         }
  
         /// <summary>

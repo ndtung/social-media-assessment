@@ -231,7 +231,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
     <value>Search</value>
   </data>
   <data name="btn_tab_1_save" xml:space="preserve">
-    <value>Save and Continue</value>
+    <value>Save </value>
   </data>
   <data name="btn_tab_2_download_column_1" xml:space="preserve">
     <value>Download Strategy Worksheet</value>
@@ -245,7 +245,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="btn_tab_3_downloadreport" xml:space="preserve">
     <value>Download Report</value>
   </data>
-  <data name="btn_tab_3_download_column_3" xml:space="preserve">
+  <data name="btn_tab_2_download_column_3" xml:space="preserve">
     <value>Download Web Worksheet</value>
   </data>
   <data name="btn_tab_3_uploadworksheets" xml:space="preserve">
@@ -268,5 +268,8 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   </data>
   <data name="value_dasboard_grid_default_sort_direction" xml:space="preserve">
     <value>descending</value>
+  </data>
+  <data name="btn_tab_1_save_and_continue" xml:space="preserve">
+    <value>Save and Continue</value>
   </data>
 </root>

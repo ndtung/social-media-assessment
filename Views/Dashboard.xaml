@@ -1,13 +1,10 @@
-﻿<Window x:Class="MCIFramework.Dashboard"
+﻿<UserControl x:Class="MCIFramework.Views.Dashboard"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:prop="clr-namespace:MCIFramework.Properties"
-        Title="{x:Static prop:Resources.dashboard_window_title}" Height="1005" Width="1280" MinWidth="1000" MinHeight="650"
-        Top="0" Left="0"
-        ResizeMode="CanResizeWithGrip">
-    <Window.Resources>
+        xmlns:prop="clr-namespace:MCIFramework.Properties">
+    <UserControl.Resources>
         <SolidColorBrush x:Key="GrayGridLine" Color="#DBDBF8" />
-    </Window.Resources>
+    </UserControl.Resources>
     <Grid Margin="0,0,0,30" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="500"></ColumnDefinition>
@@ -27,7 +24,7 @@
         <Label Grid.Row ="1"  Content="{x:Static prop:Resources.dashboard_search_title}" HorizontalAlignment="Left" Margin="37,62,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.684,-1.192" FontSize="14" FontFamily="Arial" Foreground="#FF7A7070"/>
 
         <Button Grid.Row ="1" Style="{StaticResource BlueButton}" Command="{Binding SearchCommand}" IsDefault="true" Content="{x:Static prop:Resources.btn_search}" HorizontalAlignment="Left" Margin="280,88,0,0" VerticalAlignment="Top" Width="91" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" />
-        <Button Grid.Row ="2" Style="{StaticResource GreenButton}" Command="{Binding SearchCommand}" Grid.Column="2" Content="{x:Static prop:Resources.btn_create_new_assessment}" HorizontalAlignment="Right" Margin="0,88,40,0" VerticalAlignment="Top" Width="159" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0"/>
+        <Button Grid.Row ="2" Style="{StaticResource GreenButton}" Command="{Binding CreateNewAssessmentCommand}" Grid.Column="2" Content="{x:Static prop:Resources.btn_create_new_assessment}" HorizontalAlignment="Right" Margin="0,88,40,0" VerticalAlignment="Top" Width="159" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0"/>
 
         <DataGrid Grid.Row ="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                   Margin="40,170,40,30" AutoGenerateColumns="False" ItemsSource="{Binding Path=Assessments,NotifyOnTargetUpdated=True}" 
@@ -37,6 +34,7 @@
                   Sorting="AssessmentsDataGrid_Sorting"
                   TargetUpdated="AssessmentsDataGrid_TargetUpdated"
                   Loaded="AssessmentsDataGrid_Loaded"
+                  SelectedItem="{Binding SelectedItem}"
                   >
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGridRow}">
@@ -198,9 +196,13 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Content="Edit Assessment" Style="{StaticResource GreenButton}" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
-                                <Button Content="Generate Report" Style="{StaticResource GreenButton}" Grid.Column="1" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
-                                <Button Content="Delete" Style="{StaticResource RedButton}" Grid.Column="2" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
+                                <Button Content="Edit Assessment" Command="{Binding Path=DataContext.OpenAssessmentCommand,RelativeSource={RelativeSource FindAncestor,
+                                AncestorType={x:Type DataGrid}}}" Style="{StaticResource GreenButton}" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
+                                <Button Content="Generate Report" Command="{Binding Path=DataContext.GenerateReportCommand,RelativeSource={RelativeSource FindAncestor,
+                                AncestorType={x:Type DataGrid}}}" Style="{StaticResource GreenButton}" Grid.Column="1" Margin="5,5,5,5" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
+                                <Button Content="Delete" Command="{Binding Path=DataContext.DeleteAssessmentCommand, RelativeSource={RelativeSource FindAncestor,
+                                AncestorType={x:Type DataGrid}}}"  Style="{StaticResource RedButton}" Grid.Column="2" Margin="5,5,5,5" Height="40" 
+                                        Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Padding="0,1,0,1"/>
                             </Grid>
 
                         </DataTemplate>
@@ -246,4 +248,4 @@
         </StackPanel>
 
     </Grid>
-</Window>
+</UserControl>

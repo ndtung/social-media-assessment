@@ -1,38 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq ;
-using System.Text ;
-using System.Threading.Tasks; 
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using MCIFramework.Models;
+using System.ComponentModel;
+using System.Windows;
 //using MCIFramework.Helper;
 
 
 namespace MCIFramework.ViewModels
 {
-    public class AssessmentDetailsModel:ViewModelBase
+    public class AssessmentDetailsModel : ViewModelBase, IDataErrorInfo, IPageViewModel
     {
+        private Database _context = new Database();
         private Assessment _assessment;
-        public AssessmentDetailsModel(int assessmentID)
+        private Dictionary<string, bool> _validProperties;
+        private bool _allPropertiesValid = false;
+        private Boolean _isNewAssessment;
+
+        private String _tab1Message;
+        private String _tab1MessageColor;
+        private Visibility _newAssessmentVisibility;
+        private Visibility _createNewAssessmentVisibility;
+        private int _tab;
+
+        private ICommand _uploadWorksheetCommand;
+        private ICommand _downloadReportCommand;
+        private ICommand _saveCommand;
+        private ICommand _downloadStrategyCommand;
+        private ICommand _importSocialCommand;
+        private ICommand _downloadSocialCommand;
+        private ICommand _downloadWebCommand;
+        private ICommand _toDashboardCommand;
+
+        
+        #region Constructors
+        /// <summary>
+        /// Create new assessment details model with default tab
+        /// </summary>
+        /// <param name="assessmentID"></param>
+        /// <param name="tab"> 0: first tab, 1: second tab, 2: third tab</param>
+        public AssessmentDetailsModel(int assessmentID,int tab)
         {
-            Database context = new Database();
-            var item = context.assessments.FirstOrDefault(c => c.Id == assessmentID);
+            var item = _context.assessments.FirstOrDefault(c => c.Id == assessmentID);
+            this._validProperties = new Dictionary<string, bool>();
+            IsNewAssessment = false;
+            DefaultTab = tab;
+            CreateNewAssessmentTitle = Visibility.Hidden;
             if (item != null)
                 _assessment = (Assessment)item;
             else
-            { }
+            { new AssessmentDetailsModel(); }
         }
-        
+
         public AssessmentDetailsModel()
         {
-
+            _assessment = new Assessment();
+            this._validProperties = new Dictionary<string, bool>();
+            _isNewAssessment = true;
+            NewAssessmentVisibility = Visibility.Hidden;
+            CreateNewAssessmentTitle = Visibility.Visible;
         }
 
-        private ICommand _uploadWorksheet;
-        private ICommand _downloadReport;
-        
-
+        #endregion
+    
         public Assessment Assessment
         {
             get
@@ -45,8 +79,40 @@ namespace MCIFramework.ViewModels
                 OnPropertyChanged("Assessment");
             }
         }
-       
+
         #region Properties
+
+        public string Name
+        {
+            get { return "AssessmentDetails"; }
+        }
+
+        public string Tab1Message
+        {
+            get { return _tab1Message; }
+            set
+            {
+                if (_tab1Message != value)
+                {
+                    _tab1Message = value;
+                    OnPropertyChanged("Tab1Message");
+                }
+            }
+        }
+
+        public string Tab1MessageColor
+        {
+            get { return _tab1MessageColor; }
+            set
+            {
+                if (_tab1MessageColor != value)
+                {
+                    _tab1MessageColor = value;
+                    OnPropertyChanged("Tab1MessageColor");
+                }
+            }
+        }
+
         public string Organisation
         {
             get { return _assessment.Organisation; }
@@ -75,7 +141,7 @@ namespace MCIFramework.ViewModels
 
         public string AssessmentDisplayName
         {
-            get { return _assessment.Organisation+" - "+_assessment.Title; }
+            get { return _assessment.Organisation + " - " + _assessment.Title; }
         }
 
         public DateTime? StartDate
@@ -125,11 +191,17 @@ namespace MCIFramework.ViewModels
                 if (_assessment.IsSocialMedia != value)
                 {
                     _assessment.IsSocialMedia = value;
-                    OnPropertyChanged("IsSocialMedia");
+                    if (value==false)
+                    {
+                        IsFacebook = false;
+                        IsTwitter = false;
+                        IsYoutube = false;
+                    }
+                    OnPropertyChanged("IsSocialMedia"); OnPropertyChanged("StartDate"); OnPropertyChanged("EndDate");
                 }
             }
         }
-        
+
         public Boolean IsFacebook
         {
             get { return _assessment.IsFacebook; }
@@ -138,11 +210,14 @@ namespace MCIFramework.ViewModels
                 if (_assessment.IsFacebook != value)
                 {
                     _assessment.IsFacebook = value;
+                    if (value == true)
+                        IsSocialMedia = true;
                     OnPropertyChanged("IsFacebook");
+                    OnPropertyChanged("FacebookUsername");
                 }
             }
         }
-        
+
         public Boolean IsYoutube
         {
             get { return _assessment.IsYoutube; }
@@ -151,7 +226,10 @@ namespace MCIFramework.ViewModels
                 if (_assessment.IsYoutube != value)
                 {
                     _assessment.IsYoutube = value;
+                    if (value == true)
+                        IsSocialMedia = true;
                     OnPropertyChanged("IsYoutube");
+                    OnPropertyChanged("YoutubeId");
                 }
             }
         }
@@ -164,11 +242,14 @@ namespace MCIFramework.ViewModels
                 if (_assessment.IsTwitter != value)
                 {
                     _assessment.IsTwitter = value;
+                    if (value == true)
+                        IsSocialMedia = true;
                     OnPropertyChanged("IsTwitter");
+                    OnPropertyChanged("TwitterUsername");
                 }
             }
         }
-        
+
         public Boolean IsWeb
         {
             get { return _assessment.IsWeb; }
@@ -178,6 +259,45 @@ namespace MCIFramework.ViewModels
                 {
                     _assessment.IsWeb = value;
                     OnPropertyChanged("IsWeb");
+                    OnPropertyChanged("WebUrl");
+                    OnPropertyChanged("TopPage1");
+                    OnPropertyChanged("TopPage2");
+                    OnPropertyChanged("TopPage3");
+                    OnPropertyChanged("TopPage4");
+                    OnPropertyChanged("TopPage5");
+                    OnPropertyChanged("TopPageUrl1");
+                    OnPropertyChanged("TopPageUrl2");
+                    OnPropertyChanged("TopPageUrl3");
+                    OnPropertyChanged("TopPageUrl4");
+                    OnPropertyChanged("TopPageUrl5");
+                    
+                    OnPropertyChanged("Audience1");
+                    OnPropertyChanged("Audience2");
+                    OnPropertyChanged("Audience3");
+
+                    OnPropertyChanged("Audience1Keyword1");
+                    OnPropertyChanged("Audience1Keyword2");
+                    OnPropertyChanged("Audience1Keyword3");
+
+                    OnPropertyChanged("Audience2Keyword1");
+                    OnPropertyChanged("Audience2Keyword2");
+                    OnPropertyChanged("Audience2Keyword3");
+
+                    OnPropertyChanged("Audience3Keyword1");
+                    OnPropertyChanged("Audience3Keyword2");
+                    OnPropertyChanged("Audience3Keyword3");
+
+                    OnPropertyChanged("Audience1Scenario1");
+                    OnPropertyChanged("Audience1Scenario2");
+                    OnPropertyChanged("Audience1Scenario3");
+                    
+                    OnPropertyChanged("Audience2Scenario1");
+                    OnPropertyChanged("Audience2Scenario2");
+                    OnPropertyChanged("Audience2Scenario3");
+                    
+                    OnPropertyChanged("Audience3Scenario1");
+                    OnPropertyChanged("Audience3Scenario2");
+                    OnPropertyChanged("Audience3Scenario3");
                 }
             }
         }
@@ -288,7 +408,7 @@ namespace MCIFramework.ViewModels
 
         public string TopPage3
         {
-            get { return _assessment.TopPage1; }
+            get { return _assessment.TopPage3; }
             set
             {
                 if (_assessment.TopPage3 != value)
@@ -611,7 +731,6 @@ namespace MCIFramework.ViewModels
             }
         }
 
-
         public string Audience3Keyword2
         {
             get { return _assessment.Audience3Keyword2; }
@@ -677,57 +796,366 @@ namespace MCIFramework.ViewModels
             }
         }
 
+        public bool AllPropertiesValid
+        {
+            get { return _allPropertiesValid; }
+            set
+            {
+              //  if (allPropertiesValid != value)
+                {
+                    _allPropertiesValid = value;
+                    if (value == false)
+                    {
+                        Tab1Message = "Please fill in the required fields";
+                        Tab1MessageColor = "Red";
+                    }
+                    else
+                    {
+                        Tab1Message = "";
+                        Tab1MessageColor = "Green";
+                    }
+                    base.OnPropertyChanged("AllPropertiesValid");
+                }
+            }
+        }
+
+        public Visibility NewAssessmentVisibility 
+        {
+            get { return _newAssessmentVisibility; }
+            set
+            {
+                if (_newAssessmentVisibility != value)
+                {
+                    _newAssessmentVisibility = value;
+                    OnPropertyChanged("NewAssessmentVisibility");
+                }
+            }
+        }
+
+        public Visibility CreateNewAssessmentTitle
+        {
+            get { return _createNewAssessmentVisibility; }
+            set
+            {
+                if (_createNewAssessmentVisibility != value)
+                {
+                    _createNewAssessmentVisibility = value;
+                    OnPropertyChanged("CreateNewAssessmentTitle");
+                }
+            }
+        }
+
+        public Boolean IsNewAssessment
+        {
+            get { return _isNewAssessment; }
+            set
+            {
+                if (_isNewAssessment != value)
+                {
+                    _isNewAssessment = value;
+                    OnPropertyChanged("IsNewAssessment");
+                }
+            }
+        }
+
+        public int DefaultTab
+        {
+            get { return _tab; }
+            set
+            {
+                if (_tab != value)
+                {
+                    _tab = value;
+                    OnPropertyChanged("DefaultTab");
+                }
+            }
+        }
         #endregion
-      
+
+        #region IDataErrorInfo members
+
+        public string Error
+        {
+            get { return (_assessment as IDataErrorInfo).Error; }
+        }
+
+        public string this[string propertyName]
+        {
+            get
+            {
+                string error = (_assessment as IDataErrorInfo)[propertyName];
+                _validProperties[propertyName] = String.IsNullOrEmpty(error) ? true : false;
+                ValidateProperties();
+                CommandManager.InvalidateRequerySuggested();
+                return error;
+            }
+        }
+
+        #endregion
 
         #region Commands
-        void Students_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public ICommand SaveCommand
         {
-            OnPropertyChanged("Assessments");
-        }
-        //upload Worksheets, need to check and validate if all files are uploaded before generating report
-        //public ICommand uploadWorksheet
-        //{
-        //    get
-        //    {
-        //        if (_uploadWorksheet == null)
-        //        {
-        //            _uploadWorksheet = new RelayCommand(param => this.Submit(),
-        //                null);
-        //        }
-        //        return _uploadWorksheet;
-        //    }
-        //}
+            get
+            {
+                if (_saveCommand == null)
+                {
+                    _saveCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            SaveAndContinue();
+                        },
+                        param =>
+                        {
+                            return Validate() == true ? true : false;
+                        }
+                    );
+                }
 
-        //Download generated Report
-        //public ICommand downloadReport
-        //{
-        //    get
-        //    {
-        //        if (_downloadReport == null)
-        //        {
-        //            _downloadReport = new RelayCommand(param => this.Submit(),
-        //                null);
-        //        }
-        //        return _downloadReport;
-        //    }
-        //}
+                return _saveCommand;
+            }
+        }
+
+        public ICommand DownloadStrategyCommand
+        {
+            get
+            {
+                if (_downloadStrategyCommand == null)
+                {
+                    _downloadStrategyCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            DownloadStrategyWorksheet();
+                        },
+                        param =>
+                        {
+                            return IsStrategy == true ? true : false;
+                        }
+                    );
+                }
+
+                return _saveCommand;
+            }
+        }
+
+        public ICommand DownloadWebCommand
+        {
+            get
+            {
+                if (_downloadWebCommand == null)
+                {
+                    _downloadWebCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            DownloadWebWorksheet();
+                        },
+                        param =>
+                        {
+                            return IsWeb == true ? true : false;
+                        }
+                    );
+                }
+
+                return _saveCommand;
+            }
+        }
+
+        public ICommand ImportSocialCommand
+        {
+            get
+            {
+                if (_importSocialCommand == null)
+                {
+                    _importSocialCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            ImportSocialMediaData();
+                        },
+                        param =>
+                        {
+                            return IsSocialMedia == true ? true : false;
+                        }
+                    );
+                }
+
+                return _importSocialCommand;
+            }
+        }
+
+        public ICommand DownloadSocialCommand
+        {
+            get
+            {
+                if (_downloadSocialCommand == null)
+                {
+                    _downloadSocialCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            DownloadWebWorksheet();
+                        },
+                        param =>
+                        {
+                            return IsSocialMedia == true ? true : false;
+                        }
+                    );
+                }
+
+                return _downloadSocialCommand;
+            }
+        }
+
+        public ICommand UploadWorksheetCommand
+        {
+            get
+            {
+                if (_uploadWorksheetCommand == null)
+                {
+                    _uploadWorksheetCommand = new RelayCommand
+                    (
+                         param =>
+                         {
+                             UploadWorksheet();
+                         },
+                        param =>
+                        {
+                            // TODO: check if the worksheet locations are specifed
+                            return true;
+                        }
+                    );
+                }
+                return _uploadWorksheetCommand;
+            }
+        }
+
+        public ICommand DownloadReportCommand
+        {
+            get
+            {
+                if (_downloadReportCommand == null)
+                {
+                    _downloadReportCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            DownloadReport();
+                        },
+                        param =>
+                        {
+                            // TODO: check if worksheets has been uploadded
+                            return true;
+                        }
+                    );
+                }
+                return _downloadReportCommand;
+            }
+        }
+
+        public ICommand ToDashboardCommand
+        {
+            get
+            {
+                if (_toDashboardCommand == null)
+                {
+                    _toDashboardCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            ToDashboard();
+                        },
+                        param =>
+                        {
+                            // TODO: check if worksheets has been uploadded
+                            return true;
+                        }
+                    );
+                }
+                return _toDashboardCommand;
+            }
+        }
+
+        #endregion
+
+        #region Private helpers
+
+        private void ValidateProperties()
+        {
+            foreach (bool isValid in _validProperties.Values)
+            {
+                if (!isValid)
+                {
+                    this.AllPropertiesValid = false;
+                    return;
+                }
+            }
+            this.AllPropertiesValid = true;
+        }
+                
+        private void SaveAndContinue()
+        {
+            try
+            {
+                if (_isNewAssessment)
+                {
+                    _context.assessments.Add(_assessment);
+                    _context.SaveChanges();
+                     Tab1Message = "Assessment added !";
+                    Tab1MessageColor = "Green";
+                }
+                else
+                {
+                    _context.SaveChanges();
+                    Tab1Message = "Assessment Details saved !";
+                    Tab1MessageColor = "Green";
+                }
+            }
+            catch
+            {
+                Tab1Message = "We encountered system error. Please try to save again";
+                Tab1MessageColor = "Red";
+            }
+        }
+
+        private void DownloadStrategyWorksheet()
+        {
+
+        }
+
+        private void DownloadWebWorksheet()
+        {
+
+        }
+
+        private void ImportSocialMediaData()
+        {
+
+        }
+
+        private void UploadWorksheet()
+        {
+
+        }
+
+        private void DownloadReport()
+        {
+
+        }
+
+        private void ToDashboard()
+        {
+            ToDashboardGlobalEvent.Instance.Publish("ToDashboard");
+        }
+
+        private Boolean Validate()
+        {
+            return AllPropertiesValid;
+        }
 
         #endregion
 
     }
-
-
-//============================================================================================================================================
-
-
-//============================================================================================================================================
-
-
-//============================================================================================================================================
-
-
-//============================================================================================================================================
-
-
 }

@@ -7,53 +7,65 @@ using MCIFramework.Models;
 using System.Data;
 using System.Data.Entity;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-
+using System.Windows;
 
 namespace MCIFramework.ViewModels
 {
-    public class DashboardModel : INotifyPropertyChanged
+    public class DashboardModel : INotifyPropertyChanged, IPageViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Private Properties
-
-        private string searchBoxText = String.Empty;
-        private ObservableCollection<Assessment> assessments;
-        private int start = 0;
-        private int itemCount = Int32.Parse(Properties.Resources.value_dashboard_page_default_row_count);
-        private string sortColumn = Properties.Resources.value_dasboard_grid_default_sort_column;
-        private bool ascending = Properties.Resources.value_dasboard_grid_default_sort_direction == "ascending" ? true:false;
-        private int totalItems = 0;
-
-        private ICommand searchCommand;
-        private ICommand newAssessmentCommand;
-        private ICommand firstCommand;
-        private ICommand previousCommand;
-        private ICommand nextCommand;
-        private ICommand lastCommand;
+        private Database _context = new Database();
+        private string _searchBoxText = String.Empty;
+        private ObservableCollection<Assessment> _assessments;
+        private int _start = 0;
+        private int _itemCount = Int32.Parse(Properties.Resources.value_dashboard_page_default_row_count);
+        private string _sortColumn = Properties.Resources.value_dasboard_grid_default_sort_column;
+        private bool _ascending = Properties.Resources.value_dasboard_grid_default_sort_direction == "ascending" ? true : false;
+        private int _totalItems = 0;
+        private Assessment _selectedItem;
+        private InteractionRequest<Confirmation> _confirmationInteractionRequest;
         
+        private ICommand _searchCommand;
+        private ICommand _newAssessmentCommand;
+        private ICommand _firstCommand;
+        private ICommand _previousCommand;
+        private ICommand _nextCommand;
+        private ICommand _lastCommand;
+        private ICommand _deleteAssessmentCommand;
+        private ICommand _generateReportCommand;
+        private ICommand _openAssessmentCommand;
+
         #endregion
 
         public DashboardModel()
         {
-
             RefreshAssessments();
+            _confirmationInteractionRequest = new InteractionRequest<Confirmation>();
+            
+        }
+
+        public string Name
+        {
+            get { return "Dashboard"; }
         }
 
         public ObservableCollection<Assessment> Assessments
         {
             get
             {
-                return assessments;
+                return _assessments;
             }
             set
             {
-                if (object.ReferenceEquals(assessments, value) != true)
+                if (object.ReferenceEquals(_assessments, value) != true)
                 {
-                    assessments = value;
+                    _assessments = value;
                     NotifyPropertyChanged("Assessments");
                 }
             }
@@ -62,38 +74,46 @@ namespace MCIFramework.ViewModels
         /// <summary>
         /// Gets the index of the first item in the products list.
         /// </summary>
-        public int Start { get { return start + 1; } }
+        public int Start { get { return _start + 1; } }
 
         /// <summary>
         /// Gets the index of the last item in the products list.
         /// </summary>
-        public int End { get { return start + itemCount < totalItems ? start + itemCount : totalItems; } }
+        public int End { get { return _start + _itemCount < _totalItems ? _start + _itemCount : _totalItems; } }
 
         /// <summary>
         /// The number of total items in the data store.
         /// </summary>
-        public int TotalItems { get { return totalItems; } }
+        public int TotalItems { get { return _totalItems; } }
 
         /// <summary>
         /// Search Text Box
         /// </summary>
-        public string SearchBoxText 
-        { 
-            get 
-            { 
-                return searchBoxText; 
+        public string SearchBoxText
+        {
+            get
+            {
+                return _searchBoxText;
             }
             set
             {
-                if (object.ReferenceEquals(searchBoxText, value) != true)
+                if (object.ReferenceEquals(_searchBoxText, value) != true)
                 {
-                    searchBoxText = value;
+                    _searchBoxText = value;
                     NotifyPropertyChanged("SearchBoxText");
                 }
             }
         }
 
-       
+        public Assessment SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                NotifyPropertyChanged("SelectedItem");
+            }
+        }
 
         /// <summary>
         /// Sorts the list of products.
@@ -102,18 +122,253 @@ namespace MCIFramework.ViewModels
         /// <param name="ascending">Set to true if the sort</param>
         public void Sort(string sortColumn, bool ascending)
         {
-            this.sortColumn = sortColumn;
-            this.ascending = ascending;
+            this._sortColumn = sortColumn;
+            this._ascending = ascending;
 
             RefreshAssessments();
         }
 
+        public IInteractionRequest ConfirmationInteractionRequest
+        {
+            get { return _confirmationInteractionRequest; }
+        }
+
+
+
+        #region Commands
+
+        public ICommand FirstCommand
+        {
+            get
+            {
+                if (_firstCommand == null)
+                {
+                    _firstCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            _start = 0;
+                            RefreshAssessments();
+                        },
+                        param =>
+                        {
+                            return _start - _itemCount >= 0 ? true : false;
+                        }
+                    );
+                }
+
+                return _firstCommand;
+            }
+        }
+
+        public ICommand PreviousCommand
+        {
+            get
+            {
+                if (_previousCommand == null)
+                {
+                    _previousCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            _start -= _itemCount;
+                            RefreshAssessments();
+                        },
+                        param =>
+                        {
+                            return _start - _itemCount >= 0 ? true : false;
+                        }
+                    );
+                }
+
+                return _previousCommand;
+            }
+        }
+
+        public ICommand NextCommand
+        {
+            get
+            {
+                if (_nextCommand == null)
+                {
+                    _nextCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            _start += _itemCount;
+                            RefreshAssessments();
+                        },
+                        param =>
+                        {
+                            return _start + _itemCount < _totalItems ? true : false;
+                        }
+                    );
+                }
+
+                return _nextCommand;
+            }
+        }
+
+        public ICommand LastCommand
+        {
+            get
+            {
+                if (_lastCommand == null)
+                {
+                    _lastCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            _start = (_totalItems / _itemCount - 1) * _itemCount;
+                            _start += _totalItems % _itemCount == 0 ? 0 : _itemCount;
+                            RefreshAssessments();
+                        },
+                        param =>
+                        {
+                            return _start + _itemCount < _totalItems ? true : false;
+                        }
+                    );
+                }
+
+                return _lastCommand;
+            }
+        }
+
+        public ICommand SearchCommand
+        {
+            get
+            {
+                if (_searchCommand == null)
+                {
+                    _searchCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            RefreshAssessments();
+                        },
+                        param =>
+                        {
+                            return SearchBoxText != null ? true : false;
+                        }
+                    );
+                }
+
+                return _searchCommand;
+            }
+        }
+
+        public ICommand CreateNewAssessmentCommand
+        {
+            get
+            {
+                if (_newAssessmentCommand == null)
+                {
+                    _newAssessmentCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            OpenNewAssessmentWindow();
+                        },
+                        param =>
+                        {
+                            return true;// Always create new
+                        }
+                    );
+                }
+
+                return _newAssessmentCommand;
+            }
+        }
+
+        public ICommand OpenAssessmentCommand
+        {
+            get
+            {
+                if (_openAssessmentCommand == null)
+                {
+                    _openAssessmentCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            OpenExistingAssessmentWindow();
+                        },
+                        param =>
+                        {
+                            return true;// Always create new
+                        }
+                    );
+                }
+
+                return _openAssessmentCommand;
+            }
+        }
+
+        public ICommand GenerateReportCommand
+        {
+            get
+            {
+                if (_generateReportCommand == null)
+                {
+                    _generateReportCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            OpenGenerateReportWindow();
+                        },
+                        param =>
+                        {
+                            return true;// Always create new
+                        }
+                    );
+                }
+
+                return _generateReportCommand;
+            }
+        }
+
+        public ICommand DeleteAssessmentCommand
+        {
+            get
+            {
+                if (_deleteAssessmentCommand == null)
+                {
+                    _deleteAssessmentCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            var result = MessageBox.Show(
+                            "Are you sure you want to delete the assessment?",
+                            "Confirm Delete", MessageBoxButton.OKCancel);
+
+                            if (result.Equals(MessageBoxResult.OK))
+                            {
+                                DeleteSelectedItem();
+                                RefreshAssessments();
+                            }
+                            else 
+                                RefreshAssessments();
+
+                        },
+                        param =>
+                        {
+                            return true;
+                        }
+                    );
+                }
+
+                return _deleteAssessmentCommand;
+            }
+        }
+
+        #endregion
+
+        #region Helpers
         /// <summary>
         /// Refreshes the list of products. Called by navigation commands.
         /// </summary>
         private void RefreshAssessments()
         {
-            Assessments = GetAssessments(start, itemCount, sortColumn, ascending, out totalItems, searchBoxText);
+            Assessments = GetAssessments(_start, _itemCount, _sortColumn, _ascending, out _totalItems, _searchBoxText);
 
             NotifyPropertyChanged("Start");
             NotifyPropertyChanged("End");
@@ -132,166 +387,66 @@ namespace MCIFramework.ViewModels
             }
         }
 
-        #region Commands
-
-        /// <summary>
-        /// Gets the command for moving to the first page of assessments.
-        /// </summary>
-        public ICommand FirstCommand
+        private void OpenNewAssessmentWindow()
         {
-            get
-            {
-                if (firstCommand == null)
-                {
-                    firstCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            start = 0;
-                            RefreshAssessments();
-                        },
-                        param =>
-                        {
-                            return start - itemCount >= 0 ? true : false;
-                        }
-                    );
-                }
+            CreateNewAssessmentGlobalEvent.Instance.Publish("NewAssessment");
+        }
 
-                return firstCommand;
+        private void DeleteSelectedItem()
+        {
+            try
+            {
+                _context.assessments.Remove(SelectedItem);
+                _context.SaveChanges();
+            }
+            catch
+            {
+
             }
         }
 
-        /// <summary>
-        /// Gets the command for moving to the previous page of assessments.
-        /// </summary>
-        public ICommand PreviousCommand
-        {
-            get
-            {
-                if (previousCommand == null)
-                {
-                    previousCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            start -= itemCount;
-                            RefreshAssessments();
-                        },
-                        param =>
-                        {
-                            return start - itemCount >= 0 ? true : false;
-                        }
-                    );
-                }
 
-                return previousCommand;
-            }
+        private void OpenExistingAssessmentWindow()
+        {
+            EditAssessmentGlobalEvent.Instance.Publish(SelectedItem);
         }
 
-        /// <summary>
-        /// Gets the command for moving to the next page of assessments.
-        /// </summary>
-        public ICommand NextCommand
+        private void OpenGenerateReportWindow()
         {
-            get
-            {
-                if (nextCommand == null)
-                {
-                    nextCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            start += itemCount;
-                            RefreshAssessments();
-                        },
-                        param =>
-                        {
-                            return start + itemCount < totalItems ? true : false;
-                        }
-                    );
-                }
-
-                return nextCommand;
-            }
+            GenerateReportGlobalEvent.Instance.Publish(SelectedItem);
         }
 
-        /// <summary>
-        /// Gets the command for moving to the last page of assessments.
-        /// </summary>
-        public ICommand LastCommand
+        private void ShowDialog()
         {
-            get
-            {
-                if (lastCommand == null)
+            _confirmationInteractionRequest.Raise(
+                new Confirmation
                 {
-                    lastCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            start = (totalItems / itemCount - 1) * itemCount;
-                            start += totalItems % itemCount == 0 ? 0 : itemCount;
-                            RefreshAssessments();
-                        },
-                        param =>
-                        {
-                            return start + itemCount < totalItems ? true : false;
-                        }
-                    );
-                }
-
-                return lastCommand;
-            }
+                    Title = "Confirm",
+                    Content = "Are you sure you want to delete the selected assessment?"
+                }, OnDialogClosed);
         }
 
-        public ICommand SearchCommand
+        private void OnDialogClosed(Confirmation confirmation)
         {
-            get
+            if (confirmation.Confirmed)
             {
-                if (searchCommand == null)
-                {
-                    searchCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            RefreshAssessments();
-                        },
-                        param =>
-                        {
-                            return SearchBoxText !=null ? true : false;
-                        }
-                    );
-                }
+                _context.assessments.Remove(SelectedItem);
+                _context.SaveChanges();
+                RefreshAssessments();
+            }
+            else
+            {
 
-                return searchCommand;
             }
         }
-
-        public ICommand CreateNewAssessmentCommand
+        
+        public bool CanDelete
         {
-            get
-            {
-                if (newAssessmentCommand == null)
-                {
-                    newAssessmentCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            
-                        },
-                        param =>
-                        {
-                            return true;// Always create new
-                        }
-                    );
-                }
-
-                return newAssessmentCommand;
-            }
+            get { return SelectedItem != null; }
         }
-
         #endregion
 
-         #region DAL
+        #region DAL
         private ObservableCollection<Assessment> GetAssessments(int start, int itemCount, string sortColumn, bool ascending, out int totalItems, string searchBoxText)
         {
             ObservableCollection<Assessment> allAssessments = GetAllAssessments(searchBoxText);
@@ -340,19 +495,17 @@ namespace MCIFramework.ViewModels
 
         private ObservableCollection<Assessment> GetAllAssessments(string searchBoxText)
         {
-            Database context = new Database();
-            context.assessments.OrderByDescending(x => x.CreatedDate).Load();
-            ObservableCollection<Assessment> result = context.assessments.Local;
+            _context.assessments.OrderByDescending(x => x.CreatedDate).Load();
+            ObservableCollection<Assessment> result = _context.assessments.Local;
             var result2 = from s in result
                           where s.Organisation.ToLower().Contains(searchBoxText.ToLower()) ||
                                 s.Title.ToLower().Contains(searchBoxText.ToLower())
                           select s;
-            
+
             return new ObservableCollection<Assessment>(result2);
+
         }
-
         #endregion
-
 
 
     }

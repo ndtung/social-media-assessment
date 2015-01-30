@@ -389,11 +389,20 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save and Continue.
+        ///   Looks up a localized string similar to Save .
         /// </summary>
         public static string btn_tab_1_save {
             get {
                 return ResourceManager.GetString("btn_tab_1_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save and Continue.
+        /// </summary>
+        public static string btn_tab_1_save_and_continue {
+            get {
+                return ResourceManager.GetString("btn_tab_1_save_and_continue", resourceCulture);
             }
         }
         
@@ -416,20 +425,20 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download Web Worksheet.
+        /// </summary>
+        public static string btn_tab_2_download_column_3 {
+            get {
+                return ResourceManager.GetString("btn_tab_2_download_column_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import Social Media Data.
         /// </summary>
         public static string btn_tab_2_import_column_2 {
             get {
                 return ResourceManager.GetString("btn_tab_2_import_column_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download Web Worksheet.
-        /// </summary>
-        public static string btn_tab_3_download_column_3 {
-            get {
-                return ResourceManager.GetString("btn_tab_3_download_column_3", resourceCulture);
             }
         }
         

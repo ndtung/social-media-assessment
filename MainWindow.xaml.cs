@@ -1,5 +1,4 @@
-﻿//using MCIFramework.Helper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,18 +11,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using MCIFramework.Models;
-using MCIFramework.ViewModels;
 
-
-namespace MCIFramework.Views
+namespace MCIFramework
 {
     /// <summary>
-    /// Interaction logic for AssessmentDetails.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class AssessmentDetails : UserControl
+    public partial class MainWindow : Window
     {
-        public AssessmentDetails()
+        public MainWindow()
         {
             InitializeComponent();
         }
