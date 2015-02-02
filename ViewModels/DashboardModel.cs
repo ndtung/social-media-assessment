@@ -478,6 +478,14 @@ namespace MCIFramework.ViewModels
                     (
                         allAssessments.OrderBy(row => row.ReportGenerationDate ?? DateTime.MaxValue)
                     );
+
+                    break;
+                case ("CreatedDate"):
+                    sortedAssessments = new ObservableCollection<Assessment>
+                    (
+                        allAssessments.OrderBy(row => row.CreatedDate ?? DateTime.MaxValue)
+                    );
+
                     break;
             }
 

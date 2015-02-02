@@ -61,6 +61,24 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AIzaSyDySsjf0V7XSzNbWII4zTJXq9CjkJ7EbeM.
+        /// </summary>
+        public static string _api_youtube_api_key {
+            get {
+                return ResourceManager.GetString("_api_youtube_api_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 500.
+        /// </summary>
+        public static string _api_youtube_maximum_videos {
+            get {
+                return ResourceManager.GetString("_api_youtube_maximum_videos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Digital Comms Diagnostics.
         /// </summary>
         public static string app_header {

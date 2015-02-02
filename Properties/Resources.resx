@@ -272,4 +272,10 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="btn_tab_1_save_and_continue" xml:space="preserve">
     <value>Save and Continue</value>
   </data>
+  <data name="_api_youtube_api_key" xml:space="preserve">
+    <value>AIzaSyDySsjf0V7XSzNbWII4zTJXq9CjkJ7EbeM</value>
+  </data>
+  <data name="_api_youtube_maximum_videos" xml:space="preserve">
+    <value>500</value>
+  </data>
 </root>

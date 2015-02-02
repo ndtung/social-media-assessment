@@ -12,6 +12,10 @@ namespace MCIFramework
     public class Database : DbContext
     {
         public DbSet<Assessment> assessments { get; set; }
+
+        public DbSet<SocialMediaStat> socialMediaStats { get; set; }
+        public DbSet<FacebookPost> facebookPosts { get; set; }
+        public DbSet<TwitterTweet> twitterTweets { get; set; }
     }
     
 }

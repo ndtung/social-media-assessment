@@ -182,6 +182,21 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
+                <DataGridTextColumn Header="Created Date" Binding="{Binding CreatedDate}"  Width="150" MinWidth="70">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Left" />
+                            <Setter Property="Margin" Value="15,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn Header="Actions" Width="350" MinWidth="200">
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">

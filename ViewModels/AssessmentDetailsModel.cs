@@ -8,7 +8,9 @@ using System.Collections.ObjectModel;
 using MCIFramework.Models;
 using System.ComponentModel;
 using System.Windows;
-//using MCIFramework.Helper;
+using MCIFramework.Helper;
+using System.ComponentModel;
+using System.IO;
 
 
 namespace MCIFramework.ViewModels
@@ -17,12 +19,21 @@ namespace MCIFramework.ViewModels
     {
         private Database _context = new Database();
         private Assessment _assessment;
+        private SocialMediaStat _socialMediaStat;
         private Dictionary<string, bool> _validProperties;
         private bool _allPropertiesValid = false;
         private Boolean _isNewAssessment;
 
         private String _tab1Message;
         private String _tab1MessageColor;
+
+        private String _tab2YoutubeMessage;
+        private String _tab2YoutubeMessageColor;
+        private String _tab2FacebookMessage;
+        private String _tab2FacebookMessageColor;
+        private String _tab2TwitterMessage;
+        private String _tab2TwitterMessageColor;
+
         private Visibility _newAssessmentVisibility;
         private Visibility _createNewAssessmentVisibility;
         private int _tab;
@@ -36,6 +47,10 @@ namespace MCIFramework.ViewModels
         private ICommand _downloadWebCommand;
         private ICommand _toDashboardCommand;
 
+        private readonly BackgroundWorker _youtubeWorker = new BackgroundWorker();
+        private readonly BackgroundWorker _facebookWorker = new BackgroundWorker();
+        private readonly BackgroundWorker _twitterWorker = new BackgroundWorker();
+
         
         #region Constructors
         /// <summary>
@@ -45,6 +60,13 @@ namespace MCIFramework.ViewModels
         /// <param name="tab"> 0: first tab, 1: second tab, 2: third tab</param>
         public AssessmentDetailsModel(int assessmentID,int tab)
         {
+            _youtubeWorker.DoWork += youtubeWorker_DoWork;
+            _youtubeWorker.RunWorkerCompleted += youtubeWorker_RunWorkerCompleted;
+            _facebookWorker.DoWork += facebookWorker_DoWork;
+            _facebookWorker.RunWorkerCompleted += facebookWorker_RunWorkerCompleted;
+            _twitterWorker.DoWork += twitterWorker_DoWork;
+            _twitterWorker.RunWorkerCompleted += twitterWorker_RunWorkerCompleted;
+
             var item = _context.assessments.FirstOrDefault(c => c.Id == assessmentID);
             this._validProperties = new Dictionary<string, bool>();
             IsNewAssessment = false;
@@ -109,6 +131,32 @@ namespace MCIFramework.ViewModels
                 {
                     _tab1MessageColor = value;
                     OnPropertyChanged("Tab1MessageColor");
+                }
+            }
+        }
+
+        public string Tab2YoutubeMessage
+        {
+            get { return _tab2YoutubeMessage; }
+            set
+            {
+                if (_tab2YoutubeMessage != value)
+                {
+                    _tab2YoutubeMessage = value;
+                    OnPropertyChanged("Tab2YoutubeMessage");
+                }
+            }
+        }
+
+        public string Tab2YoutubeMessageColor
+        {
+            get { return _tab2YoutubeMessageColor; }
+            set
+            {
+                if (_tab2YoutubeMessageColor != value)
+                {
+                    _tab2YoutubeMessageColor = value;
+                    OnPropertyChanged("Tab2YoutubeMessageColor");
                 }
             }
         }
@@ -996,7 +1044,7 @@ namespace MCIFramework.ViewModels
                     (
                         param =>
                         {
-                            DownloadWebWorksheet();
+                            DownloadSocialMediaWorksheet();
                         },
                         param =>
                         {
@@ -1080,7 +1128,7 @@ namespace MCIFramework.ViewModels
 
         #endregion
 
-        #region Private helpers
+        #region Actual Command Handlers 
 
         private void ValidateProperties()
         {
@@ -1101,6 +1149,7 @@ namespace MCIFramework.ViewModels
             {
                 if (_isNewAssessment)
                 {
+                    _assessment.CreatedDate = DateTime.Now;
                     _context.assessments.Add(_assessment);
                     _context.SaveChanges();
                      Tab1Message = "Assessment added !";
@@ -1108,6 +1157,7 @@ namespace MCIFramework.ViewModels
                 }
                 else
                 {
+                    _assessment.UpdatedDate = DateTime.Now;
                     _context.SaveChanges();
                     Tab1Message = "Assessment Details saved !";
                     Tab1MessageColor = "Green";
@@ -1132,6 +1182,23 @@ namespace MCIFramework.ViewModels
 
         private void ImportSocialMediaData()
         {
+            if (IsSocialMedia)
+            {
+                _socialMediaStat = new SocialMediaStat();
+                _socialMediaStat.AssessmentId = _assessment.Id;
+                CreateFolderAndCopyTemplate();
+                if (IsFacebook)
+                    _facebookWorker.RunWorkerAsync();
+                //if (IsYoutube)
+                  //_youtubeWorker.RunWorkerAsync();
+                //if (IsTwitter)
+                   // _twitterWorker.RunWorkerAsync();
+
+            }
+        }
+
+        private void DownloadSocialMediaWorksheet()
+        {
 
         }
 
@@ -1155,6 +1222,74 @@ namespace MCIFramework.ViewModels
             return AllPropertiesValid;
         }
 
+        private void CreateFolderAndCopyTemplate()
+        {
+            try
+            {
+                if (!Directory.Exists(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString())))
+                    Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx"));
+                File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Social Media Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx"), true);
+            }
+            catch
+            {
+
+            }
+        }
+        #endregion
+
+        #region Background Workers
+        private void youtubeWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here
+            Tab2YoutubeMessage = "Processing Facebook data";
+            Tab2YoutubeMessageColor = "Green";
+
+            YoutubeImporter youtubeImporter = new YoutubeImporter(_assessment, _socialMediaStat);
+            youtubeImporter.Process();
+
+            _socialMediaStat = youtubeImporter.StoreDataToDB();
+            _context.socialMediaStats.Add(_socialMediaStat);
+            _context.SaveChanges();
+        }
+
+        private void youtubeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work
+            if (e.Error == null)
+            {
+                Tab2YoutubeMessage = "Youtube data retrieved successfully";
+                Tab2YoutubeMessageColor = "Green";
+            }
+            else
+            {
+                Tab2YoutubeMessage = "Failed to retrieve Youtube data. Please try again";
+                Tab2YoutubeMessageColor = "Red";
+            }
+        }
+
+        private void facebookWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here
+            FacebookImporter facebookImporter = new FacebookImporter(_assessment, _socialMediaStat);
+            facebookImporter.Start();
+        }
+
+        private void facebookWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work
+        }
+
+        private void twitterWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here
+            TwitterImporter twittermporter = new TwitterImporter(_assessment, _socialMediaStat);
+            twittermporter.Start();
+        }
+
+        private void twitterWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work
+        }
         #endregion
 
     }

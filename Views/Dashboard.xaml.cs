@@ -89,6 +89,9 @@ namespace MCIFramework.Views
                 case ("ReportGenerationDate"):
                     sortField = "ReportGenerationDate";
                     break;
+                case ("CreatedDate"):
+                    sortField = "CreatedDate";
+                    break;
             }
  
             ListSortDirection direction = (e.Column.SortDirection != ListSortDirection.Ascending) ? 
