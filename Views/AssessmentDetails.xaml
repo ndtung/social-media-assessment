@@ -189,22 +189,22 @@
                     <Line Stroke="Black"
                     	X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
                     	StrokeDashArray="1 1" StrokeThickness="1" Grid.ColumnSpan="2" Margin="48,289,48,0" Grid.Row="3" Opacity="0.5" Height="46" VerticalAlignment="Top" Grid.RowSpan="2" />
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
-
+                    <TextBox Name= "txtStrategy" Text="{Binding LocationStrategy}" HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtSocial" Text="{Binding LocationSocial}" HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtWeb" Text="{Binding LocationWeb}" HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
+    
                     <Button Content="Browse" 
-                            Command="{Binding UpdateStudentNameCommand}" 
+                            Command="{Binding browseStrategyCommand}"
                             HorizontalAlignment="Left" Margin="331,41,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Strategy Assessment.xlsx"  />
 
                     <Button Content="Browse" 
-                            Command="{Binding UpdateStudentNameCommand}" 
+                            Command="{Binding browseSocialCommand}" 
                             HorizontalAlignment="Left" Margin="331,101,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Social Media Assessment.xlsx"/>
 
                     <Button Content="Browse" 
-                            Command="{Binding UpdateStudentNameCommand}" 
+                            Command="{Binding browseWebCommand}" 
                             HorizontalAlignment="Left" Margin="331,166,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Website Assessment.xlsx"/>
 

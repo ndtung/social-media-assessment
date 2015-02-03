@@ -325,11 +325,15 @@ namespace MCIFramework.Models
     {
         public string title { get; set; }
         public string description { get; set; }
+        [DefaultValue("")]
         public string link { get; set; }
         public string criteria { get; set; }
         public string recommendations { get; set; }
         public string score { get; set; }
+        public string assessor { get; set; }
+        public string indicator_for { get; set; }
         public List<DetailsLevel2> details_level_2 { get; set; }
+
         //public List<object> details_level_2 { get; set; }
     }
 
@@ -337,6 +341,7 @@ namespace MCIFramework.Models
     {
         public string title { get; set; }
         public string description { get; set; }
+        [DefaultValue("")]
         public string link { get; set; }
         public string score { get; set; }
         public List<DetailsLevel1> details_level_1 { get; set; }
@@ -345,7 +350,9 @@ namespace MCIFramework.Models
     public class RootObject
     {
         public string title { get; set; }
+        public string score { get; set; }
         public string description { get; set; }
+        public string link { get; set; }
         public List<Result> results { get; set; }
     }
 
