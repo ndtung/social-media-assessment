@@ -14,6 +14,10 @@
         <DataTemplate DataType="{x:Type viewmodel:AssessmentDetailsModel}">
             <view:AssessmentDetails />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:FBAuthenticationModel}">
+            <view:FBAuthentication />
+        </DataTemplate>
+
     </Window.Resources>
     <DockPanel>
         <ContentControl Content="{Binding CurrentPageViewModel}" />

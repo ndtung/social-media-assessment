@@ -61,6 +61,42 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1.
+        /// </summary>
+        public static string _api_facebook_access_token_expire_day {
+            get {
+                return ResourceManager.GetString("_api_facebook_access_token_expire_day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 781330755269938.
+        /// </summary>
+        public static string _api_facebook_app_id {
+            get {
+                return ResourceManager.GetString("_api_facebook_app_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 89c2be2a447122fd7818fdcf0413ebc2.
+        /// </summary>
+        public static string _api_facebook_app_secret {
+            get {
+                return ResourceManager.GetString("_api_facebook_app_secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 500.
+        /// </summary>
+        public static string _api_facebook_maximum_comments_to_retrieve_of_a_post {
+            get {
+                return ResourceManager.GetString("_api_facebook_maximum_comments_to_retrieve_of_a_post", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AIzaSyDySsjf0V7XSzNbWII4zTJXq9CjkJ7EbeM.
         /// </summary>
         public static string _api_youtube_api_key {

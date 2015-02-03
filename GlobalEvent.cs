@@ -77,4 +77,37 @@ namespace MCIFramework
         }
     }
 
+    internal class FBAuthenGlobalEvent : PubSubEvent<Assessment>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly FBAuthenGlobalEvent _event;
+
+        static FBAuthenGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<FBAuthenGlobalEvent>();
+        }
+
+        public static FBAuthenGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
+
+    internal class FBAuthenEndGlobalEvent : PubSubEvent<String>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly FBAuthenEndGlobalEvent _event;
+
+        static FBAuthenEndGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<FBAuthenEndGlobalEvent>();
+        }
+
+        public static FBAuthenEndGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
 }

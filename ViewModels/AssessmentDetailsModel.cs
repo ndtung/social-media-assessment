@@ -9,7 +9,6 @@ using MCIFramework.Models;
 using System.ComponentModel;
 using System.Windows;
 using MCIFramework.Helper;
-using System.ComponentModel;
 using System.IO;
 
 
@@ -51,15 +50,16 @@ namespace MCIFramework.ViewModels
         private readonly BackgroundWorker _facebookWorker = new BackgroundWorker();
         private readonly BackgroundWorker _twitterWorker = new BackgroundWorker();
 
-        
+
         #region Constructors
         /// <summary>
         /// Create new assessment details model with default tab
         /// </summary>
         /// <param name="assessmentID"></param>
         /// <param name="tab"> 0: first tab, 1: second tab, 2: third tab</param>
-        public AssessmentDetailsModel(int assessmentID,int tab)
+        public AssessmentDetailsModel(int assessmentID, int tab)
         {
+            FBAuthenEndGlobalEvent.Instance.Subscribe(FBAuthenEnd);
             _youtubeWorker.DoWork += youtubeWorker_DoWork;
             _youtubeWorker.RunWorkerCompleted += youtubeWorker_RunWorkerCompleted;
             _facebookWorker.DoWork += facebookWorker_DoWork;
@@ -69,11 +69,15 @@ namespace MCIFramework.ViewModels
 
             var item = _context.assessments.FirstOrDefault(c => c.Id == assessmentID);
             this._validProperties = new Dictionary<string, bool>();
+            
             IsNewAssessment = false;
             DefaultTab = tab;
             CreateNewAssessmentTitle = Visibility.Hidden;
             if (item != null)
+            {
                 _assessment = (Assessment)item;
+
+            }
             else
             { new AssessmentDetailsModel(); }
         }
@@ -88,7 +92,7 @@ namespace MCIFramework.ViewModels
         }
 
         #endregion
-    
+
         public Assessment Assessment
         {
             get
@@ -157,6 +161,58 @@ namespace MCIFramework.ViewModels
                 {
                     _tab2YoutubeMessageColor = value;
                     OnPropertyChanged("Tab2YoutubeMessageColor");
+                }
+            }
+        }
+
+        public string Tab2FacebookMessage
+        {
+            get { return _tab2FacebookMessage; }
+            set
+            {
+                if (_tab2FacebookMessage != value)
+                {
+                    _tab2FacebookMessage = value;
+                    OnPropertyChanged("Tab2FacebookMessage");
+                }
+            }
+        }
+
+        public string Tab2FacebookMessageColor
+        {
+            get { return _tab2FacebookMessageColor; }
+            set
+            {
+                if (_tab2FacebookMessageColor != value)
+                {
+                    _tab2FacebookMessageColor = value;
+                    OnPropertyChanged("Tab2FacebookMessageColor");
+                }
+            }
+        }
+
+        public string Tab2TwitterMessage
+        {
+            get { return _tab2TwitterMessage; }
+            set
+            {
+                if (_tab2TwitterMessage != value)
+                {
+                    _tab2TwitterMessage = value;
+                    OnPropertyChanged("Tab2TwitterMessage");
+                }
+            }
+        }
+
+        public string Tab2TwitterMessageColor
+        {
+            get { return _tab2TwitterMessageColor; }
+            set
+            {
+                if (_tab2TwitterMessageColor != value)
+                {
+                    _tab2TwitterMessageColor = value;
+                    OnPropertyChanged("Tab2TwitterMessageColor");
                 }
             }
         }
@@ -239,7 +295,7 @@ namespace MCIFramework.ViewModels
                 if (_assessment.IsSocialMedia != value)
                 {
                     _assessment.IsSocialMedia = value;
-                    if (value==false)
+                    if (value == false)
                     {
                         IsFacebook = false;
                         IsTwitter = false;
@@ -318,7 +374,7 @@ namespace MCIFramework.ViewModels
                     OnPropertyChanged("TopPageUrl3");
                     OnPropertyChanged("TopPageUrl4");
                     OnPropertyChanged("TopPageUrl5");
-                    
+
                     OnPropertyChanged("Audience1");
                     OnPropertyChanged("Audience2");
                     OnPropertyChanged("Audience3");
@@ -338,11 +394,11 @@ namespace MCIFramework.ViewModels
                     OnPropertyChanged("Audience1Scenario1");
                     OnPropertyChanged("Audience1Scenario2");
                     OnPropertyChanged("Audience1Scenario3");
-                    
+
                     OnPropertyChanged("Audience2Scenario1");
                     OnPropertyChanged("Audience2Scenario2");
                     OnPropertyChanged("Audience2Scenario3");
-                    
+
                     OnPropertyChanged("Audience3Scenario1");
                     OnPropertyChanged("Audience3Scenario2");
                     OnPropertyChanged("Audience3Scenario3");
@@ -849,7 +905,7 @@ namespace MCIFramework.ViewModels
             get { return _allPropertiesValid; }
             set
             {
-              //  if (allPropertiesValid != value)
+                //  if (allPropertiesValid != value)
                 {
                     _allPropertiesValid = value;
                     if (value == false)
@@ -867,7 +923,7 @@ namespace MCIFramework.ViewModels
             }
         }
 
-        public Visibility NewAssessmentVisibility 
+        public Visibility NewAssessmentVisibility
         {
             get { return _newAssessmentVisibility; }
             set
@@ -1128,7 +1184,7 @@ namespace MCIFramework.ViewModels
 
         #endregion
 
-        #region Actual Command Handlers 
+        #region Actual Command Handlers
 
         private void ValidateProperties()
         {
@@ -1142,7 +1198,7 @@ namespace MCIFramework.ViewModels
             }
             this.AllPropertiesValid = true;
         }
-                
+
         private void SaveAndContinue()
         {
             try
@@ -1152,7 +1208,7 @@ namespace MCIFramework.ViewModels
                     _assessment.CreatedDate = DateTime.Now;
                     _context.assessments.Add(_assessment);
                     _context.SaveChanges();
-                     Tab1Message = "Assessment added !";
+                    Tab1Message = "Assessment added !";
                     Tab1MessageColor = "Green";
                 }
                 else
@@ -1182,17 +1238,32 @@ namespace MCIFramework.ViewModels
 
         private void ImportSocialMediaData()
         {
+            
             if (IsSocialMedia)
             {
                 _socialMediaStat = new SocialMediaStat();
                 _socialMediaStat.AssessmentId = _assessment.Id;
+                TimeSpan timeSpan = (DateTime)_assessment.EndDate - (DateTime)_assessment.StartDate;
+                _socialMediaStat.TotalDays = timeSpan.Days;
                 CreateFolderAndCopyTemplate();
-                if (IsFacebook)
-                    _facebookWorker.RunWorkerAsync();
-                //if (IsYoutube)
-                  //_youtubeWorker.RunWorkerAsync();
-                //if (IsTwitter)
-                   // _twitterWorker.RunWorkerAsync();
+                if (IsYoutube)
+                {
+                    _youtubeWorker.RunWorkerAsync();
+
+                }
+                else
+                {
+                    if (IsFacebook)
+                    {
+                        FBAuthenGlobalEvent.Instance.Publish(_assessment);
+                        
+                    }
+                    else
+                    {
+                        if (IsTwitter)
+                            _twitterWorker.RunWorkerAsync();
+                    }
+                }
 
             }
         }
@@ -1206,6 +1277,7 @@ namespace MCIFramework.ViewModels
         {
 
         }
+
 
         private void DownloadReport()
         {
@@ -1238,18 +1310,21 @@ namespace MCIFramework.ViewModels
         #endregion
 
         #region Background Workers
+
         private void youtubeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2YoutubeMessage = "Processing Facebook data";
+            Tab2YoutubeMessage = "Processing Youtube data";
             Tab2YoutubeMessageColor = "Green";
 
             YoutubeImporter youtubeImporter = new YoutubeImporter(_assessment, _socialMediaStat);
             youtubeImporter.Process();
-
-            _socialMediaStat = youtubeImporter.StoreDataToDB();
-            _context.socialMediaStats.Add(_socialMediaStat);
-            _context.SaveChanges();
+            SocialMediaStat socialStat = youtubeImporter.GetDataToStore();
+            _socialMediaStat.YoutubeSubscribers = socialStat.YoutubeSubscribers;
+            _socialMediaStat.YoutubeVideoDislikes = socialStat.YoutubeVideoDislikes;
+            _socialMediaStat.YoutubeVideoLikes = socialStat.YoutubeVideoLikes;
+            _socialMediaStat.YoutubeVideos = socialStat.YoutubeVideos;
+            _socialMediaStat.YoutubeVideoViews = socialStat.YoutubeVideoViews;
         }
 
         private void youtubeWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1259,38 +1334,124 @@ namespace MCIFramework.ViewModels
             {
                 Tab2YoutubeMessage = "Youtube data retrieved successfully";
                 Tab2YoutubeMessageColor = "Green";
+
             }
             else
             {
                 Tab2YoutubeMessage = "Failed to retrieve Youtube data. Please try again";
                 Tab2YoutubeMessageColor = "Red";
             }
+            if (IsFacebook)
+                FBAuthenGlobalEvent.Instance.Publish(_assessment);
+            else
+            {
+                if (IsTwitter)
+                    _twitterWorker.RunWorkerAsync();
+                else// No Facebook, no Twitter
+                {
+                    SaveSocialMediaStat();
+                }
+            }
         }
 
         private void facebookWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
+            Tab2FacebookMessage = "Processing Facebook data";
+            Tab2FacebookMessageColor = "Green";
+
             FacebookImporter facebookImporter = new FacebookImporter(_assessment, _socialMediaStat);
-            facebookImporter.Start();
+            facebookImporter.Process();
+
+            SocialMediaStat socialStat = facebookImporter.GetDataToStore();
+            _socialMediaStat.FacebookComments = socialStat.FacebookComments;
+            _socialMediaStat.FacebookFans = socialStat.FacebookFans;
+            _socialMediaStat.FacebookLikes = socialStat.FacebookLikes;
+            _socialMediaStat.FacebookPosts = socialStat.FacebookPosts;
+            _socialMediaStat.FacebookShares = socialStat.FacebookShares;
         }
 
         private void facebookWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //update ui once worker complete his work
+            if (e.Error == null)
+            {
+                Tab2FacebookMessage = "Facebook data retrieved successfully";
+                Tab2FacebookMessageColor = "Green";
+
+            }
+            else
+            {
+                Tab2FacebookMessage = "Failed to retrieve Youtube data. Please try again";
+                Tab2FacebookMessageColor = "Red";
+            }
+
+            if (IsTwitter)
+                _twitterWorker.RunWorkerAsync();
+            else// no Twitter
+            {
+                SaveSocialMediaStat();
+            }
+
         }
 
         private void twitterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            TwitterImporter twittermporter = new TwitterImporter(_assessment, _socialMediaStat);
-            twittermporter.Start();
+            Tab2TwitterMessage = "Processing Twitter data";
+            Tab2TwitterMessageColor = "Green";
+
+            TwitterImporter twitterImporter = new TwitterImporter(_assessment, _socialMediaStat);
+            twitterImporter.Start();
+
+            SocialMediaStat socialStat = twitterImporter.GetDataToStore();
+            _socialMediaStat.FacebookComments = socialStat.FacebookComments;
+            _socialMediaStat.FacebookFans = socialStat.FacebookFans;
+            _socialMediaStat.FacebookLikes = socialStat.FacebookLikes;
+            _socialMediaStat.FacebookPosts = socialStat.FacebookPosts;
+            _socialMediaStat.FacebookShares = socialStat.FacebookShares;
         }
 
         private void twitterWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //update ui once worker complete his work
+            if (e.Error == null)
+            {
+                Tab2TwitterMessage = "Twitter data retrieved successfully";
+                Tab2TwitterMessageColor = "Green";
+               
+            }
+            else
+            {
+                Tab2TwitterMessage = "Failed to retrieve Twitter data. Please try again";
+                Tab2TwitterMessageColor = "Red";
+            }
+            SaveSocialMediaStat();
+        }
+
+        private void SaveSocialMediaStat()
+        {
+            _context.socialMediaStats.Add(_socialMediaStat);
+            _context.SaveChanges();
         }
         #endregion
 
+        #region Message Passing
+        private void FBAuthenEnd(string msg)
+        {
+            if (msg == "FB Authentication completed")
+            {
+                Tab2FacebookMessage = msg;
+                Tab2FacebookMessageColor = "Green";
+                _facebookWorker.RunWorkerAsync();
+            }
+            else
+            {
+                Tab2FacebookMessage = "FB Authentication failed. Please try again";
+                Tab2FacebookMessageColor = "Red";
+            }
+
+        }
+        #endregion
     }
 }

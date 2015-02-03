@@ -34,5 +34,10 @@ namespace MCIFramework.Helper
         {
 
         }
+
+        public SocialMediaStat GetDataToStore()
+        {
+            return _socialMediaStat;
+        }
     }
 }

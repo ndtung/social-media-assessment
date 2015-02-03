@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="MCIFramework.Views.FBAuthentication"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:prop="clr-namespace:MCIFramework"
+             mc:Ignorable="d" 
+             >
+    <Grid>
+        <WebBrowser prop:WebBrowserUtility.BindableSource="{Binding BrowserUri}"
+            Name="WBrowser" Navigated="WebBrowser_Navigated_1"/>
+    </Grid>
+</UserControl>

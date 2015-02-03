@@ -16,7 +16,6 @@ namespace MCIFramework
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
             MainWindow app = new MainWindow();
             MainWindowModel context = new MainWindowModel();
             app.DataContext = context;

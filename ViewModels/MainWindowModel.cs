@@ -26,11 +26,14 @@ namespace MCIFramework.ViewModels
             // Add available pages
             PageViewModels.Add(new DashboardModel());
             PageViewModels.Add(new AssessmentDetailsModel());
+            PageViewModels.Add(new FBAuthenticationModel());
+
             CreateNewAssessmentGlobalEvent.Instance.Subscribe(OpenNewAssessmentViewModel);
             ToDashboardGlobalEvent.Instance.Subscribe(ToDashboardViewModel);
             EditAssessmentGlobalEvent.Instance.Subscribe(EditAssessmentViewModel);
             GenerateReportGlobalEvent.Instance.Subscribe(GenerateReportViewModel);
-            
+            FBAuthenGlobalEvent.Instance.Subscribe(ToFBAuthenViewModel);
+            FBAuthenEndGlobalEvent.Instance.Subscribe(FBAuthenEnd);
             // Set starting page
             CurrentPageViewModel = PageViewModels[0];
         }
@@ -114,6 +117,19 @@ namespace MCIFramework.ViewModels
         {
             PageViewModels[1] = new AssessmentDetailsModel(assessment.Id,2);
             CurrentPageViewModel = PageViewModels[1];
+        }
+
+        private void ToFBAuthenViewModel(Assessment assessment)
+        {
+            // Check if access token is still valid
+               
+                CurrentPageViewModel = PageViewModels[2];
+        }
+
+        private void FBAuthenEnd(String msg)
+        {
+            CurrentPageViewModel = PageViewModels[1];
+            //PageViewModels.Remove(PageViewModels[2]);
         }
     }
 }

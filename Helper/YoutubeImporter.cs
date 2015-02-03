@@ -121,9 +121,9 @@ namespace MCIFramework.Helper
             }
 
         }
-        
 
-        public SocialMediaStat StoreDataToDB()
+
+        public SocialMediaStat GetDataToStore()
         {
             _socialMediaStat.YoutubeSubscribers = _subscribers.ToString();
             _socialMediaStat.YoutubeVideoDislikes = _totalDislikes.ToString();

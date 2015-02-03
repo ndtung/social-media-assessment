@@ -278,4 +278,16 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="_api_youtube_maximum_videos" xml:space="preserve">
     <value>500</value>
   </data>
+  <data name="_api_facebook_app_id" xml:space="preserve">
+    <value>781330755269938</value>
+  </data>
+  <data name="_api_facebook_app_secret" xml:space="preserve">
+    <value>89c2be2a447122fd7818fdcf0413ebc2</value>
+  </data>
+  <data name="_api_facebook_maximum_comments_to_retrieve_of_a_post" xml:space="preserve">
+    <value>500</value>
+  </data>
+  <data name="_api_facebook_access_token_expire_day" xml:space="preserve">
+    <value>1</value>
+  </data>
 </root>
