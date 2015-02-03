@@ -16,8 +16,9 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Net;
-using Ionic.Zip;
-//using MCIFramework.Helper;
+using SevenZip;
+using MCIFramework.Helper;
+
 
 
 namespace MCIFramework.ViewModels
@@ -32,6 +33,8 @@ namespace MCIFramework.ViewModels
 
         private String _tab1Message;
         private String _tab1MessageColor;
+        private String _tab3Message;
+        private String _tab3MessageColor;
         private Visibility _newAssessmentVisibility;
         private Visibility _createNewAssessmentVisibility;
         private int _tab;
@@ -128,6 +131,31 @@ namespace MCIFramework.ViewModels
             }
         }
 
+        public string Tab3Message
+        {
+            get { return _tab3Message; }
+            set
+            {
+                if (_tab3Message != value)
+                {
+                    _tab3Message = value;
+                    OnPropertyChanged("Tab3Message");
+                }
+            }
+        }
+
+        public string Tab3MessageColor
+        {
+            get { return _tab3MessageColor; }
+            set
+            {
+                if (_tab3MessageColor != value)
+                {
+                    _tab3MessageColor = value;
+                    OnPropertyChanged("Tab3MessageColor");
+                }
+            }
+        }
         public string Organisation
         {
             get { return _assessment.Organisation; }
@@ -1236,11 +1264,12 @@ namespace MCIFramework.ViewModels
                     Tab1MessageColor = "Green";
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 Tab1Message = "We encountered system error. Please try to save again";
                 Tab1MessageColor = "Red";
-            }
+                Log.LogError("SaveAndContinue", ex);
+            }            
         }
 
         private void DownloadStrategyWorksheet()
@@ -1260,59 +1289,72 @@ namespace MCIFramework.ViewModels
 
 
         private void UploadWorksheet()
-        {
-
+        {            
             string assesNo = _assessment.Id.ToString();
             string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
             //string pathName = "F:\\Projects\\mci\\" + "Resources\\Assessments\\";
 
             string pathNameXLS = pathName + assesNo + "\\xlsx\\";
-            if (!Directory.Exists(pathNameXLS))
+
+            try
             {
-                Directory.CreateDirectory(pathNameXLS);
-            }
+                if (!Directory.Exists(pathNameXLS))
+                {
+                    Directory.CreateDirectory(pathNameXLS);
+                }
+                Tab3Message = "No file is selected";
+                Tab3MessageColor = "Red";
 
-            if (LocationStrategy != null)
+                if (LocationStrategy != null)
+                {
+                    //fileName = Path.Combine(pathNameXLS, LocationStrategy);                
+                    //WSUploader(LocationStrategy, pathNameXLS);
+
+                    FileStream fStream = File.OpenRead(LocationStrategy);
+                    byte[] contents = new byte[fStream.Length];
+                    fStream.Read(contents, 0, (int)fStream.Length);
+                    fStream.Close();
+
+                    //BinaryWriter wr = new BinaryWriter(fStream);
+                    //wr.Write(reader.ReadBytes((int)Data.Length));
+                    //wr.Close();
+
+                    WebClient client = new WebClient();
+                    client.UploadData(pathNameXLS + "Strategy Assessment.xlsx", "Post", contents);
+                    Tab3Message = "Upload is completed !";
+                    Tab3MessageColor = "Green";
+                }
+                if (LocationSocial != null)
+                {
+                    FileStream fStream = File.OpenRead(LocationSocial);
+                    byte[] contents = new byte[fStream.Length];
+                    fStream.Read(contents, 0, (int)fStream.Length);
+                    fStream.Close();
+                    WebClient client = new WebClient();
+                    client.UploadData(pathNameXLS + "Social Media Assessment.xlsx", "Post", contents);
+                    Tab3Message = "Upload is completed !";
+                    Tab3MessageColor = "Green";
+                }
+                if (LocationWeb != null)
+                {
+                    FileStream fStream = File.OpenRead(LocationWeb);
+                    byte[] contents = new byte[fStream.Length];
+                    fStream.Read(contents, 0, (int)fStream.Length);
+                    fStream.Close();
+                    WebClient client = new WebClient();
+                    client.UploadData(pathNameXLS + "Website Assessment.xlsx", "Post", contents);
+                    Tab3Message = "Upload is completed !";
+                    Tab3MessageColor = "Green";
+                }
+
+                //TO ADD MESSAGE OR NOTIFY UPLOAD IS COMPLETED
+                //return "1"; //for successfull                
+                //MessageBox.Show("Upload is completed");
+            }
+            catch (Exception ex)
             {
-                //fileName = Path.Combine(pathNameXLS, LocationStrategy);                
-                //WSUploader(LocationStrategy, pathNameXLS);
-
-                FileStream fStream = File.OpenRead(LocationStrategy);
-                byte[] contents = new byte[fStream.Length];
-                fStream.Read(contents, 0, (int)fStream.Length);
-                fStream.Close();
-
-                //BinaryWriter wr = new BinaryWriter(fStream);
-                //wr.Write(reader.ReadBytes((int)Data.Length));
-                //wr.Close();
-
-                WebClient client = new WebClient();
-                client.UploadData(pathNameXLS + "Strategy Assessment.xlsx", "Post", contents);
-
-
+                Log.LogError("UploadWorksheet", ex);
             }
-            if (LocationSocial != null)
-            {
-                FileStream fStream = File.OpenRead(LocationSocial);
-                byte[] contents = new byte[fStream.Length];
-                fStream.Read(contents, 0, (int)fStream.Length);
-                fStream.Close();
-                WebClient client = new WebClient();
-                client.UploadData(pathNameXLS + "Social Media Assessment.xlsx", "Post", contents);
-            }
-            if (LocationWeb != null)
-            {
-                FileStream fStream = File.OpenRead(LocationWeb);
-                byte[] contents = new byte[fStream.Length];
-                fStream.Read(contents, 0, (int)fStream.Length);
-                fStream.Close();
-                WebClient client = new WebClient();
-                client.UploadData(pathNameXLS + "Website Assessment.xlsx", "Post", contents);
-            }
-
-            //TO ADD MESSAGE OR NOTIFY UPLOAD IS COMPLETED
-            //return "1"; //for successfull
-            MessageBox.Show("Upload is completed");
 
         }
 
@@ -1381,6 +1423,8 @@ namespace MCIFramework.ViewModels
 
             //check and combine into array
             string[] myarray = strings.Split(',');
+            List<Result> tempResult = new List<Result>();
+            
 
             //loop and generate 
             foreach (string temp in myarray)
@@ -1454,8 +1498,7 @@ namespace MCIFramework.ViewModels
 
                     RootObject root = new RootObject();
                     RootObject homeroot = new RootObject();                    
-                    List<Result> tempResult = new List<Result>();
-                    homeroot.results = new List<Result>();
+                    
 
                     string levelNo = "";
                     List<DetailsLevel1> tempDetail1 = new List<DetailsLevel1>();
@@ -1495,11 +1538,12 @@ namespace MCIFramework.ViewModels
                             {
                                 templink = "4";
                             }
-                            
-                            homeroot.title = "How to read the framework results";
-                            homeroot.description = "Every metric is a score from 0-10. A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation's nature.";
+
+                            homeroot.title = Properties.Resources.homeroot_title;
+                            homeroot.description = Properties.Resources.homeroot_description ;
                             homeroot.score = "";
-                            homeroot.link = "";                            
+                            homeroot.link = "";
+                            //homeroot.results = new List<Result>();
 
                             result.title = root.title;
                             result.score = root.score;
@@ -1623,38 +1667,68 @@ namespace MCIFramework.ViewModels
                         jw1.Flush();
                         //fs.Position = 0;
                     }
-                    zipFolder(pathName + assesNo + "\\Report\\");
+
+                    //zip folder and save to users desktop
+                    AddToArchive(pathName + assesNo + "\\Report\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 
                 }
-                catch
+
+
+                catch (Exception ex)
                 {
+                    Log.LogError("DownloadReport", ex);
                 }
                 finally
                 {
                     oledbConn.Close();
-
                     //MessageBox.Show("Report Generation is completed, click ok to start download");
                 }
             }
 
         }
 
-        private void zipFolder(string directory)
+        public void AddToArchive(string inFile, string outFile)
         {
-            string[] MainDirs = Directory.GetDirectories(directory);
-            for (int i = 0; i < MainDirs.Length; i++)
+            FileInfo f = new FileInfo(inFile);
+            StringBuilder output_7zip_File = new StringBuilder(outFile + Path.DirectorySeparatorChar + f.Name + @".7z");
+            string output_stringBuilder = output_7zip_File.ToString();
+            
+            StringBuilder output_File = new StringBuilder(outFile + Path.DirectorySeparatorChar + f.Name);
+            string output_dir_stringBuilder = output_7zip_File.ToString();
+ 
+            SevenZipCompressor szc = new SevenZipCompressor(); 
+
+            if (File.Exists(inFile))
             {
-                using (ZipFile zip = new ZipFile())
-                {                    
-                    zip.AddDirectory(MainDirs[i]);
-                    zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
-                    zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
-                    //zip.Save(string.Format("MCI{0}.zip", i));   
-                    zip.Save("MCI.zip");
-                    
-                }
+                szc.CompressionMode = SevenZip.CompressionMode.Append;
             }
-        }
+            else
+            {               
+                szc.CompressionMode = SevenZip.CompressionMode.Create;
+            }
+            FileStream archive = new FileStream(output_stringBuilder, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+          
+            try
+            {
+                szc.CompressionLevel = CompressionLevel.Normal;
+                szc.CompressionMethod = CompressionMethod.Lzma;
+                szc.CompressionMode = CompressionMode.Append;               
+                szc.DirectoryStructure = false;
+                szc.EncryptHeaders = true;
+                szc.DefaultItemName = inFile; 
+                szc.CompressDirectory(outFile, archive); 
+            }
+            catch (Exception ex)
+            {             
+                Log.LogError("AddToArchive", ex);
+            }
+            //archive.Flush();
+            archive.Close();
+ 
+
+ 
+        }  
+
 
         private void ToDashboard()
         {
@@ -1700,14 +1774,10 @@ namespace MCIFramework.ViewModels
                     File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Website Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Website Assessment.xlsx"), true);
                 }
 
-
-                
-                    
-
             }
-            catch
+            catch(Exception ex)
             {
-
+                Log.LogError("CreateFolderAndCopyTemplate", ex);
             }
         }
 

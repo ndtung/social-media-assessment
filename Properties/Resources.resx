@@ -272,4 +272,10 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="btn_tab_1_save_and_continue" xml:space="preserve">
     <value>Save and Continue</value>
   </data>
+  <data name="homeroot_description" xml:space="preserve">
+    <value>Every metric is a score from 0-10. A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation's nature.</value>
+  </data>
+  <data name="homeroot_title" xml:space="preserve">
+    <value>How to read the framework results</value>
+  </data>
 </root>
