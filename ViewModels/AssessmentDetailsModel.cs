@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Net;
+using Ionic.Zip;
 //using MCIFramework.Helper;
 
 
@@ -1311,14 +1312,14 @@ namespace MCIFramework.ViewModels
 
             //TO ADD MESSAGE OR NOTIFY UPLOAD IS COMPLETED
             //return "1"; //for successfull
-            //MessageBox("Upload is completed");
+            MessageBox.Show("Upload is completed");
 
         }
 
         private void BrowseWorksheet(string wsName)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
-
+            
             //set filter
             if (wsName == "Strategy")
             {
@@ -1364,264 +1365,295 @@ namespace MCIFramework.ViewModels
 
         private void DownloadReport()
         {
-            string InputFileName = "";
-
+            string strings = "";
             if (_assessment.IsStrategy == true)
             {
-                InputFileName = "Strategy Assessment.xlsx";
+                strings += "strategy,";
             }
-            else if (_assessment.IsWeb == true)
+            if (_assessment.IsWeb == true)
             {
-                InputFileName = "Website Assessment.xlsx";
+                strings += "social,";
             }
-            else if (_assessment.IsSocialMedia == true)
+            if (_assessment.IsSocialMedia == true)
             {
-                InputFileName = "Social Media Assessment.xlsx";
-            }
-
-            string assesNo = _assessment.Id.ToString();
-
-            string pathName = AppDomain.CurrentDomain.BaseDirectory;
-            //string pathName = "F:\\Projects\\mci\\" + "Resources\\Assessments\\";
-
-            string pathNameXLS = pathName + assesNo + "\\xlsx\\";
-            string fileName = Path.Combine(pathNameXLS, InputFileName);
-
-            string xlsTab = "";
-            string xlsType = "1";
-            string jsonName = "";
-
-            if (InputFileName == "Strategy Assessment.xlsx")
-            {
-                xlsTab = "SELECT * FROM [6 Data for upload$]";
-                xlsType = "1";
-                jsonName = "strategy.js";
-            }
-            else if (InputFileName == "Social Media Assessment.xlsx")
-            {
-                xlsTab = "SELECT * FROM [10 Data for upload$]";
-                xlsType = "2";
-                jsonName = "social-media.js";
-            }
-            else if (InputFileName == "Website Assessment.xlsx")
-            {
-                xlsTab = "SELECT * FROM [3 Data for upload$]";
-                xlsType = "2";
-                jsonName = "web.js";
+                strings += "web";
             }
 
-            string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=YES;\""))));
+            //check and combine into array
+            string[] myarray = strings.Split(',');
 
-            // Create the connection object 
-            OleDbConnection oledbConn = new OleDbConnection(CnStr);
-            try
+            //loop and generate 
+            foreach (string temp in myarray)
             {
-                // Open connection
-                oledbConn.Open();
+                string InputFileName = "";
 
-                // Create OleDbCommand object and select data from worksheet 
-                OleDbCommand cmd = new OleDbCommand(xlsTab, oledbConn);
-
-                // Create new OleDbDataAdapter
-                OleDbDataAdapter oleda = new OleDbDataAdapter();
-
-                oleda.SelectCommand = cmd;
-                DataSet ds = new DataSet();
-
-                DataTable dt = new DataTable();
-                oleda.Fill(dt);
-
-                int row = 0;
-                RootObject root = new RootObject();
-
-                string levelNo = "";
-                List<DetailsLevel1> tempDetail1 = new List<DetailsLevel1>();
-                List<DetailsLevel2> tempDetail2 = new List<DetailsLevel2>();
-
-                foreach (DataRow dr in dt.Rows)
+                if (temp == "strategy")
                 {
-                    row++;
+                    InputFileName = "Strategy Assessment.xlsx";
+                }
+                else if (temp == "social")
+                {
+                    InputFileName = "Website Assessment.xlsx";
+                }
+                else if (temp == "web")
+                {
+                    InputFileName = "Social Media Assessment.xlsx";
+                }
 
-                    Result result = new Result();
-                    DetailsLevel1 details_level_1 = new DetailsLevel1();
-                    DetailsLevel2 details_level_2 = new DetailsLevel2();
+                string assesNo = _assessment.Id.ToString();
 
-                    result.details_level_1 = new List<DetailsLevel1>();
-                    details_level_1.details_level_2 = new List<DetailsLevel2>();
+                string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
+                //string pathName = "F:\\Projects\\mci\\" + "Resources\\Assessments\\";
 
-                    if (dr.ItemArray[0].ToString().Length == 1)
+                string pathNameXLS = pathName + assesNo + "\\xlsx\\";
+                string fileName = Path.Combine(pathNameXLS, InputFileName);
+
+                string xlsTab = "";
+                string xlsType = "1";
+                string jsonName = "";
+
+                if (InputFileName == "Strategy Assessment.xlsx")
+                {
+                    xlsTab = "SELECT * FROM [6 Data for upload$]";
+                    xlsType = "1";
+                    jsonName = "strategy.js";
+                }
+                else if (InputFileName == "Social Media Assessment.xlsx")
+                {
+                    xlsTab = "SELECT * FROM [10 Data for upload$]";
+                    xlsType = "2";
+                    jsonName = "social-media.js";
+                }
+                else if (InputFileName == "Website Assessment.xlsx")
+                {
+                    xlsTab = "SELECT * FROM [3 Data for upload$]";
+                    xlsType = "2";
+                    jsonName = "web.js";
+                }
+                CreateFolderAndCopyTemplate("");
+                string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=YES;\""))));
+
+                // Create the connection object 
+                OleDbConnection oledbConn = new OleDbConnection(CnStr);
+                try
+                {
+                    // Open connection
+                    oledbConn.Open();
+
+                    // Create OleDbCommand object and select data from worksheet 
+                    OleDbCommand cmd = new OleDbCommand(xlsTab, oledbConn);
+
+                    // Create new OleDbDataAdapter
+                    OleDbDataAdapter oleda = new OleDbDataAdapter();
+
+                    oleda.SelectCommand = cmd;
+                    DataSet ds = new DataSet();
+
+                    DataTable dt = new DataTable();
+                    oleda.Fill(dt);
+
+                    RootObject root = new RootObject();
+                    RootObject homeroot = new RootObject();                    
+                    List<Result> tempResult = new List<Result>();
+                    homeroot.results = new List<Result>();
+
+                    string levelNo = "";
+                    List<DetailsLevel1> tempDetail1 = new List<DetailsLevel1>();
+                    List<DetailsLevel2> tempDetail2 = new List<DetailsLevel2>();
+
+                    string jsonpath = pathName + assesNo + "\\Report\\assets\\MCI-Framework\\js\\";
+                    string jsonhomeItem = jsonpath + "home.js";
+
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        root.title = (dr.ItemArray[1].ToString());
-                        root.score = (dr.ItemArray[2].ToString());
-                        root.description = (dr.ItemArray[3].ToString());
-                        root.results = new List<Result>();
+                        Result result = new Result();
+                        DetailsLevel1 details_level_1 = new DetailsLevel1();
+                        DetailsLevel2 details_level_2 = new DetailsLevel2();                        
 
-                        //==========================================================================================================================================
-                        ////append to home.js
-                        string jsonpath = pathName + assesNo + "\\Report\\assets\\MCI-Framework\\js\\";
-                        string homeItem = jsonpath + "home.js";
-                                                
-                        if (!Directory.Exists(jsonpath))
+                        result.details_level_1 = new List<DetailsLevel1>();
+                        details_level_1.details_level_2 = new List<DetailsLevel2>();
+                        
+
+                        if (dr.ItemArray[0].ToString().Length == 1)
                         {
-                            Directory.CreateDirectory(jsonpath);
+                            root.title = (dr.ItemArray[1].ToString());
+                            root.score = (dr.ItemArray[2].ToString());
+                            root.description = (dr.ItemArray[3].ToString());
+                            root.results = new List<Result>();
+                            //==========================================================================================================================================
+                            ////append to home.js
+                            string templink = "";
+                            if (jsonName == "strategy.js")
+                            {
+                                templink = "2";
+                            }
+                            else if (jsonName == "social-media.js")
+                            {
+                                templink = "3";
+                            }
+                            else if (jsonName == "web.js")
+                            {
+                                templink = "4";
+                            }
+                            
+                            homeroot.title = "How to read the framework results";
+                            homeroot.description = "Every metric is a score from 0-10. A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation's nature.";
+                            homeroot.score = "";
+                            homeroot.link = "";                            
+
+                            result.title = root.title;
+                            result.score = root.score;
+                            result.description = root.description;
+                            result.link = templink;
+                            //homeroot.results.Add(result);
+                            tempResult.Add(result);
+                            //==========================================================================================================================================
                         }
 
-                        var filePath = @homeItem;
-                        // Read existing json data
-                        var homejsonData = System.IO.File.ReadAllText(filePath);
-                        // De-serialize to object or create new list
-                        var homeresults = JsonConvert.DeserializeObject<List<RootObject>>(homejsonData)
-                                              ?? new List<RootObject>();
-                        string templink = "";
+
+                        if (dr.ItemArray[0].ToString().Length == 3)
+                        {
+                            //result.details_level_1 = new List<DetailsLevel1>();
+                            result.title = (dr.ItemArray[1].ToString());
+                            result.score = (dr.ItemArray[2].ToString());
+                            result.description = (dr.ItemArray[3].ToString());
+                            result.link = "";
+                            root.results.Add(result);
+                            levelNo = dr.ItemArray[0].ToString().Substring(2, 1);
+
+                            //reset
+                            tempDetail1 = new List<DetailsLevel1>();
+                            tempDetail2 = new List<DetailsLevel2>();
+                        }
+
+
+                        if (dr.ItemArray[0].ToString().Length == 5)
+                        {
+                            details_level_1.title = (dr.ItemArray[1].ToString());
+                            details_level_1.score = (dr.ItemArray[2].ToString());
+                            details_level_1.description = (dr.ItemArray[3].ToString());
+                            details_level_1.criteria = (dr.ItemArray[4].ToString());
+
+                            if (xlsType == "1")
+                            {
+                                details_level_1.recommendations = (dr.ItemArray[5].ToString());
+                                details_level_1.assessor = (dr.ItemArray[6].ToString());
+                            }
+                            else if (xlsType == "2")
+                            {
+                                details_level_1.indicator_for = (dr.ItemArray[5].ToString());
+                                details_level_1.recommendations = (dr.ItemArray[6].ToString());
+                                details_level_1.assessor = (dr.ItemArray[7].ToString());
+                            }
+                            details_level_1.link = "";
+                            tempDetail1.Add(details_level_1);
+                        }
+
+
+                        if (dr.ItemArray[0].ToString().Length == 7)
+                        {
+                            details_level_2.title = (dr.ItemArray[1].ToString());
+                            details_level_2.score = (dr.ItemArray[2].ToString());
+                            details_level_2.description = (dr.ItemArray[3].ToString());
+                            details_level_2.criteria = (dr.ItemArray[4].ToString());
+
+                            if (xlsType == "1")
+                            {
+                                details_level_2.recommendations = (dr.ItemArray[5].ToString());
+                                details_level_2.assessor = (dr.ItemArray[6].ToString());
+                            }
+                            else if (xlsType == "2")
+                            {
+                                details_level_2.indicator_for = (dr.ItemArray[5].ToString());
+                                details_level_2.recommendations = (dr.ItemArray[6].ToString());
+                                details_level_2.assessor = (dr.ItemArray[7].ToString());
+                            }
+                            details_level_2.link = "";
+                            tempDetail2.Add(details_level_2);
+                            //details_level_1.details_level_2.Add(details_level_2);                            
+                        }
+
+                        result.details_level_1 = tempDetail1;
+                        details_level_1.details_level_2 = tempDetail2;
+                        
+                    }
+                    homeroot.results = tempResult;
+
+                    //writing json file
+                    //F:\Projects\mci\Resources\Assessments\1\Report\assets\MCI-Framework\js
+
+                    string jsonItem = pathName + assesNo + "\\Report\\assets\\MCI-Framework\\js\\" + jsonName;
+
+                    using (FileStream fs = File.Open(@jsonItem, FileMode.Create))
+                    using (StreamWriter sw = new StreamWriter(fs))
+                    using (JsonWriter jw = new JsonTextWriter(sw))
+                    {
+                        jw.Formatting = Formatting.Indented;
+                        JsonSerializer serializer = new JsonSerializer();
+                        //serializer.NullValueHandling = NullValueHandling.Ignore;
                         if (jsonName == "strategy.js")
                         {
-                            templink = "2";
+                            sw.WriteLine("var strategy = ");
                         }
                         else if (jsonName == "social-media.js")
                         {
-                            templink = "3";
+                            sw.WriteLine("var social_media = ");
                         }
                         else if (jsonName == "web.js")
                         {
-                            templink = "4";
+                            sw.WriteLine("var web = ");
                         }
 
-                        // Add any new employees
-                        homeresults.Add(new RootObject()
-                        {
-                            title = root.title,
-                            description = root.description,
-                            score = root.score,
-                            link = templink
-                        });
+                        serializer.Serialize(jw, root);
+                        jw.Flush();
+                        //fs.Position = 0;
 
-                        // Update json data string
-                        homejsonData = JsonConvert.SerializeObject(homeresults);
-                        System.IO.File.WriteAllText(filePath, homejsonData);
-                        //==========================================================================================================================================
-
+                        
                     }
-
-
-                    if (dr.ItemArray[0].ToString().Length == 3)
+                    //create home.js
+                    using (FileStream fs1 = File.Open(@jsonhomeItem, FileMode.Create))
+                    using (StreamWriter sw1 = new StreamWriter(fs1))
+                    using (JsonWriter jw1 = new JsonTextWriter(sw1))
                     {
-                        //result.details_level_1 = new List<DetailsLevel1>();
-
-                        result.title = (dr.ItemArray[1].ToString());
-                        result.score = (dr.ItemArray[2].ToString());
-                        result.description = (dr.ItemArray[3].ToString());
-                        result.link = "";
-
-                        root.results.Add(result);
-                        levelNo = dr.ItemArray[0].ToString().Substring(2, 1);
-
-                        //reset
-                        tempDetail1 = new List<DetailsLevel1>();
-                        tempDetail2 = new List<DetailsLevel2>();
+                        jw1.Formatting = Formatting.Indented;
+                        JsonSerializer serializer1 = new JsonSerializer();
+                        //serializer.NullValueHandling = NullValueHandling.Ignore;
+                        sw1.WriteLine("var home = ");
+                        serializer1.Serialize(jw1, homeroot);
+                        jw1.Flush();
+                        //fs.Position = 0;
                     }
-
-
-                    if (dr.ItemArray[0].ToString().Length == 5)
-                    {
-
-
-                        details_level_1.title = (dr.ItemArray[1].ToString());
-                        details_level_1.score = (dr.ItemArray[2].ToString());
-                        details_level_1.description = (dr.ItemArray[3].ToString());
-                        details_level_1.criteria = (dr.ItemArray[4].ToString());
-
-                        if (xlsType == "1")
-                        {
-                            details_level_1.recommendations = (dr.ItemArray[5].ToString());
-                            details_level_1.assessor = (dr.ItemArray[6].ToString());
-                        }
-                        else if (xlsType == "2")
-                        {
-                            details_level_1.indicator_for = (dr.ItemArray[5].ToString());
-                            details_level_1.recommendations = (dr.ItemArray[6].ToString());
-                            details_level_1.assessor = (dr.ItemArray[7].ToString());
-                        }
-
-                        details_level_1.link = "";
-
-                        tempDetail1.Add(details_level_1);
-
-                    }
-
-
-                    if (dr.ItemArray[0].ToString().Length == 7)
-                    {
-                        details_level_2.title = (dr.ItemArray[1].ToString());
-                        details_level_2.score = (dr.ItemArray[2].ToString());
-                        details_level_2.description = (dr.ItemArray[3].ToString());
-                        details_level_2.criteria = (dr.ItemArray[4].ToString());
-
-                        if (xlsType == "1")
-                        {
-                            details_level_2.recommendations = (dr.ItemArray[5].ToString());
-                            details_level_2.assessor = (dr.ItemArray[6].ToString());
-                        }
-                        else if (xlsType == "2")
-                        {
-                            details_level_2.indicator_for = (dr.ItemArray[5].ToString());
-                            details_level_2.recommendations = (dr.ItemArray[6].ToString());
-                            details_level_2.assessor = (dr.ItemArray[7].ToString());
-                        }
-
-
-                        details_level_2.link = "";
-
-                        tempDetail2.Add(details_level_2);
-                        //details_level_1.details_level_2.Add(details_level_2);
-
-                    }
-
-                    result.details_level_1 = tempDetail1;
-                    details_level_1.details_level_2 = tempDetail2;
+                    zipFolder(pathName + assesNo + "\\Report\\");
 
                 }
-
-                //writing json file
-                //F:\Projects\mci\Resources\Assessments\1\Report\assets\MCI-Framework\js
-
-                string jsonItem = pathName + assesNo + "\\Report\\assets\\MCI-Framework\\js\\" + jsonName;
-
-                using (FileStream fs = File.Open(@jsonItem, FileMode.Create))
-                using (StreamWriter sw = new StreamWriter(fs))
-                using (JsonWriter jw = new JsonTextWriter(sw))
+                catch
                 {
-                    jw.Formatting = Formatting.Indented;
-                    JsonSerializer serializer = new JsonSerializer();
-                    //serializer.NullValueHandling = NullValueHandling.Ignore;
-                    if (jsonName == "strategy.js")
-                    {
-                        sw.WriteLine("var strategy = ");
-                    }
-                    else if (jsonName == "social-media.js")
-                    {
-                        sw.WriteLine("var social_media = ");
-                    }
-                    else if (jsonName == "web.js")
-                    {
-                        sw.WriteLine("var web = ");
-                    }
-
-                    serializer.Serialize(jw, root);
-                    jw.Flush();
-                    //fs.Position = 0;
                 }
+                finally
+                {
+                    oledbConn.Close();
 
+                    //MessageBox.Show("Report Generation is completed, click ok to start download");
+                }
             }
-            catch
+
+        }
+
+        private void zipFolder(string directory)
+        {
+            string[] MainDirs = Directory.GetDirectories(directory);
+            for (int i = 0; i < MainDirs.Length; i++)
             {
+                using (ZipFile zip = new ZipFile())
+                {                    
+                    zip.AddDirectory(MainDirs[i]);
+                    zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                    zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
+                    //zip.Save(string.Format("MCI{0}.zip", i));   
+                    zip.Save("MCI.zip");
+                    
+                }
             }
-            finally
-            {
-                oledbConn.Close();
-            }
-
-
-
         }
 
         private void ToDashboard()
@@ -1634,19 +1666,51 @@ namespace MCIFramework.ViewModels
             return AllPropertiesValid;
         }
 
-        private void CreateFolderAndCopyTemplate()
+        private void CreateFolderAndCopyTemplate(string fileType)
         {
             try
             {
+                //copy whole folder from Resources\Templates\Reports to Resources\Assessments\x\Reports
+                if (!Directory.Exists(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "Report")))
+                {
+                    Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "Report"));
+                    string _SelectedPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Templates\\Reports";
+                    string destinationPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Assessments\\" + _assessment.Id.ToString() + "\\Report";
+                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(_SelectedPath, destinationPath);
+                }
+        
                 if (!Directory.Exists(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString())))
                     Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx"));
-                File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Social Media Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx"), true);
+
+                if (fileType == "")
+                {
+                    //emptpy or something else, do nothing but copy report folder if it does not exist
+                }
+
+                if (fileType == "strategy")
+                {
+                    File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Strategy Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Strategy Assessment.xlsx"), true);
+                }
+                if (fileType == "social")
+                {
+                    File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Social Media Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx"), true);
+                }
+                if (fileType == "web")
+                {
+                    File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Website Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Website Assessment.xlsx"), true);
+                }
+
+
+                
+                    
+
             }
             catch
             {
 
             }
         }
+
 
 
 
