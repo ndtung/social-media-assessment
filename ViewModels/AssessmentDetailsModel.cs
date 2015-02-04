@@ -1697,9 +1697,40 @@ namespace MCIFramework.ViewModels
             using (ZipFile zip = new ZipFile())
             {                
                 try {
-                    zip.AddDirectory(@zipFileToCreate);
-                    zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
-                    zip.Save(@destination + "\\MCI.zip");
+
+                    //zip.AddDirectory(@zipFileToCreate);
+                    //zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
+                    //zip.Save(@destination + "\\MCI.zip");
+
+                    // Configure save file dialog box
+                    SaveFileDialog dlg = new SaveFileDialog();
+
+                    //set default save location to mydocument
+                    dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                    dlg.FileName = "MCI"; // Default file name
+                    dlg.DefaultExt = ".zip"; // Default file extension
+                    dlg.Filter = "Zip (.zip)|*.zip"; // Filter files by extension 
+
+                    // Show save file dialog box
+                    Nullable<bool> result = dlg.ShowDialog();
+
+                    // Process save file dialog box results 
+                    if (result == true)
+                    {
+                        // Save document                         
+                        string selectpath = Path.GetDirectoryName(dlg.FileName);
+                        string GetFileName = Path.GetFileName(dlg.FileName);
+                        string filename = "\\"+ GetFileName ;
+
+                        zip.AddDirectory(@zipFileToCreate);
+                        zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
+                        zip.Save(@selectpath + filename);
+
+                    }
+
+
+
                 }
                 catch (Exception ex)
                 {
