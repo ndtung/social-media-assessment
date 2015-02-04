@@ -54,9 +54,10 @@ namespace MCIFramework.Helper
                 SaveToDB(actualPosts);
                 SaveToExcel(actualPosts);
             }
-            catch(Exception e)
+            catch (Exception ex)
             {
-                throw e;
+                Log.LogError("FacebookImporter", ex);
+                throw ex;
             }
         }
 

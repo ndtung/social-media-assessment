@@ -278,6 +278,12 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="_api_youtube_maximum_videos" xml:space="preserve">
     <value>500</value>
   </data>
+    <data name="homeroot_description" xml:space="preserve">
+    <value>Every metric is a score from 0-10. A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation's nature.</value>
+  </data>
+  <data name="homeroot_title" xml:space="preserve">
+    <value>How to read the framework results</value>
+  </data>
   <data name="_api_facebook_app_id" xml:space="preserve">
     <value>781330755269938</value>
   </data>

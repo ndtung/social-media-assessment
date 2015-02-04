@@ -61,7 +61,8 @@ namespace MCIFramework.Helper
             }
             catch (Exception ex)
             {
-
+                Log.LogError("TwitterImporter", ex);
+                throw ex;
             }
 
         }

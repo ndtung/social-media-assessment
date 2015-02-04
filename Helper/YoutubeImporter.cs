@@ -115,8 +115,9 @@ namespace MCIFramework.Helper
                 }
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Log.LogError("YoutubeImporter", ex);
                 return false;
             }
 

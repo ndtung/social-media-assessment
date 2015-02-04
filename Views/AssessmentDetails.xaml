@@ -72,16 +72,16 @@
                         <Line Stroke="Black"
                 		X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
                 		StrokeDashArray="1 1" StrokeThickness="1" Grid.ColumnSpan="10" Margin="31,245,27,-193" Grid.Row="8" Opacity="0.5" Grid.Column="1" />
-                        
-                        
-                        
+
+
+
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_fb_txtBox_lbl}" Margin="34,58,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="6" Grid.Row="8" Padding="0,5,5,5" Height="26" HorizontalAlignment="Left" Width="170"/>
-                        
+
                         <Label Content="From (dd/mm/yyyy)" HorizontalAlignment="Left" Margin="46,98,0,0" VerticalAlignment="Top" Grid.Column="8" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="26" Width="120" RenderTransformOrigin="0.5,0.731"/>
                         <Label Content="To (dd/mm/yyyy)" HorizontalAlignment="Left" Margin="0,98,0,0" VerticalAlignment="Top" Grid.Column="9" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" RenderTransformOrigin="0.444,0.885" Height="26" Width="120"/>
-                        
+
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_twitter_txtBox_lbl}" Margin="28,122,8,-1" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="8" Height="26"/>
-                        
+
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_youtube_txtBox_lbl}" Margin="28,181,15,0" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="8" Height="26"/>
                         <CheckBox Content="{x:Static prop:Resources.assessment_tab_1_twitter_chkBox}" IsChecked="{Binding IsTwitter}" Grid.ColumnSpan="6" Margin="31,103,0,285" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left" Width="175" />
                         <TextBox Height="23" Margin="26,122,10,0" TextWrapping="NoWrap" Text="{Binding TwitterUsername,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsTwitter}" VerticalAlignment="Top" Grid.Row="8" Grid.Column="7" />
@@ -106,14 +106,14 @@
                         <TextBox Height="23" Margin="26,498,10,-345" TextWrapping="NoWrap" Text="{Binding TopPageUrl4,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"  IsEnabled="{Binding IsWeb}"  Grid.Row="8" Grid.Column="7" />
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="32,545,0,-431" TextWrapping="NoWrap" Text="{Binding TopPage5,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding IsWeb}" VerticalAlignment="Top" Width="201" Grid.ColumnSpan="7" Grid.Row="8" Grid.Column="1" />
                         <TextBox Height="23" Margin="26,545,10,-391" TextWrapping="NoWrap" Text="{Binding TopPageUrl5,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" IsEnabled="{Binding IsWeb}"  Grid.Row="8" Grid.Column="7" />
-                        
-                        
+
+
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_website_audience1}" Margin="46,281,75,0" VerticalAlignment="Top" Grid.Column="8" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="28"/>
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_website_scenario}" Margin="0,281,0,0" VerticalAlignment="Top" Grid.Column="9" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="28" HorizontalAlignment="Left" Width="171"/>
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_website_keywords}" Margin="0,281,0,0" VerticalAlignment="Top" Grid.Column="10" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="28" HorizontalAlignment="Left" Width="167"/>
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_website_audience2}"   Margin="46,376,75,-57" VerticalAlignment="Top" Grid.Column="8" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="28"/>
                         <Label Content="{x:Static prop:Resources.assessment_tab_1_website_audience3}"  Margin="46,470,75,-152" VerticalAlignment="Top" Grid.Column="8" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="28"/>
-                        
+
                         <TextBox Height="23" Margin="46,311,22,0" TextWrapping="NoWrap" Text="{Binding Audience1,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding IsWeb}"  VerticalAlignment="Top" Grid.Row="8" Grid.Column="8"  />
                         <TextBox Height="23" Margin="46,404,22,-55" TextWrapping="NoWrap" Text="{Binding Audience2,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsWeb}"  VerticalAlignment="Top" Grid.Row="8" Grid.Column="8" />
                         <TextBox Height="23" Margin="46,498,22,-147" TextWrapping="NoWrap" Text="{Binding Audience3,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsWeb}"  VerticalAlignment="Top" Grid.Row="8" Grid.Column="8" />
@@ -192,42 +192,43 @@
                     <Line Stroke="Black"
                     	X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
                     	StrokeDashArray="1 1" StrokeThickness="1" Grid.ColumnSpan="2" Margin="48,289,48,0" Grid.Row="3" Opacity="0.5" Height="46" VerticalAlignment="Top" Grid.RowSpan="2" />
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtStrategy" Text="{Binding LocationStrategy}" HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtSocial" Text="{Binding LocationSocial}" HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtWeb" Text="{Binding LocationWeb}" HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
 
                     <Button Content="Browse" 
-                            Command="{Binding UpdateStudentNameCommand}" 
+                            Command="{Binding browseStrategyCommand}"
                             HorizontalAlignment="Left" Margin="331,41,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Strategy Assessment.xlsx"  />
 
                     <Button Content="Browse" 
-                            Command="{Binding UpdateStudentNameCommand}" 
+                            Command="{Binding browseSocialCommand}" 
                             HorizontalAlignment="Left" Margin="331,101,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Social Media Assessment.xlsx"/>
 
                     <Button Content="Browse" 
-                            Command="{Binding UpdateStudentNameCommand}" 
+                            Command="{Binding browseWebCommand}" 
                             HorizontalAlignment="Left" Margin="331,166,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Website Assessment.xlsx"/>
 
                     <Button Content="{x:Static prop:Resources.btn_tab_3_uploadworksheets}"  Style="{StaticResource BlueButton}" HorizontalAlignment="Left" Margin="48,231,0,0" Grid.Row="3" Width="168" Height="41" VerticalAlignment="Top"  BorderBrush="{x:Null}" Foreground="White" 
                             Command="{Binding UploadWorksheetCommand}" 
                             ToolTip="Upload Worksheet for report generation"/>
-                    
+
                     <Button Content="{x:Static prop:Resources.btn_tab_3_downloadreport}" Style="{StaticResource GreenButton}" HorizontalAlignment="Left" Margin="48,311,0,0" Grid.Row="3" Width="168" Height="41" VerticalAlignment="Top"  BorderBrush="{x:Null}" Foreground="White" 
                             Command="{Binding DownloadReportCommand}" 
                             ToolTip="Download generated report"/>
 
+                    <Label Content="{Binding Tab3Message}" Foreground="{Binding Tab3MessageColor}" Margin="234,245,5,0" VerticalAlignment="Top"  Grid.Row="3" Padding="0,5,5,5" UseLayoutRounding="True" Height="33"/>
 
 
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row3_titlle}" HorizontalAlignment="Left" Margin="48,139,0,0" Grid.Row="3" VerticalAlignment="Top"/>
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row2_titlle}" HorizontalAlignment="Left" Margin="48,74,0,0" Grid.Row="3" VerticalAlignment="Top"/>
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row1_titlle}" HorizontalAlignment="Left" Margin="48,14,0,0" Grid.Row="3" VerticalAlignment="Top"/>
 
-                 
-                    
-                    
+
+
+
                 </Grid>
 
 
@@ -236,7 +237,7 @@
             </TabItem>
 
         </TabControl>
-        
+
 
     </Grid>
 
