@@ -20,8 +20,9 @@ namespace MCIFramework.Helper
                 Process();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.LogError("TwitterImporter", ex);
                 return false;
             }
 

@@ -16,8 +16,9 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Net;
-using SevenZip;
 using MCIFramework.Helper;
+using Ionic.Zip;
+
 
 
 
@@ -971,6 +972,7 @@ namespace MCIFramework.ViewModels
                 _validProperties[propertyName] = String.IsNullOrEmpty(error) ? true : false;
                 ValidateProperties();
                 CommandManager.InvalidateRequerySuggested();
+                //Log.LogError("IDataErrorInfo", error);
                 return error;
             }
         }
@@ -1670,6 +1672,7 @@ namespace MCIFramework.ViewModels
 
                     //zip folder and save to users desktop
                     AddToArchive(pathName + assesNo + "\\Report\\", Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                    
 
                 }
 
@@ -1681,53 +1684,33 @@ namespace MCIFramework.ViewModels
                 finally
                 {
                     oledbConn.Close();
+                    Tab3Message = "Report generation is completed! Check your desktop";
+                    Tab3MessageColor = "Green";
                     //MessageBox.Show("Report Generation is completed, click ok to start download");
                 }
             }
 
         }
 
-        public void AddToArchive(string inFile, string outFile)
+        private void AddToArchive(string zipFileToCreate, string destination) 
         {
-            FileInfo f = new FileInfo(inFile);
-            StringBuilder output_7zip_File = new StringBuilder(outFile + Path.DirectorySeparatorChar + f.Name + @".7z");
-            string output_stringBuilder = output_7zip_File.ToString();
-            
-            StringBuilder output_File = new StringBuilder(outFile + Path.DirectorySeparatorChar + f.Name);
-            string output_dir_stringBuilder = output_7zip_File.ToString();
- 
-            SevenZipCompressor szc = new SevenZipCompressor(); 
+            using (ZipFile zip = new ZipFile())
+            {                
+                try {
+                    zip.AddDirectory(@zipFileToCreate);
+                    zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
+                    zip.Save(@destination + "\\MCI.zip");
+                }
+                catch (Exception ex)
+                {
+                    Log.LogError("AddToArchive", ex);
+                }
 
-            if (File.Exists(inFile))
-            {
-                szc.CompressionMode = SevenZip.CompressionMode.Append;
             }
-            else
-            {               
-                szc.CompressionMode = SevenZip.CompressionMode.Create;
-            }
-            FileStream archive = new FileStream(output_stringBuilder, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-          
-            try
-            {
-                szc.CompressionLevel = CompressionLevel.Normal;
-                szc.CompressionMethod = CompressionMethod.Lzma;
-                szc.CompressionMode = CompressionMode.Append;               
-                szc.DirectoryStructure = false;
-                szc.EncryptHeaders = true;
-                szc.DefaultItemName = inFile; 
-                szc.CompressDirectory(outFile, archive); 
-            }
-            catch (Exception ex)
-            {             
-                Log.LogError("AddToArchive", ex);
-            }
-            //archive.Flush();
-            archive.Close();
- 
-
- 
-        }  
+        
+        
+        }
+        
 
 
         private void ToDashboard()
@@ -1758,7 +1741,7 @@ namespace MCIFramework.ViewModels
 
                 if (fileType == "")
                 {
-                    //emptpy or something else, do nothing but copy report folder if it does not exist
+                    //empty or something else, do nothing but copy report folder if it does not exist
                 }
 
                 if (fileType == "strategy")
