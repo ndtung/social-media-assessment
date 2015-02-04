@@ -16,11 +16,16 @@ namespace MCIFramework.Models
         public string YoutubeVideoViews { get; set; }
         public string YoutubeVideoLikes { get; set; }
         public string YoutubeVideoDislikes { get; set; }
-        public int FacebookLikes { get; set; }
-        public int FacebookFans { get; set; }
-        public int FacebookPosts { get; set; }
-        public int FacebookComments { get; set; }
-        public int FacebookShares { get; set; }
-        
+        public int? FacebookLikes { get; set; }
+        public int? FacebookFans { get; set; }
+        public int? FacebookPosts { get; set; }
+        public int? FacebookComments { get; set; }
+        public int? FacebookShares { get; set; }
+
+        public int? TwitterFollowers { get; set; }
+        public int? TwitterTweets { get; set; }
+        public int? TwitterFavourites { get; set; }
+        public int? TwitterReplies { get; set; }
+        public int? TwitterRetweets { get; set; }
     }
 }

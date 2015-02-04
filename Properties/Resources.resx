@@ -290,4 +290,22 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="_api_facebook_access_token_expire_day" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="_api_twitter_access_token" xml:space="preserve">
+    <value>3014183050-mwJg6a3TfucgYBN8vleup28L3Zh1Ni1ZbHYdue8</value>
+  </data>
+  <data name="_api_twitter_access_token_secret" xml:space="preserve">
+    <value>dIM7xwVaqX3sjgh7Opl5k5K2fjxbXf3aNmcDyYmIIrxVc</value>
+  </data>
+  <data name="_api_twitter_consumer_key" xml:space="preserve">
+    <value>20KCoXf5h80d4jfNx9XXrQkxM</value>
+  </data>
+  <data name="_api_twitter_consumer_secret" xml:space="preserve">
+    <value>vF6YCMfb5ltf93rYA76B8ORVhAJqEkZdA6yV1uvW0mIHVsRVwI</value>
+  </data>
+  <data name="_api_twitter_search_query_max_count" xml:space="preserve">
+    <value>100</value>
+  </data>
+  <data name="_api_twitter_status_query_max_count" xml:space="preserve">
+    <value>200</value>
+  </data>
 </root>

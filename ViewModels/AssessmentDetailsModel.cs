@@ -18,11 +18,12 @@ namespace MCIFramework.ViewModels
     {
         private Database _context = new Database();
         private Assessment _assessment;
-        private SocialMediaStat _socialMediaStat;
+        private SocialMediaStat _socialMediaStat = new SocialMediaStat();
         private Dictionary<string, bool> _validProperties;
         private bool _allPropertiesValid = false;
         private Boolean _isNewAssessment;
-
+        private Boolean _isDownloadSocialMedialEnabled;
+        private Boolean _isImportSocialMedialEnabled;
         private String _tab1Message;
         private String _tab1MessageColor;
 
@@ -69,14 +70,17 @@ namespace MCIFramework.ViewModels
 
             var item = _context.assessments.FirstOrDefault(c => c.Id == assessmentID);
             this._validProperties = new Dictionary<string, bool>();
-            
+
             IsNewAssessment = false;
             DefaultTab = tab;
             CreateNewAssessmentTitle = Visibility.Hidden;
             if (item != null)
             {
                 _assessment = (Assessment)item;
-
+                if (_context.socialMediaStats.FirstOrDefault(x => x.AssessmentId == assessmentID) != null)
+                    IsDownloadSocialMedialEnabled = true;
+                if (IsSocialMedia)
+                    IsImportSocialMediaEnabled = true;
             }
             else
             { new AssessmentDetailsModel(); }
@@ -962,6 +966,31 @@ namespace MCIFramework.ViewModels
             }
         }
 
+        public Boolean IsDownloadSocialMedialEnabled
+        {
+            get { return _isDownloadSocialMedialEnabled; }
+            set
+            {
+                if (_isDownloadSocialMedialEnabled != value)
+                {
+                    _isDownloadSocialMedialEnabled = value;
+                    OnPropertyChanged("IsDownloadSocialMedialEnabled");
+                }
+            }
+        }
+
+        public Boolean IsImportSocialMediaEnabled
+        {
+            get { return _isImportSocialMedialEnabled; }
+            set
+            {
+                if (_isImportSocialMedialEnabled != value)
+                {
+                    _isImportSocialMedialEnabled = value;
+                    OnPropertyChanged("IsImportSocialMediaEnabled");
+                }
+            }
+        }
         public int DefaultTab
         {
             get { return _tab; }
@@ -1238,10 +1267,13 @@ namespace MCIFramework.ViewModels
 
         private void ImportSocialMediaData()
         {
-            
+
             if (IsSocialMedia)
             {
-                _socialMediaStat = new SocialMediaStat();
+                Tab2YoutubeMessage = "";
+                Tab2FacebookMessage = "";
+                Tab2TwitterMessage = "";
+                IsImportSocialMediaEnabled = false;
                 _socialMediaStat.AssessmentId = _assessment.Id;
                 TimeSpan timeSpan = (DateTime)_assessment.EndDate - (DateTime)_assessment.StartDate;
                 _socialMediaStat.TotalDays = timeSpan.Days;
@@ -1256,7 +1288,7 @@ namespace MCIFramework.ViewModels
                     if (IsFacebook)
                     {
                         FBAuthenGlobalEvent.Instance.Publish(_assessment);
-                        
+
                     }
                     else
                     {
@@ -1316,7 +1348,7 @@ namespace MCIFramework.ViewModels
             // run all background tasks here
             Tab2YoutubeMessage = "Processing Youtube data";
             Tab2YoutubeMessageColor = "Green";
-
+            IsDownloadSocialMedialEnabled = false;
             YoutubeImporter youtubeImporter = new YoutubeImporter(_assessment, _socialMediaStat);
             youtubeImporter.Process();
             SocialMediaStat socialStat = youtubeImporter.GetDataToStore();
@@ -1400,16 +1432,16 @@ namespace MCIFramework.ViewModels
             // run all background tasks here
             Tab2TwitterMessage = "Processing Twitter data";
             Tab2TwitterMessageColor = "Green";
-
+            IsDownloadSocialMedialEnabled = false;
             TwitterImporter twitterImporter = new TwitterImporter(_assessment, _socialMediaStat);
-            twitterImporter.Start();
+            twitterImporter.Process();
 
             SocialMediaStat socialStat = twitterImporter.GetDataToStore();
-            _socialMediaStat.FacebookComments = socialStat.FacebookComments;
-            _socialMediaStat.FacebookFans = socialStat.FacebookFans;
-            _socialMediaStat.FacebookLikes = socialStat.FacebookLikes;
-            _socialMediaStat.FacebookPosts = socialStat.FacebookPosts;
-            _socialMediaStat.FacebookShares = socialStat.FacebookShares;
+            _socialMediaStat.TwitterFavourites = socialStat.TwitterFavourites;
+            _socialMediaStat.TwitterFollowers = socialStat.TwitterFollowers;
+            _socialMediaStat.TwitterReplies = socialStat.TwitterReplies;
+            _socialMediaStat.TwitterRetweets = socialStat.TwitterRetweets;
+            _socialMediaStat.TwitterTweets = socialStat.TwitterTweets;
         }
 
         private void twitterWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1419,7 +1451,7 @@ namespace MCIFramework.ViewModels
             {
                 Tab2TwitterMessage = "Twitter data retrieved successfully";
                 Tab2TwitterMessageColor = "Green";
-               
+
             }
             else
             {
@@ -1431,8 +1463,11 @@ namespace MCIFramework.ViewModels
 
         private void SaveSocialMediaStat()
         {
+            _context.socialMediaStats.RemoveRange(_context.socialMediaStats.Where(x => x.AssessmentId == _assessment.Id));
             _context.socialMediaStats.Add(_socialMediaStat);
             _context.SaveChanges();
+            IsDownloadSocialMedialEnabled = true;
+            IsImportSocialMediaEnabled = true;
         }
         #endregion
 

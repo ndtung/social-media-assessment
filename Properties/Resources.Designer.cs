@@ -97,6 +97,60 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 3014183050-mwJg6a3TfucgYBN8vleup28L3Zh1Ni1ZbHYdue8.
+        /// </summary>
+        public static string _api_twitter_access_token {
+            get {
+                return ResourceManager.GetString("_api_twitter_access_token", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dIM7xwVaqX3sjgh7Opl5k5K2fjxbXf3aNmcDyYmIIrxVc.
+        /// </summary>
+        public static string _api_twitter_access_token_secret {
+            get {
+                return ResourceManager.GetString("_api_twitter_access_token_secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 20KCoXf5h80d4jfNx9XXrQkxM.
+        /// </summary>
+        public static string _api_twitter_consumer_key {
+            get {
+                return ResourceManager.GetString("_api_twitter_consumer_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to vF6YCMfb5ltf93rYA76B8ORVhAJqEkZdA6yV1uvW0mIHVsRVwI.
+        /// </summary>
+        public static string _api_twitter_consumer_secret {
+            get {
+                return ResourceManager.GetString("_api_twitter_consumer_secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100.
+        /// </summary>
+        public static string _api_twitter_search_query_max_count {
+            get {
+                return ResourceManager.GetString("_api_twitter_search_query_max_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 200.
+        /// </summary>
+        public static string _api_twitter_status_query_max_count {
+            get {
+                return ResourceManager.GetString("_api_twitter_status_query_max_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AIzaSyDySsjf0V7XSzNbWII4zTJXq9CjkJ7EbeM.
         /// </summary>
         public static string _api_youtube_api_key {

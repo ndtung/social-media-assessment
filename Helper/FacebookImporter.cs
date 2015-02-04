@@ -206,6 +206,8 @@ namespace MCIFramework.Helper
         private void SaveToDB(List<FacebookPost> posts)
         {
             Database context = new Database();
+            // clear all existing postComment of this assessment
+            context.facebookPostComments.RemoveRange(context.facebookPostComments.Where(x=>x.AssessmentId == _assessment.Id));
             foreach(FacebookPost post in posts)
             {
                 if (post.comments != null)
