@@ -43,10 +43,12 @@ namespace MCIFramework.ViewModels
         private ICommand _uploadWorksheetCommand;
         private ICommand _downloadReportCommand;
         private ICommand _saveCommand;
-        private ICommand _downloadStrategyCommand;
         private ICommand _importSocialCommand;
+
+        private ICommand _downloadStrategyCommand;
         private ICommand _downloadSocialCommand;
         private ICommand _downloadWebCommand;
+
         private ICommand _toDashboardCommand;
         private ICommand _browseStrategyCommand;
         private ICommand _browseSocialCommand;
@@ -1002,7 +1004,7 @@ namespace MCIFramework.ViewModels
                 return _saveCommand;
             }
         }
-
+        //=================================================================================================================================
         public ICommand DownloadStrategyCommand
         {
             get
@@ -1022,7 +1024,7 @@ namespace MCIFramework.ViewModels
                     );
                 }
 
-                return _saveCommand;
+                return _downloadStrategyCommand;
             }
         }
 
@@ -1048,7 +1050,30 @@ namespace MCIFramework.ViewModels
                 return _saveCommand;
             }
         }
+        
+        public ICommand DownloadSocialCommand
+        {
+            get
+            {
+                if (_downloadSocialCommand == null)
+                {
+                    _downloadSocialCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            DownloadSocialWorksheet();
+                        },
+                        param =>
+                        {
+                            return IsSocialMedia == true ? true : false;
+                        }
+                    );
+                }
 
+                return _saveCommand;
+            }
+        }
+        //=================================================================================================================================
         public ICommand ImportSocialCommand
         {
             get
@@ -1070,30 +1095,7 @@ namespace MCIFramework.ViewModels
 
                 return _importSocialCommand;
             }
-        }
-
-        public ICommand DownloadSocialCommand
-        {
-            get
-            {
-                if (_downloadSocialCommand == null)
-                {
-                    _downloadSocialCommand = new RelayCommand
-                    (
-                        param =>
-                        {
-                            DownloadWebWorksheet();
-                        },
-                        param =>
-                        {
-                            return IsSocialMedia == true ? true : false;
-                        }
-                    );
-                }
-
-                return _downloadSocialCommand;
-            }
-        }
+        }        
 
         public ICommand UploadWorksheetCommand
         {
@@ -1276,12 +1278,21 @@ namespace MCIFramework.ViewModels
 
         private void DownloadStrategyWorksheet()
         {
+            //CreateFolderAndCopyTemplate("strategy");
+            saveLocation("strategy");
 
+        }
+
+        private void DownloadSocialWorksheet()
+        {
+            //CreateFolderAndCopyTemplate("social");
+            saveLocation("social");
         }
 
         private void DownloadWebWorksheet()
         {
-
+            //CreateFolderAndCopyTemplate("web");
+            saveLocation("web");
         }
 
         private void ImportSocialMediaData()
@@ -1696,13 +1707,7 @@ namespace MCIFramework.ViewModels
         {
             using (ZipFile zip = new ZipFile())
             {                
-                try {
-
-                    //zip.AddDirectory(@zipFileToCreate);
-                    //zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
-                    //zip.Save(@destination + "\\MCI.zip");
-
-                    // Configure save file dialog box
+                try {                    
                     SaveFileDialog dlg = new SaveFileDialog();
 
                     //set default save location to mydocument
@@ -1726,10 +1731,7 @@ namespace MCIFramework.ViewModels
                         zip.AddDirectory(@zipFileToCreate);
                         zip.Comment = "This zip was created at " + System.DateTime.Now.ToString("G");
                         zip.Save(@selectpath + filename);
-
                     }
-
-
 
                 }
                 catch (Exception ex)
@@ -1737,8 +1739,7 @@ namespace MCIFramework.ViewModels
                     Log.LogError("AddToArchive", ex);
                 }
 
-            }
-        
+            }        
         
         }
         
@@ -1753,6 +1754,68 @@ namespace MCIFramework.ViewModels
         {
             return AllPropertiesValid;
         }
+
+        private void saveLocation(string fileType)
+        {
+            
+            string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Templates\\Worksheets\\";
+            //string pathNameXLS = pathName + assesNo + "\\xlsx\\";
+            string InputFileName = "";
+
+            if (fileType == "strategy")
+            {
+                InputFileName = "Strategy Assessment.xlsx";
+            }
+            if (fileType == "social")
+            {
+                InputFileName = "Social Media Assessment.xlsx";
+            }
+            if (fileType == "web")
+            {
+                InputFileName = "Website Assessment.xlsx";
+            }
+            string fileName = Path.Combine(pathName, InputFileName);
+
+            SaveFileDialog dlg = new SaveFileDialog();
+
+            //set default save location to mydocument
+            dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            dlg.FileName = InputFileName; // Default file name
+            dlg.Filter = "xlsx (.xlsx)|*.xlsx"; // Filter files by extension 
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results 
+            if (result == true)
+            {
+                // Save document                         
+                string dlgselectpath = Path.GetDirectoryName(dlg.FileName);
+                string dlgGetFileName = Path.GetFileName(dlg.FileName);
+                string dlgfilename = dlgselectpath + "\\" + dlgGetFileName;
+
+                // Will not overwrite if the destination file already exists.
+                File.Copy(Path.Combine(pathName, InputFileName), Path.Combine(dlgselectpath, dlgGetFileName));
+
+            }
+
+            using (ZipFile zip = new ZipFile())
+            {
+                try
+                {
+                    
+
+                }
+                catch (Exception ex)
+                {
+                    Log.LogError("saveLocation", ex);
+                }
+
+            }            
+            
+        }
+
 
         private void CreateFolderAndCopyTemplate(string fileType)
         {
