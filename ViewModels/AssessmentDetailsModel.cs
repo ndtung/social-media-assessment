@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Net;
 using Ionic.Zip;
+using System.Reflection;
 
 
 
@@ -1419,7 +1420,7 @@ namespace MCIFramework.ViewModels
             {
                 Tab1Message = "We encountered system error. Please try to save again";
                 Tab1MessageColor = "Red";
-                Log.LogError("SaveAndContinue", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -1552,9 +1553,9 @@ namespace MCIFramework.ViewModels
             }
             catch (Exception ex)
             {
-                Log.LogError("UploadWorksheet", ex);
                 Tab3Message = ex.Message;
                 Tab3MessageColor = "Red";
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
 
         }
@@ -1880,7 +1881,7 @@ namespace MCIFramework.ViewModels
 
                 catch (Exception ex)
                 {
-                    Log.LogError("DownloadReport", ex);
+                    Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                 }
                 finally
                 {
@@ -1932,7 +1933,7 @@ namespace MCIFramework.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Log.LogError("AddToArchive", ex);
+                    Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                 }
 
             }
@@ -1988,7 +1989,7 @@ namespace MCIFramework.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        Log.LogError("Failed to save from DB to Web worksheet", ex);
+                        Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                     }
                 }
 
@@ -2014,7 +2015,7 @@ namespace MCIFramework.ViewModels
 
             catch (Exception ex)
             {
-                Log.LogError("saveLocation", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
 
         }
@@ -2057,7 +2058,7 @@ namespace MCIFramework.ViewModels
             }
             catch (Exception ex)
             {
-                Log.LogError("CreateFolderAndCopyTemplate", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -2198,9 +2199,9 @@ namespace MCIFramework.ViewModels
                 myTransaction.Commit();
                 oledbConn.Close();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.LogError("Failed to update data to web worksheet", e);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -2214,9 +2215,9 @@ namespace MCIFramework.ViewModels
                     Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx"));
                 File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Social Media Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx"), true);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
         #endregion

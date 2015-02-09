@@ -13,6 +13,7 @@ using MCIFramework.Models;
 using System.Data.OleDb;
 using System.Data;
 using System.IO;
+using System.Reflection;
 
 namespace MCIFramework.Helper
 {
@@ -123,7 +124,7 @@ namespace MCIFramework.Helper
             }
             catch (Exception ex)
             {
-                Log.LogError("YoutubeImporter", ex);
+                Log.LogError(this.GetType().Name + " - " + System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 throw ex;
             }
 
@@ -156,10 +157,10 @@ namespace MCIFramework.Helper
                 myTransaction.Commit();
                 oledbConn.Close();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.LogError("SaveToExcelFailed", e);
-                throw e;
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
+                throw ex;
             }
         }
 

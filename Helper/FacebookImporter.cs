@@ -11,6 +11,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Data;
 using OfficeOpenXml;
+using System.Reflection;
 
 
 namespace MCIFramework.Helper
@@ -63,7 +64,7 @@ namespace MCIFramework.Helper
             }
             catch (Exception ex)
             {
-                Log.LogError("FacebookImporter", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                 throw ex;
             }
         }
