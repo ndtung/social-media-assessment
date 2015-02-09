@@ -7,11 +7,17 @@ using MCIFramework.Models;
 using Facebook;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Data.OleDb;
+using System.IO;
+using System.Data;
+using OfficeOpenXml;
+
 
 namespace MCIFramework.Helper
 {
     public class FacebookImporter
     {
+        private int _rowPerTime = 100;
         private int _totalLikes = 0;
         private int _totalComments = 0;
         private int _totalPosts = 0;
@@ -52,7 +58,8 @@ namespace MCIFramework.Helper
                 GetFirstReplyFromPage(actualPosts);
                 // Find photo albulms
                 SaveToDB(actualPosts);
-                SaveToExcel(actualPosts);
+                Database db = new Database();
+                SaveToExcel(db.facebookPostComments.Where(x => x.AssessmentId == _assessment.Id).ToList());
             }
             catch (Exception ex)
             {
@@ -73,7 +80,7 @@ namespace MCIFramework.Helper
         {
             List<FacebookPost> pagePosts = new List<FacebookPost>();
             // Getting all page posts after assessment start date
-            var statuses = _client.Get(_assessment.FacebookUsername+"/posts?fields=id,actions,message,shares,comments.summary(true),likes.summary(true)").ToString();
+            var statuses = _client.Get(_assessment.FacebookUsername + "/posts?fields=id,actions,message,shares,comments.summary(true),likes.summary(true)").ToString();
             FacebookPosts result = JsonConvert.DeserializeObject<FacebookPosts>(statuses);
             pagePosts.AddRange(result.data);
 
@@ -127,16 +134,16 @@ namespace MCIFramework.Helper
                         }
                         while (true && post.comments.data.Count < _maximumPostComment);// Get all maximum comments
                     }
-                    if (post.shares!=null)
+                    if (post.shares != null)
                         _totalShares += post.shares.count;
-                    if (post.likes!=null)
+                    if (post.likes != null)
                         _totalLikes += post.likes.data.Count;
-                    if (post.comments!=null)
+                    if (post.comments != null)
                         _totalComments += post.comments.data.Count;
                     post.comments.data.OrderBy(x => x.created_time);
                 }
             }
-            
+
         }
 
         private void GetFirstReplyFromPage(List<FacebookPost> posts)
@@ -171,7 +178,7 @@ namespace MCIFramework.Helper
                                 while (true);// Get all replies
                             }
                         }
-                        
+
                         //At this moment, all replies are stored in allReplies
                         var firstPageReply = allReplies.OrderBy(x => x.created_time).FirstOrDefault(x => x.from.id == _pageId);
                         if (firstPageReply != null)
@@ -189,6 +196,11 @@ namespace MCIFramework.Helper
             return DateTime.Parse(jsonDateTime, null, DateTimeStyles.RoundtripKind);
         }
 
+        private string ConvertToJson(DateTime time)
+        {
+            return time.ToUniversalTime().ToString(@"yyyy-MM-dd\Thh:mm:ss", CultureInfo.InvariantCulture);
+        }
+
         public SocialMediaStat GetDataToStore()
         {
             _socialMediaStat.FacebookComments = _totalComments;
@@ -199,17 +211,99 @@ namespace MCIFramework.Helper
             return _socialMediaStat;
         }
 
-        private void SaveToExcel(List<FacebookPost> posts)
+        private void SaveToExcel(List<FacebookPostComment> entries)
         {
+            string assesNo = _assessment.Id.ToString();
+            string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
+            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx");
 
+            string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=NO;\""))));
+            OleDbConnection oledbConn = new OleDbConnection(CnStr);
+            var existingFile = new FileInfo(fileName);
+            try
+            { // Write a certain number of entries, close, and open again to write to prevent excessive amount of data.
+                using (var package = new ExcelPackage(existingFile))
+                {
+                    // Get the work book in the file
+                    var workBook = package.Workbook;
+                    if (workBook != null)
+                    {
+                        if (workBook.Worksheets.Count > 0)
+                        {
+                            // Get the first row
+                            var currentWorksheet = workBook.Worksheets["7 Facebook raw data"];
+                            currentWorksheet.Cells[2, 1].Value = _socialMediaStat.TotalDays;
+                            currentWorksheet.Cells[2, 2].Value = _totalFans;
+                            currentWorksheet.Cells[2, 3].Value = _totalPosts;
+                            currentWorksheet.Cells[2, 4].Value = _totalLikes;
+                            currentWorksheet.Cells[2, 5].Value = _totalComments;
+                            currentWorksheet.Cells[2, 6].Value = _totalShares;
+                            package.Save();
+                        }
+                    }
+                }
+                int entryPostion = 0; 
+                int rowPosition = 4;
+                while (entryPostion < entries.Count)
+                {
+                    WriteFBCommentsPartial(entryPostion, rowPosition, entries, fileName);
+                    entryPostion += _rowPerTime;
+                    rowPosition += _rowPerTime;
+                }
+            }
+
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
+        private void WriteFBCommentsPartial(int entryNextPosition, int rowPostion, List<FacebookPostComment> entries, String fileName)
+        {
+            var existingFile = new FileInfo(fileName); 
+            using (var package = new ExcelPackage(existingFile))
+            {
+            // Get the work book in the file
+                var workBook = package.Workbook;
+                if (workBook != null)
+                {
+                    if (workBook.Worksheets.Count > 0)
+                    {
+                        var currentWorksheet = workBook.Worksheets["7 Facebook raw data"];
+                        for (int i = 0;i<_rowPerTime;i++)
+                        {
+                            int index = i+entryNextPosition;
+                            if (index < entries.Count)
+                            {
+                                FacebookPostComment entry = entries[index];
+                                currentWorksheet.Cells[rowPostion, 1].Value = entry.PostUrl;
+                                currentWorksheet.Cells[rowPostion, 2].Value = entry.Post;
+                                currentWorksheet.Cells[rowPostion, 3].Value = ConvertToJson(DateTime.Parse(entry.PostTimestamp));
+                                if (entry.PostComment != null)
+
+                                    currentWorksheet.Cells[rowPostion, 4].Value = entry.PostComment;
+                                if (entry.ResponseTime != null)
+                                {
+
+                                    currentWorksheet.Cells[rowPostion, 5].Value = entry.Response;
+                                    currentWorksheet.Cells[rowPostion, 6].Value = ConvertToJson(DateTime.Parse(entry.ResponseTime));
+                                }
+                            }
+                            else
+                            { break; }
+                            rowPostion++;
+                        }
+                        package.Save();
+                    }
+                }
+            }        
+        }
         private void SaveToDB(List<FacebookPost> posts)
         {
             Database context = new Database();
             // clear all existing postComment of this assessment
-            context.facebookPostComments.RemoveRange(context.facebookPostComments.Where(x=>x.AssessmentId == _assessment.Id));
-            foreach(FacebookPost post in posts)
+            context.facebookPostComments.RemoveRange(context.facebookPostComments.Where(x => x.AssessmentId == _assessment.Id));
+            foreach (FacebookPost post in posts)
             {
                 if (post.comments != null)
                 {
@@ -220,7 +314,7 @@ namespace MCIFramework.Helper
                         facebookPostComment.FacebookId = _pageId;
                         facebookPostComment.Post = post.message;
                         facebookPostComment.PostComment = comment.message;
-                        facebookPostComment.PostTimestamp = post.created_time;
+                        facebookPostComment.PostTimestamp = comment.created_time;
                         facebookPostComment.PostUrl = post.actions[0].link;
                         if (comment.first_reply != null)
                         {
@@ -243,7 +337,7 @@ namespace MCIFramework.Helper
             }
             context.SaveChanges();
         }
-       
+
     }
 
     public class FacebookPosts
@@ -254,16 +348,16 @@ namespace MCIFramework.Helper
 
     public class FacebookPost
     {
-        public string id{ get;set;}
-        public string message {get;set;}
+        public string id { get; set; }
+        public string message { get; set; }
         public FacebookComments comments { get; set; }
-        public FacebookLikes likes {get;set;}
-        public Share shares {get;set;}
+        public FacebookLikes likes { get; set; }
+        public Share shares { get; set; }
         public string created_time { get; set; }
         public string updated_time { get; set; }
         public List<Action> actions { get; set; }
     }
-    
+
     public class FacebookComments
     {
         public List<FacebookComment> data { get; set; }
@@ -287,7 +381,7 @@ namespace MCIFramework.Helper
         public LikePaging paging { get; set; }
         public Summary summary { get; set; }
     }
-    
+
     public class FacebokLike
     {
         public string id { get; set; }
@@ -303,7 +397,7 @@ namespace MCIFramework.Helper
     public class Paging
     {
         public string previous { get; set; }
-        public string next{ get; set;}
+        public string next { get; set; }
     }
 
     public class LikePaging
@@ -326,7 +420,7 @@ namespace MCIFramework.Helper
     public class FacebookPage
     {
         public string id { get; set; }
-        public int likes {get;set;}
+        public int likes { get; set; }
     }
 
     public class From

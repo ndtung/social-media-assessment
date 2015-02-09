@@ -14,7 +14,8 @@ namespace MCIFramework.ViewModels
         private ICommand _navigatedCommand;
         private Database _dbContext = new Database();
         private Uri _browserUri;
-        
+        private ICommand _cancelAuthCommand;
+
         public Uri BrowserUri
         {
             get { return _browserUri; }
@@ -39,6 +40,29 @@ namespace MCIFramework.ViewModels
             Messenger.Default.Register<Uri>(this, "BrowserChangedURL", MyCallbackMethod);
         }
 
+        public ICommand CancelAuthCommand
+        {
+            get
+            {
+                if (_cancelAuthCommand == null)
+                {
+                    _cancelAuthCommand = new RelayCommand
+                    (
+                        param =>
+                        {
+                            GoBackToAssessmentDetail();
+                        },
+                        param =>
+                        {
+                            return true;
+                        }
+                    );
+                }
+
+                return _cancelAuthCommand;
+            }
+        }
+
         private void MyCallbackMethod(Uri uri)
         {
             if (uri != null)
@@ -53,6 +77,12 @@ namespace MCIFramework.ViewModels
                 
             }
         }
+
+        private void GoBackToAssessmentDetail()
+        {
+            FBAuthenCancelGlobalEvent.Instance.Publish("Cancel");
+        }
+
         private void SaveToDB(string accessToken)
         {
             API tokenSetting = _dbContext.apis.Where(x => x.Name == "FBAccessToken").FirstOrDefault();

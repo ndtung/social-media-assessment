@@ -76,6 +76,23 @@ namespace MCIFramework
             get { return _event; }
         }
     }
+    
+    internal class NewAssessmentCreatedGlobalEvent : PubSubEvent<Assessment>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly NewAssessmentCreatedGlobalEvent _event;
+
+        static NewAssessmentCreatedGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<NewAssessmentCreatedGlobalEvent>();
+        }
+
+        public static NewAssessmentCreatedGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
 
     internal class FBAuthenGlobalEvent : PubSubEvent<Assessment>
     {
@@ -106,6 +123,23 @@ namespace MCIFramework
         }
 
         public static FBAuthenEndGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
+
+    internal class FBAuthenCancelGlobalEvent : PubSubEvent<String>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly FBAuthenCancelGlobalEvent _event;
+
+        static FBAuthenCancelGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<FBAuthenCancelGlobalEvent>();
+        }
+
+        public static FBAuthenCancelGlobalEvent Instance
         {
             get { return _event; }
         }

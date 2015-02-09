@@ -167,7 +167,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Completion Date" Binding="{Binding ReportGenerationDate}"  Width="150" MinWidth="70" SortDirection="Descending">
+                <DataGridTextColumn Header="Completion Date" Binding="{Binding ReportGenerationDate}"  Width="150" MinWidth="70" >
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -182,7 +182,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Created Date" Binding="{Binding CreatedDate}"  Width="150" MinWidth="70">
+                <DataGridTextColumn Header="Created Date" Binding="{Binding CreatedDate}"  Width="150" MinWidth="70" SortDirection="Ascending">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center" />

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using MCIFramework.Models;
 using System.Text.RegularExpressions;
 using LinqToTwitter;
+using System.Data.OleDb;
+using System.IO;
+using System.Data;
+using System.Globalization;
 
 namespace MCIFramework.Helper
 {
@@ -47,16 +51,17 @@ namespace MCIFramework.Helper
         {
             try
             {
-                List<Status> mentionTweets = GetAllTweetsMentioningUser(_twitterUsername);
-                List<Status> filteredMentionTweets = mentionTweets.Where(x => x.CreatedAt <= _assessment.EndDate && x.CreatedAt >= _assessment.StartDate).ToList();
+                List<Status> mentionTweets = GetMentionedTweet(_twitterUsername);
+               // List<Status> filteredMentionTweets = mentionTweets.Where(x => x.CreatedAt <= _assessment.EndDate && x.CreatedAt >= _assessment.StartDate).ToList();
 
                 List<Status> userTweets = GetAllTweetsOfuser(_twitterUsername);
                 List<Status> filteredUserTweets = userTweets.Where(x => x.CreatedAt <= _assessment.EndDate && x.CreatedAt >= _assessment.StartDate).ToList();
 
                 GetTwitterUserInfo(filteredUserTweets);
-                GetTotalRepliesToTweetsFromUser(filteredUserTweets,mentionTweets);
-                List<TwitterTweet> excelEntries = GetMentionedTweetsAndReplies(mentionTweets, filteredUserTweets);
-                SaveToDB(excelEntries);
+                //GetTotalRepliesToTweetsFromUser(filteredUserTweets,mentionTweets);
+                //List<TwitterTweet> excelEntries = GetMentionedTweetsAndReplies(mentionTweets, filteredUserTweets);
+                //SaveToDB(excelEntries);
+                //SaveToExcel(excelEntries);
                 
             }
             catch (Exception ex)
@@ -110,7 +115,7 @@ namespace MCIFramework.Helper
             return result;
         }
 
-        private List<Status> GetAllTweetsMentioningUser(string twitterUserName)
+        private List<Status> GetAll7DaysTweetsMentioningUser(string twitterUserName)
         {
             List<Status> result = new List<Status>();
 
@@ -156,6 +161,49 @@ namespace MCIFramework.Helper
                         break;
             }
             while (userStatusResponse[0].Statuses.Count != 0);
+            return result;
+        }
+
+        private List<Status> GetMentionedTweet(string twitterUserName)
+        {
+            List<Status> result = new List<Status>();
+
+            var userStatusResponse =
+                      from tweet in _twitterContext.Status
+                      where tweet.Type == StatusType.Mentions &&
+                      tweet.Count == StatusQueryCount &&
+                      tweet.ScreenName == twitterUserName
+                      select tweet;
+
+            result.AddRange(userStatusResponse.ToList());
+            if (result.Count != 0)
+            {
+                ulong maxID = userStatusResponse.ToList().Min(status => status.StatusID) - 1;
+                ulong sinceId = result[result.Count - 1].StatusID;
+                do
+                {
+
+                    userStatusResponse =
+                       (from tweet in _twitterContext.Status
+                        where tweet.Type == StatusType.Mentions &&
+                              tweet.ScreenName == twitterUserName &&
+                              tweet.Count == StatusQueryCount &&
+                              tweet.MaxID == maxID
+                        select tweet);
+
+
+                    if (userStatusResponse.ToList().Count > 0)
+                    {
+                        // first tweet processed on current query
+                        maxID = userStatusResponse.ToList().Min(status => status.StatusID) - 1;
+
+                        result.AddRange(userStatusResponse.ToList());
+                    }
+                    if (result[result.Count - 1].CreatedAt < _assessment.StartDate) // stop if tweets are created before assessment start datae
+                        break;
+                }
+                while (userStatusResponse.ToList().Count != 0);
+            }
             return result;
         }
 
@@ -231,6 +279,74 @@ namespace MCIFramework.Helper
             context.SaveChanges();
         }
 
+        private void SaveToExcel(List<TwitterTweet> entries)
+        {
+            string assesNo = _assessment.Id.ToString();
+            string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
+            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx");
+
+            string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=NO;\""))));
+            OleDbConnection oledbConn = new OleDbConnection(CnStr);
+            try
+            {
+                oledbConn.Open();
+                OleDbCommand command = oledbConn.CreateCommand();
+                string strSQL;
+
+
+                strSQL = "INSERT INTO [8 Twitter raw data$A1:F1] VALUES ( @1, @2, @3,  @4,  @5, @6)";
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@1", _socialMediaStat.TotalDays);
+                command.Parameters.AddWithValue("@2", _twitterFollowers);
+                command.Parameters.AddWithValue("@3", _twitterTweets);
+                command.Parameters.AddWithValue("@4", _twitterFavourites);
+                command.Parameters.AddWithValue("@5", _twitterReplies);
+                command.Parameters.AddWithValue("@6", _twitterRetweets);
+                command.CommandType = CommandType.Text;
+                command.CommandText = strSQL;
+                OleDbTransaction myTransaction = oledbConn.BeginTransaction();
+                command.Transaction = myTransaction;
+                command.ExecuteNonQuery();
+
+                int startTweetRow = 3;
+                foreach (TwitterTweet entry in entries)
+                {
+                    if (entry.Response != null)
+                    {
+                    command.CommandText = "INSERT INTO [8 Twitter raw data$A" + startTweetRow + ":F" + startTweetRow +
+                        "] VALUES (@1, @2, @3, @4, @5, @6)";
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@1", entry.Tweet);
+                        command.Parameters.AddWithValue("@2", entry.TweetUrl);
+                        command.Parameters.AddWithValue("@3", ConvertToJson((DateTime)entry.TweetTimestamp));
+                        command.Parameters.AddWithValue("@4", entry.Response);
+                        command.Parameters.AddWithValue("@5", entry.ResponseUrl);
+                        command.Parameters.AddWithValue("@6", ConvertToJson((DateTime)entry.ResponseTimestamp));
+                    }
+                    else
+                    {
+                        command.CommandText = "INSERT INTO [8 Twitter raw data$A" + startTweetRow + ":C" + startTweetRow +
+    "] VALUES (@1, @2, @3)";
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@1", entry.Tweet);
+                        command.Parameters.AddWithValue("@2", entry.TweetUrl);
+                        command.Parameters.AddWithValue("@3", ConvertToJson((DateTime)entry.TweetTimestamp));
+
+                    }
+                    command.ExecuteNonQuery();
+                    startTweetRow++;
+                }
+
+
+                myTransaction.Commit();
+                oledbConn.Close();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public SocialMediaStat GetDataToStore()
         {
             _socialMediaStat.TwitterFavourites = _twitterFavourites;
@@ -240,6 +356,11 @@ namespace MCIFramework.Helper
             _socialMediaStat.TwitterTweets = _twitterTweets;
 
             return _socialMediaStat;
+        }
+
+        private String ConvertToJson(DateTime time)
+        {
+            return time.ToString(@"ddd MMM dd HH:mm:ss yyyy", CultureInfo.InvariantCulture);
         }
     }
     

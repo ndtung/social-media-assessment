@@ -92,10 +92,10 @@ namespace MCIFramework.Models
                         validationResult = ValidateYoutubeId();
                         break;
                     case "StartDate":
-                        validationResult = ValidateDateTime(this.StartDate);
+                        validationResult = ValidateDateTime(this.StartDate)+ValidateStartTime(this.StartDate);
                         break;
                     case "EndDate":
-                        validationResult = ValidateDateTime(this.EndDate);
+                        validationResult = ValidateDateTime(this.EndDate) + ValidateEndTime(this.EndDate);
                         break;
                     case "WebUrl":
                         validationResult = ValidateUrl(this.WebUrl);
@@ -125,7 +125,7 @@ namespace MCIFramework.Models
                         validationResult = ValidateUrl(this.TopPageUrl3);
                         break;
                     case "TopPageUrl4":
-                        validationResult = ValidateUrl(this.TopPageUrl3);
+                        validationResult = ValidateUrl(this.TopPageUrl4);
                         break;
                     case "TopPageUrl5":
                         validationResult = ValidateUrl(this.TopPageUrl5);
@@ -288,6 +288,33 @@ namespace MCIFramework.Models
                 else
                     return String.Empty;
             }
+        }
+        private string ValidateEndTime(DateTime? endTime)
+        {
+            if (StartDate == null)
+                return String.Empty;
+            else
+            {
+                if (endTime < StartDate)
+                    return "End date must be after start date";
+                else
+                    return String.Empty;
+            }
+
+        }
+
+        private string ValidateStartTime(DateTime? startTime)
+        {
+            if (EndDate == null)
+                return String.Empty;
+            else
+            {
+                if (startTime > EndDate)
+                    return "Start date must be before end date";
+                else
+                    return String.Empty;
+            }
+
         }
 
 

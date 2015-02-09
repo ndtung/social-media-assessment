@@ -489,7 +489,7 @@ namespace MCIFramework.ViewModels
                     break;
             }
 
-            sortedAssessments = ascending ? sortedAssessments : new ObservableCollection<Assessment>(sortedAssessments.Reverse());
+            sortedAssessments = ascending ? allAssessments : new ObservableCollection<Assessment>(allAssessments.Reverse());
 
             ObservableCollection<Assessment> filteredAssessments = new ObservableCollection<Assessment>();
 

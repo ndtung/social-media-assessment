@@ -10,6 +10,9 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json.Linq;
 using MCIFramework.Models;
+using System.Data.OleDb;
+using System.Data;
+using System.IO;
 
 namespace MCIFramework.Helper
 {
@@ -39,7 +42,7 @@ namespace MCIFramework.Helper
 
         }
 
-        public Boolean Process()
+        public void Process()
         {
             try
             {
@@ -113,16 +116,52 @@ namespace MCIFramework.Helper
                         _subscribers += (ulong)channelResp.Items[0].Statistics.SubscriberCount;
 
                 }
-                return true;
+
+                // Save to Excel
+                SaveToExcel();
+               
             }
             catch (Exception ex)
             {
                 Log.LogError("YoutubeImporter", ex);
-                return false;
+                throw ex;
             }
 
         }
 
+
+        private void SaveToExcel()
+        {
+            string assesNo = _assessment.Id.ToString();
+            string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
+            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx");
+
+            string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=NO;\""))));
+            OleDbConnection oledbConn = new OleDbConnection(CnStr);
+            try
+            {
+                oledbConn.Open();
+                OleDbCommand command = oledbConn.CreateCommand();
+                string strSQL;
+
+                //Load the insert statement into the string variable, with all of the passed info
+                strSQL = "INSERT INTO [9 YouTube raw data$A1:F1] VALUES (" + _socialMediaStat.TotalDays + ", " + _subscribers + ", " + _totalVideos + ", "
+                    + _totalViews + "," + _totalLikes + "," + _totalDislikes+")";
+
+                OleDbTransaction myTransaction = oledbConn.BeginTransaction();
+                command.Transaction = myTransaction;
+                command.CommandText = strSQL;
+                command.ExecuteNonQuery();
+
+                myTransaction.Commit();
+                oledbConn.Close();
+            }
+            catch (Exception e)
+            {
+                Log.LogError("SaveToExcelFailed", e);
+                throw e;
+            }
+        }
 
         public SocialMediaStat GetDataToStore()
         {

@@ -204,10 +204,8 @@
   </data>
   <data name="assessment_tab_2_notes" xml:space="preserve">
     <value>Notes:
- 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
- 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</value>
+
+To retrieve Facebook data from Graph API, you might be asked to log in to Facebook.</value>
   </data>
   <data name="assessment_tab_3" xml:space="preserve">
     <value>Generate Report</value>
@@ -261,13 +259,13 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
     <value>Dashboard</value>
   </data>
   <data name="value_dashboard_page_default_row_count" xml:space="preserve">
-    <value>7</value>
+    <value>10</value>
   </data>
   <data name="value_dasboard_grid_default_sort_column" xml:space="preserve">
-    <value>ReportGenerationDate</value>
+    <value>CreatedDate</value>
   </data>
   <data name="value_dasboard_grid_default_sort_direction" xml:space="preserve">
-    <value>descending</value>
+    <value>ascending</value>
   </data>
   <data name="btn_tab_1_save_and_continue" xml:space="preserve">
     <value>Save and Continue</value>
@@ -278,7 +276,7 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
   <data name="_api_youtube_maximum_videos" xml:space="preserve">
     <value>500</value>
   </data>
-    <data name="homeroot_description" xml:space="preserve">
+  <data name="homeroot_description" xml:space="preserve">
     <value>Every metric is a score from 0-10. A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation's nature.</value>
   </data>
   <data name="homeroot_title" xml:space="preserve">

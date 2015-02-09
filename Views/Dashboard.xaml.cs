@@ -43,7 +43,7 @@ namespace MCIFramework.Views
             }
             else
             {
-                currentSortColumn = dataGrid.Columns.Where(c => c.Header.ToString() == "Completion Date").Single();
+                currentSortColumn = dataGrid.Columns.Where(c => c.Header.ToString() == "Created Date").Single();
             }
         }
  

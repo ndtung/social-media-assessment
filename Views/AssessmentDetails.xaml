@@ -75,7 +75,7 @@
 
 
 
-                        <Label Content="{x:Static prop:Resources.assessment_tab_1_fb_txtBox_lbl}" Margin="34,58,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="6" Grid.Row="8" Padding="0,5,5,5" Height="26" HorizontalAlignment="Left" Width="170"/>
+                        <Label Content="{x:Static prop:Resources.assessment_tab_1_fb_txtBox_lbl}" Margin="32,58,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="6" Grid.Row="8" Padding="0,5,5,5" Height="26" HorizontalAlignment="Left" Width="170"/>
 
                         <Label Content="From (dd/mm/yyyy)" HorizontalAlignment="Left" Margin="46,98,0,0" VerticalAlignment="Top" Grid.Column="8" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" Height="26" Width="120" RenderTransformOrigin="0.5,0.731"/>
                         <Label Content="To (dd/mm/yyyy)" HorizontalAlignment="Left" Margin="0,98,0,0" VerticalAlignment="Top" Grid.Column="9" Grid.Row="8" Padding="0,5,5,5" UseLayoutRounding="True" RenderTransformOrigin="0.444,0.885" Height="26" Width="120"/>
@@ -164,7 +164,7 @@
                     <Label Content="{Binding Tab2TwitterMessage}" Foreground="{Binding Tab2TwitterMessageColor}"  HorizontalAlignment="Center" Margin="0,32,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"  FontSize="13" FontFamily="Arial"/>
                     <Button Content="{x:Static prop:Resources.btn_tab_2_download_column_1}" Command="{Binding DownloadStrategyCommand}"  IsEnabled="{Binding IsStrategy}" Style="{StaticResource BlueButton}" HorizontalAlignment="Center" Margin="0,46,0,0" Grid.Row="1" VerticalAlignment="Top" Width="216" Height="59" BorderBrush="{x:Null}" Foreground="White"/>
                     <Button Content="{x:Static prop:Resources.btn_tab_2_import_column_2}" Command="{Binding ImportSocialCommand}" IsEnabled="{Binding IsImportSocialMediaEnabled}" Style="{StaticResource BlueButton}" HorizontalAlignment="Center" Margin="0,46,0,0" Grid.Row="1" VerticalAlignment="Top" Width="216" Height="59" Grid.Column="1" Foreground="White" BorderBrush="{x:Null}"/>
-                    <Button Content="{x:Static prop:Resources.btn_tab_2_download_column_3}" Command="{Binding DownloadWebCommand}" IsEnabled="{Binding IsWeb}" Style="{StaticResource BlueButton}" HorizontalAlignment="Center" Margin="0,46,0,0" Grid.Row="1" VerticalAlignment="Top" Width="216" Height="59" Grid.Column="2" Foreground="White" BorderBrush="{x:Null}"/>
+                    <Button Content="{x:Static prop:Resources.btn_tab_2_download_column_3}" Command="{Binding DownloadWebWorksheetCommand}" IsEnabled="{Binding IsWeb}" Style="{StaticResource BlueButton}" HorizontalAlignment="Center" Margin="0,46,0,0" Grid.Row="1" VerticalAlignment="Top" Width="216" Height="59" Grid.Column="2" Foreground="White" BorderBrush="{x:Null}"/>
                     <Button Content="{x:Static prop:Resources.btn_tab_2_download_column_2}" Command="{Binding DownloadSocialCommand}" IsEnabled="{Binding IsDownloadSocialMedialEnabled}" Style="{StaticResource GreenButton}" HorizontalAlignment="Center" Margin="0,52,0,0" Grid.Row="2" VerticalAlignment="Top" Width="216" Height="41" Grid.Column="1" Grid.RowSpan="2" UseLayoutRounding="True" BorderBrush="{x:Null}" Foreground="White"/>
                     <Line Stroke="Black"
                     	X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
@@ -192,21 +192,21 @@
                     <Line Stroke="Black"
                     	X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
                     	StrokeDashArray="1 1" StrokeThickness="1" Grid.ColumnSpan="2" Margin="48,289,48,0" Grid.Row="3" Opacity="0.5" Height="46" VerticalAlignment="Top" Grid.RowSpan="2" />
-                    <TextBox Name= "txtStrategy" Text="{Binding LocationStrategy}" HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
-                    <TextBox Name= "txtSocial" Text="{Binding LocationSocial}" HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
-                    <TextBox Name= "txtWeb" Text="{Binding LocationWeb}" HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtStrategy" Text="{Binding LocationStrategy}" IsEnabled="{Binding IsStrategy}" HorizontalAlignment="Left" Height="23" Margin="48,40,0,0" Grid.Row="3" TextWrapping="NoWrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtSocial" Text="{Binding LocationSocial}" IsEnabled="{Binding IsSocialMedia}" HorizontalAlignment="Left" Height="23" Margin="48,100,0,0" Grid.Row="3" TextWrapping="NoWrap" VerticalAlignment="Top" Width="258"/>
+                    <TextBox Name= "txtWeb" Text="{Binding LocationWeb}" IsEnabled="{Binding IsWeb}" HorizontalAlignment="Left" Height="23" Margin="48,165,0,0" Grid.Row="3" TextWrapping="NoWrap" VerticalAlignment="Top" Width="258"/>
 
-                    <Button Content="Browse" 
+                    <Button Content="Browse" IsEnabled="{Binding IsStrategy}"
                             Command="{Binding browseStrategyCommand}"
                             HorizontalAlignment="Left" Margin="331,41,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Strategy Assessment.xlsx"  />
 
-                    <Button Content="Browse" 
+                    <Button Content="Browse"  IsEnabled="{Binding IsSocialMedia}"
                             Command="{Binding browseSocialCommand}" 
                             HorizontalAlignment="Left" Margin="331,101,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Social Media Assessment.xlsx"/>
 
-                    <Button Content="Browse" 
+                    <Button Content="Browse"  IsEnabled="{Binding IsWeb}"
                             Command="{Binding browseWebCommand}" 
                             HorizontalAlignment="Left" Margin="331,166,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" 
                             ToolTip="Browse Website Assessment.xlsx"/>
@@ -219,7 +219,10 @@
                             Command="{Binding DownloadReportCommand}" 
                             ToolTip="Download generated report"/>
 
-                    <Label Content="{Binding Tab3Message}" Foreground="{Binding Tab3MessageColor}" Margin="234,245,5,0" VerticalAlignment="Top"  Grid.Row="3" Padding="0,5,5,5" UseLayoutRounding="True" Height="33"/>
+                    <TextBlock Text="{Binding Tab3Message}" Foreground="{Binding Tab3MessageColor}"
+                           Margin="234,231,48,0" VerticalAlignment="Top"  
+                           Grid.Row="3" Grid.ColumnSpan="2" Padding="5,5,5,0" UseLayoutRounding="True" Height="41"
+                           TextWrapping="Wrap" />
 
 
                     <Label Content="{x:Static prop:Resources.assessment_tab_3_row3_titlle}" HorizontalAlignment="Left" Margin="48,139,0,0" Grid.Row="3" VerticalAlignment="Top"/>

@@ -34,6 +34,8 @@ namespace MCIFramework.ViewModels
             GenerateReportGlobalEvent.Instance.Subscribe(GenerateReportViewModel);
             FBAuthenGlobalEvent.Instance.Subscribe(ToFBAuthenViewModel);
             FBAuthenEndGlobalEvent.Instance.Subscribe(FBAuthenEnd);
+            NewAssessmentCreatedGlobalEvent.Instance.Subscribe(NewAssessmentCreated);
+            FBAuthenCancelGlobalEvent.Instance.Subscribe(AuthenCancel);
             // Set starting page
             CurrentPageViewModel = PageViewModels[0];
         }
@@ -97,8 +99,10 @@ namespace MCIFramework.ViewModels
 
         #endregion
 
+        #region Listening to Global Events
         private void OpenNewAssessmentViewModel(string fileName)
         {
+            PageViewModels[1] = new AssessmentDetailsModel();
             CurrentPageViewModel = PageViewModels[1];
         }
 
@@ -131,6 +135,22 @@ namespace MCIFramework.ViewModels
             CurrentPageViewModel = PageViewModels[1];
             //PageViewModels.Remove(PageViewModels[2]);
         }
+
+        private void NewAssessmentCreated(Assessment assessment)
+        {
+            PageViewModels[1] = new AssessmentDetailsModel(assessment.Id, 1);
+            CurrentPageViewModel = PageViewModels[1];
+        }
+
+        private void AuthenCancel(String msg)
+        {
+            if (msg == "Cancel")
+            {
+                CurrentPageViewModel = PageViewModels[1];
+            }
+        }
+        #endregion
     }
 }
 
+ 
