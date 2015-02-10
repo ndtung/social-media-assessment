@@ -144,4 +144,56 @@ namespace MCIFramework
             get { return _event; }
         }
     }
+
+
+    internal class TwitterAuthenGlobalEvent : PubSubEvent<Assessment>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly TwitterAuthenGlobalEvent _event;
+
+        static TwitterAuthenGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<TwitterAuthenGlobalEvent>();
+        }
+
+        public static TwitterAuthenGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
+
+    internal class TwitterAuthenEndGlobalEvent : PubSubEvent<String>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly TwitterAuthenEndGlobalEvent _event;
+
+        static TwitterAuthenEndGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<TwitterAuthenEndGlobalEvent>();
+        }
+
+        public static TwitterAuthenEndGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
+
+    internal class TwitterAuthenCancelGlobalEvent : PubSubEvent<String>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly TwitterAuthenCancelGlobalEvent _event;
+
+        static TwitterAuthenCancelGlobalEvent()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<TwitterAuthenCancelGlobalEvent>();
+        }
+
+        public static TwitterAuthenCancelGlobalEvent Instance
+        {
+            get { return _event; }
+        }
+    }
 }

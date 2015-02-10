@@ -27,6 +27,7 @@ namespace MCIFramework.ViewModels
             PageViewModels.Add(new DashboardModel());
             PageViewModels.Add(new AssessmentDetailsModel());
             PageViewModels.Add(new FBAuthenticationModel());
+            PageViewModels.Add(new TwitterAuthenticationModel());
 
             CreateNewAssessmentGlobalEvent.Instance.Subscribe(OpenNewAssessmentViewModel);
             ToDashboardGlobalEvent.Instance.Subscribe(ToDashboardViewModel);
@@ -36,6 +37,10 @@ namespace MCIFramework.ViewModels
             FBAuthenEndGlobalEvent.Instance.Subscribe(FBAuthenEnd);
             NewAssessmentCreatedGlobalEvent.Instance.Subscribe(NewAssessmentCreated);
             FBAuthenCancelGlobalEvent.Instance.Subscribe(AuthenCancel);
+
+            TwitterAuthenGlobalEvent.Instance.Subscribe(ToTwitterAuthenViewModel);
+            TwitterAuthenEndGlobalEvent.Instance.Subscribe(TwitterAuthenEnd);
+            TwitterAuthenCancelGlobalEvent.Instance.Subscribe(TwitterAuthenCancel);
             // Set starting page
             CurrentPageViewModel = PageViewModels[0];
         }
@@ -126,13 +131,12 @@ namespace MCIFramework.ViewModels
         private void ToFBAuthenViewModel(Assessment assessment)
         {
             // Check if access token is still valid
-               
-                CurrentPageViewModel = PageViewModels[2];
+            CurrentPageViewModel = PageViewModels[2];
         }
 
         private void FBAuthenEnd(String msg)
         {
-            CurrentPageViewModel = PageViewModels[1];
+            //CurrentPageViewModel = PageViewModels[1];
             //PageViewModels.Remove(PageViewModels[2]);
         }
 
@@ -149,6 +153,26 @@ namespace MCIFramework.ViewModels
                 CurrentPageViewModel = PageViewModels[1];
             }
         }
+
+        private void ToTwitterAuthenViewModel(Assessment assessment)
+        {
+            PageViewModels[3] = new TwitterAuthenticationModel();
+            CurrentPageViewModel = PageViewModels[3];
+        }
+
+        private void TwitterAuthenEnd(String msg)
+        {
+            CurrentPageViewModel = PageViewModels[1];
+        }
+        
+        private void TwitterAuthenCancel(String msg)
+        {
+            if (msg == "Cancel")
+            {
+                CurrentPageViewModel = PageViewModels[1];
+            }
+        }
+
         #endregion
     }
 }

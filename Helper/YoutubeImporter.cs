@@ -31,15 +31,21 @@ namespace MCIFramework.Helper
 
         public YoutubeImporter(Assessment assessment, SocialMediaStat socialMediaStat)
         {
-            _assessment = assessment;
-            _socialMediaStat = socialMediaStat;
-            _channelId = assessment.YoutubeId;
-            _youtube = new YouTubeService(new BaseClientService.Initializer()
+            try
             {
-                ApplicationName = "rrmciframework",
-                ApiKey = Properties.Resources._api_youtube_api_key,
-            });
+                _assessment = assessment;
+                _socialMediaStat = socialMediaStat;
+                _channelId = assessment.YoutubeId;
+                _youtube = new YouTubeService(new BaseClientService.Initializer()
+                {
+                    ApplicationName = "rrmciframework",
+                    ApiKey = Properties.Resources._api_youtube_api_key,
+                });
+            }
+            catch (Exception e)
+            {
 
+            }
         }
 
         public void Process()

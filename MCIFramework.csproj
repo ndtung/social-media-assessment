@@ -87,6 +87,12 @@
     <Reference Include="Facebook">
       <HintPath>packages\Facebook.6.8.0\lib\net45\Facebook.dll</HintPath>
     </Reference>
+    <Reference Include="Hammock">
+      <HintPath>packages\TweetSharp-Unofficial.2.3.1.2\lib\4.0\Hammock.dll</HintPath>
+    </Reference>
+    <Reference Include="Hammock.ClientProfile">
+      <HintPath>packages\TweetSharp.2.3.1\lib\4.0\Hammock.ClientProfile.dll</HintPath>
+    </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
@@ -171,7 +177,7 @@
     <Reference Include="Microsoft.VisualBasic">
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -243,6 +249,10 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
       <Private>True</Private>
     </Reference>
+    <Reference Include="TweetSharp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\TweetSharp-Unofficial.2.3.1.2\lib\4.0\TweetSharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase">
       <Private>True</Private>
     </Reference>
@@ -261,12 +271,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\OAuthHelper.cs" />
+    <Compile Include="Helper\OAuthUtility.cs" />
     <Compile Include="ViewModels\FBAuthenticationModel.cs" />
+    <Compile Include="ViewModels\TwitterAuthenticationModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ViewModel\MainViewModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\ViewModelLocator.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\TwitterAuthentication.xaml.cs">
+      <DependentUpon>TwitterAuthentication.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FBAuthentication.xaml.cs">
       <DependentUpon>FBAuthentication.xaml</DependentUpon>
@@ -279,6 +297,10 @@
     <Page Include="Views\AssessmentDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TwitterAuthentication.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dashboard.xaml">
       <Generator>MSBuild:Compile</Generator>
