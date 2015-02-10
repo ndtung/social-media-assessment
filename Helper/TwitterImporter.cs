@@ -31,21 +31,31 @@ namespace MCIFramework.Helper
 
         public TwitterImporter(Assessment assessment, SocialMediaStat socialMediaStat)
         {
-            _assessment = assessment;
-            _socialMediaStat = socialMediaStat;
-            _twitterUsername = _assessment.TwitterUsername;
-            var authorizer = new SingleUserAuthorizer
+            try
             {
-                CredentialStore = new InMemoryCredentialStore
+                _assessment = assessment;
+                _socialMediaStat = socialMediaStat;
+                _twitterUsername = _assessment.TwitterUsername;
+                Database db = new Database();
+                API token = db.apis.Where(x => x.Name == "TwitterToken").FirstOrDefault();
+                API tokenSecret = db.apis.Where(x => x.Name == "TwitterTokenSecret").FirstOrDefault();
+                var authorizer = new SingleUserAuthorizer
                 {
-                    ConsumerKey = Properties.Resources._api_twitter_consumer_key,
-                    ConsumerSecret = Properties.Resources._api_twitter_consumer_secret,
-                    OAuthToken = Properties.Resources._api_twitter_access_token,
-                    OAuthTokenSecret = Properties.Resources._api_twitter_access_token_secret
-                }
-            };
+                    CredentialStore = new InMemoryCredentialStore
+                    {
+                        ConsumerKey = Properties.Resources._api_twitter_consumer_key,
+                        ConsumerSecret = Properties.Resources._api_twitter_consumer_secret,
+                        OAuthToken = token.Value,
+                        OAuthTokenSecret = tokenSecret.Value
+                    }
+                };
 
-            _twitterContext = new TwitterContext(authorizer);
+                _twitterContext = new TwitterContext(authorizer);
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         public void Process()
@@ -53,16 +63,16 @@ namespace MCIFramework.Helper
             try
             {
                 List<Status> mentionTweets = GetMentionedTweet(_twitterUsername);
-               // List<Status> filteredMentionTweets = mentionTweets.Where(x => x.CreatedAt <= _assessment.EndDate && x.CreatedAt >= _assessment.StartDate).ToList();
+                List<Status> filteredMentionTweets = mentionTweets.Where(x => x.CreatedAt <= _assessment.EndDate && x.CreatedAt >= _assessment.StartDate).ToList();
 
                 List<Status> userTweets = GetAllTweetsOfuser(_twitterUsername);
                 List<Status> filteredUserTweets = userTweets.Where(x => x.CreatedAt <= _assessment.EndDate && x.CreatedAt >= _assessment.StartDate).ToList();
 
                 GetTwitterUserInfo(filteredUserTweets);
-                //GetTotalRepliesToTweetsFromUser(filteredUserTweets,mentionTweets);
-                //List<TwitterTweet> excelEntries = GetMentionedTweetsAndReplies(mentionTweets, filteredUserTweets);
-                //SaveToDB(excelEntries);
-                //SaveToExcel(excelEntries);
+                GetTotalRepliesToTweetsFromUser(filteredUserTweets,mentionTweets);
+                List<TwitterTweet> excelEntries = GetMentionedTweetsAndReplies(mentionTweets, filteredUserTweets);
+                SaveToDB(excelEntries);
+                SaveToExcel(excelEntries);
                 
             }
             catch (Exception ex)
@@ -172,8 +182,8 @@ namespace MCIFramework.Helper
             var userStatusResponse =
                       from tweet in _twitterContext.Status
                       where tweet.Type == StatusType.Mentions &&
-                      tweet.Count == StatusQueryCount &&
-                      tweet.ScreenName == twitterUserName
+                      tweet.Count == StatusQueryCount 
+                      
                       select tweet;
 
             result.AddRange(userStatusResponse.ToList());
@@ -187,7 +197,6 @@ namespace MCIFramework.Helper
                     userStatusResponse =
                        (from tweet in _twitterContext.Status
                         where tweet.Type == StatusType.Mentions &&
-                              tweet.ScreenName == twitterUserName &&
                               tweet.Count == StatusQueryCount &&
                               tweet.MaxID == maxID
                         select tweet);

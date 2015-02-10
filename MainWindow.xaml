@@ -17,6 +17,9 @@
         <DataTemplate DataType="{x:Type viewmodel:FBAuthenticationModel}">
             <view:FBAuthentication />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:TwitterAuthenticationModel}">
+            <view:TwitterAuthentication />
+        </DataTemplate>
 
     </Window.Resources>
     <DockPanel>

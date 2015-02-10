@@ -31,21 +31,28 @@ namespace MCIFramework.Helper
         private int _maximumPostComment = Int32.Parse(Properties.Resources._api_facebook_maximum_comments_to_retrieve_of_a_post);
         public FacebookImporter(Assessment assessment, SocialMediaStat socialMediaStat)
         {
-            _assessment = assessment;
-            _socialMediaStat = socialMediaStat;
-            string accesstoken;
-            Database db = new Database();
-            var access = db.apis.Where(x => x.Name == "FBAccessToken").FirstOrDefault();
-            if (access != null)
+            try
             {
-                accesstoken = access.Value;
-                _client = new FacebookClient(accesstoken);
-                _client.AppId = Properties.Resources._api_facebook_app_id;
-                _client.AppSecret = Properties.Resources._api_facebook_app_secret;
+                _assessment = assessment;
+                _socialMediaStat = socialMediaStat;
+                string accesstoken;
+                Database db = new Database();
+                var access = db.apis.Where(x => x.Name == "FBAccessToken").FirstOrDefault();
+                if (access != null)
+                {
+                    accesstoken = access.Value;
+                    _client = new FacebookClient(accesstoken);
+                    _client.AppId = Properties.Resources._api_facebook_app_id;
+                    _client.AppSecret = Properties.Resources._api_facebook_app_secret;
+                }
+                else
+                {
+                    _client = new FacebookClient();
+                }
             }
-            else
+            catch (Exception e)
             {
-                _client = new FacebookClient();
+
             }
         }
 

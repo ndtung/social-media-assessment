@@ -32,9 +32,11 @@ namespace MCIFramework.ViewModels
         private SocialMediaStat _socialMediaStat = new SocialMediaStat();
         private Dictionary<string, bool> _validProperties;
         private bool _allPropertiesValid = false;
+        
         private Boolean _isNewAssessment;
         private Boolean _isDownloadSocialMedialEnabled;
         private Boolean _isImportSocialMedialEnabled;
+        
         private String _tab1Message;
         private String _tab1MessageColor;
         private String _tab3Message;
@@ -72,6 +74,8 @@ namespace MCIFramework.ViewModels
         private string _locationSocial;
         private string _locationWeb;
 
+        private Boolean _facebookAuthenCompleted;
+        private Boolean _twiterAuthenCompleted;
 
         #region Constructors
         /// <summary>
@@ -82,6 +86,11 @@ namespace MCIFramework.ViewModels
         public AssessmentDetailsModel(int assessmentID, int tab)
         {
             FBAuthenEndGlobalEvent.Instance.Subscribe(FBAuthenEnd);
+            FBAuthenCancelGlobalEvent.Instance.Subscribe(AuthenCancel);
+
+            TwitterAuthenEndGlobalEvent.Instance.Subscribe(TwitterAuthenEnd);
+            TwitterAuthenCancelGlobalEvent.Instance.Subscribe(TwitterAuthenCancel);
+
             _youtubeWorker.DoWork += youtubeWorker_DoWork;
             _youtubeWorker.RunWorkerCompleted += youtubeWorker_RunWorkerCompleted;
             _facebookWorker.DoWork += facebookWorker_DoWork;
@@ -91,7 +100,7 @@ namespace MCIFramework.ViewModels
 
             var item = _context.assessments.FirstOrDefault(c => c.Id == assessmentID);
             this._validProperties = new Dictionary<string, bool>();
-            FBAuthenCancelGlobalEvent.Instance.Subscribe(AuthenCancel);
+     
             IsNewAssessment = false;
             DefaultTab = tab;
             CreateNewAssessmentTitle = Visibility.Hidden;
@@ -267,6 +276,7 @@ namespace MCIFramework.ViewModels
                 }
             }
         }
+
         public string Organisation
         {
             get { return _assessment.Organisation; }
@@ -1454,33 +1464,55 @@ namespace MCIFramework.ViewModels
                 _socialMediaStat.AssessmentId = _assessment.Id;
                 TimeSpan timeSpan = (DateTime)_assessment.EndDate - (DateTime)_assessment.StartDate;
                 _socialMediaStat.TotalDays = timeSpan.Days;
-                CreateFolderAndCopyTemplate();
-                if (IsYoutube)
+                if (!IsFacebook && !IsTwitter && !IsYoutube)
                 {
-                    _youtubeWorker.RunWorkerAsync();
-
+                    Tab2FacebookMessage = "Please select at least one social media platform";
+                    Tab2FacebookMessageColor = "Red";
+                    IsImportSocialMediaEnabled = true;
                 }
                 else
                 {
-                    if (IsFacebook)
-                    {
-                        FBAuthenGlobalEvent.Instance.Publish(_assessment);
-
-                    }
-                    else
-                    {
-                        if (IsTwitter)
-                            _twitterWorker.RunWorkerAsync();
-                        else
-                        {
-                            Tab2FacebookMessage = "Please select at least one social media platform";
-                            Tab2FacebookMessageColor = "Red";
-                            IsImportSocialMediaEnabled = true;
-                        }
-                    }
+                    CreateFolderAndCopyTemplate();
+                    RunAuthenticationProcess();
                     
                 }
+            }
+        }
 
+        private void RunAuthenticationProcess()
+        {
+            if (IsFacebook)
+                FBAuthenGlobalEvent.Instance.Publish(_assessment);
+            else
+            {
+                if (IsTwitter)
+                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+                else
+                {
+                    if (IsYoutube)
+                        StartProcessing();
+                }
+            }
+        }
+
+        private void StartProcessing()
+        {
+            // If youtube is selected, run Youtube assessment, facebook and twitter run will be triggered on youtubeworker_RunWorkerCompleted
+            IsDownloadSocialMedialEnabled = false;
+            IsImportSocialMediaEnabled = false;
+            if (IsYoutube)
+            {
+                _youtubeWorker.RunWorkerAsync();
+            }
+            else
+            {
+                if (IsFacebook && _facebookAuthenCompleted)
+                    _facebookWorker.RunWorkerAsync();
+                else
+                {
+                    if (IsTwitter && _twiterAuthenCompleted)
+                        _twitterWorker.RunWorkerAsync();
+                }
             }
         }
 
@@ -1605,9 +1637,6 @@ namespace MCIFramework.ViewModels
             }
             Tab3Message = "";
         }
-
-
-
 
         private void DownloadReport()
         {
@@ -1940,8 +1969,6 @@ namespace MCIFramework.ViewModels
 
         }
 
-
-
         private void ToDashboard()
         {
             ToDashboardGlobalEvent.Instance.Publish("ToDashboard");
@@ -2254,11 +2281,12 @@ namespace MCIFramework.ViewModels
                 Tab2YoutubeMessage = "Failed to retrieve Youtube data. Please try again";
                 Tab2YoutubeMessageColor = "Red";
             }
-            if (IsFacebook)
-                FBAuthenGlobalEvent.Instance.Publish(_assessment);
+            if (IsFacebook && _facebookAuthenCompleted)
+                _facebookWorker.RunWorkerAsync();
+
             else
             {
-                if (IsTwitter)
+                if (IsTwitter && _twiterAuthenCompleted)
                     _twitterWorker.RunWorkerAsync();
                 else// No Facebook, no Twitter
                 {
@@ -2302,7 +2330,7 @@ namespace MCIFramework.ViewModels
                 Tab2FacebookMessageColor = "Red";
             }
 
-            if (IsTwitter)
+            if (IsTwitter && _twiterAuthenCompleted)
                 _twitterWorker.RunWorkerAsync();
             else// no Twitter
             {
@@ -2362,7 +2390,11 @@ namespace MCIFramework.ViewModels
             {
                 Tab2FacebookMessage = msg;
                 Tab2FacebookMessageColor = "Green";
-                _facebookWorker.RunWorkerAsync();
+                _facebookAuthenCompleted = true;
+                if (IsTwitter)
+                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+                else
+                    StartProcessing();
             }
             else
             {
@@ -2373,9 +2405,52 @@ namespace MCIFramework.ViewModels
 
         private void AuthenCancel(string msg)
         {
-            if (IsSocialMedia)
-                IsImportSocialMediaEnabled = true;
+            if (msg == "Cancel")
+            {
+                Tab2FacebookMessage = "FB Authentication cancelled";
+                Tab2FacebookMessageColor = "Red";
+                _facebookAuthenCompleted = false;
+                if (IsTwitter)
+                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+                else
+                    StartProcessing();
+            }
+            else
+            {
+                Tab2FacebookMessage = "FB Authentication failed. Please try again";
+                Tab2FacebookMessageColor = "Red";
+                _facebookAuthenCompleted = false;
+                
+            }
             
+        }
+
+        private void TwitterAuthenEnd(string msg)
+        {
+            if (msg == "Twitter Authentication completed")
+            {
+                Tab2TwitterMessage = msg;
+                Tab2TwitterMessageColor = "Green";
+                _twiterAuthenCompleted = true;
+               
+            }
+            else
+            {
+                Tab2TwitterMessage = "Twitter Authentication failed. Please try again";
+                Tab2TwitterMessageColor = "Red";
+                _twiterAuthenCompleted = false;
+            }
+            StartProcessing();
+        }
+        private void TwitterAuthenCancel(string msg)
+        {
+            if (msg == "Cancel")
+            {
+                Tab2TwitterMessage = "Twitter Authentication cancelled";
+                Tab2TwitterMessageColor = "Red";
+                _twiterAuthenCompleted = false;
+                StartProcessing();
+            }
         }
         #endregion
     }

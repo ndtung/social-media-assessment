@@ -423,7 +423,11 @@ namespace MCIFramework.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Notes:
         ///
-        ///To retrieve Facebook data from Graph API, you might be asked to log in to Facebook..
+        ///Clicking Import Social Media button will regenerate a new Excel sheet. Previous assessments will be overwritten.
+        ///
+        ///To retrieve Facebook data, you might be asked to login to Facebook. Please use an authorised account to login.
+        ///
+        ///To retrieve Twitter data of an account, please grant MCIFramework access to that account by logging in and entering the one-time PIN number..
         /// </summary>
         public static string assessment_tab_2_notes {
             get {
