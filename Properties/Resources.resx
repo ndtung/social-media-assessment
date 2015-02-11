@@ -316,4 +316,103 @@ To retrieve Twitter data of an account, please grant MCIFramework access to that
   <data name="_api_twitter_status_query_max_count" xml:space="preserve">
     <value>200</value>
   </data>
+  <data name="assessment_tab_2_fb_auth_failed" xml:space="preserve">
+    <value>Facebook Authentication failed.</value>
+  </data>
+  <data name="assessment_tab_2_fb_failed" xml:space="preserve">
+    <value>Failed to retrieve Facebook data. Please try again</value>
+  </data>
+  <data name="assessment_tab_2_fb_successful" xml:space="preserve">
+    <value>Facebook data retrieved successfully</value>
+  </data>
+  <data name="assessment_tab_2_processing_fb" xml:space="preserve">
+    <value>Processing Facebook data</value>
+  </data>
+  <data name="assessment_tab_2_processing_twitter" xml:space="preserve">
+    <value>Processing Twitter data</value>
+  </data>
+  <data name="assessment_tab_2_processing_youtube" xml:space="preserve">
+    <value>Processing Youtube data</value>
+  </data>
+  <data name="assessment_tab_2_twitter_auth_failed" xml:space="preserve">
+    <value>TwitterAuthentication failed.</value>
+  </data>
+  <data name="assessment_tab_2_twitter_failed" xml:space="preserve">
+    <value>Failed to retrieve Twitter data. Please try again</value>
+  </data>
+  <data name="assessment_tab_2_twitter_successful" xml:space="preserve">
+    <value>Twitter data retrieved successfully</value>
+  </data>
+  <data name="assessment_tab_2_unable_to_save" xml:space="preserve">
+    <value>Unable to save result to Excel file. It is being used by another proces</value>
+  </data>
+  <data name="assessment_tab_2_youtube_failed" xml:space="preserve">
+    <value>Failed to retrieve Youtube data. Please try again</value>
+  </data>
+  <data name="assessment_tab_2_youtube_successful" xml:space="preserve">
+    <value>Youtube data retrieved successfully</value>
+  </data>
+  <data name="assessment_tab_3_select_required_files" xml:space="preserve">
+    <value>Please select the required files</value>
+  </data>
+  <data name="assessment_tab_3_upload_complete" xml:space="preserve">
+    <value>Upload is completed !</value>
+  </data>
+  <data name="assessment_twitter_auth_provide_pin" xml:space="preserve">
+    <value>Twitter PIN </value>
+  </data>
+  <data name="confirm_at_least_one_platform" xml:space="preserve">
+    <value>Please select at least one social media platform.</value>
+  </data>
+  <data name="confirm_delete_assessment" xml:space="preserve">
+    <value>Are you sure you want to delete the assessment?</value>
+  </data>
+  <data name="confirm_delete_assessment_confirm" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="message_twiiter_auth_completed" xml:space="preserve">
+    <value>Twitter Authentication completed</value>
+  </data>
+  <data name="message_twiiter_auth_failed" xml:space="preserve">
+    <value>Twitter Authentication failed</value>
+  </data>
+  <data name="model_validation_blank_field" xml:space="preserve">
+    <value>Field cannot be blank.</value>
+  </data>
+  <data name="model_validation_end_date" xml:space="preserve">
+    <value>End date must be after start date</value>
+  </data>
+  <data name="model_validation_fb_user_name" xml:space="preserve">
+    <value>Facebook Page ID is required.</value>
+  </data>
+  <data name="model_validation_organisation" xml:space="preserve">
+    <value>Organisation name is required.</value>
+  </data>
+  <data name="model_validation_start_date" xml:space="preserve">
+    <value>Start date must be before end date</value>
+  </data>
+  <data name="model_validation_title" xml:space="preserve">
+    <value>Title is required.</value>
+  </data>
+  <data name="model_validation_twitter_user_name" xml:space="preserve">
+    <value>Twitter username is required.</value>
+  </data>
+  <data name="model_validation_valid_date" xml:space="preserve">
+    <value>Please provide a valid date.</value>
+  </data>
+  <data name="model_validation_valid_url" xml:space="preserve">
+    <value>Please provide a valid URL.</value>
+  </data>
+  <data name="model_validation_youtube_id" xml:space="preserve">
+    <value>Youtube ID is required.</value>
+  </data>
+  <data name="error_text_color" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="model_validation_please_fill_fields" xml:space="preserve">
+    <value>Please fill in the required fields</value>
+  </data>
+  <data name="processing_text_color" xml:space="preserve">
+    <value>Green</value>
+  </data>
 </root>

@@ -33,6 +33,8 @@ namespace MCIFramework.ViewModels
             ToDashboardGlobalEvent.Instance.Subscribe(ToDashboardViewModel);
             EditAssessmentGlobalEvent.Instance.Subscribe(EditAssessmentViewModel);
             GenerateReportGlobalEvent.Instance.Subscribe(GenerateReportViewModel);
+            ToExportWorkSheet.Instance.Subscribe(OpenExportWorkSheet);
+
             FBAuthenGlobalEvent.Instance.Subscribe(ToFBAuthenViewModel);
             FBAuthenEndGlobalEvent.Instance.Subscribe(FBAuthenEnd);
             NewAssessmentCreatedGlobalEvent.Instance.Subscribe(NewAssessmentCreated);
@@ -134,6 +136,11 @@ namespace MCIFramework.ViewModels
             CurrentPageViewModel = PageViewModels[2];
         }
 
+        private void OpenExportWorkSheet(String msg)
+        {
+            CurrentPageViewModel = PageViewModels[1];
+        }
+
         private void FBAuthenEnd(String msg)
         {
             //CurrentPageViewModel = PageViewModels[1];
@@ -148,10 +155,10 @@ namespace MCIFramework.ViewModels
 
         private void AuthenCancel(String msg)
         {
-            if (msg == "Cancel")
-            {
-                CurrentPageViewModel = PageViewModels[1];
-            }
+            //if (msg == "Cancel")
+            //{
+            //    CurrentPageViewModel = PageViewModels[1];
+            //}
         }
 
         private void ToTwitterAuthenViewModel(Assessment assessment)
@@ -167,7 +174,7 @@ namespace MCIFramework.ViewModels
         
         private void TwitterAuthenCancel(String msg)
         {
-            if (msg == "Cancel")
+            if (msg == GlobalConstant.Cancel)
             {
                 CurrentPageViewModel = PageViewModels[1];
             }

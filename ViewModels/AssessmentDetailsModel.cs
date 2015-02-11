@@ -50,6 +50,10 @@ namespace MCIFramework.ViewModels
 
         private Visibility _newAssessmentVisibility;
         private Visibility _createNewAssessmentVisibility;
+        private Visibility _youtubeLoading = Visibility.Hidden;
+        private Visibility _facebookLoading = Visibility.Hidden;
+        private Visibility _twitterLoading = Visibility.Hidden;
+
         private int _tab;
 
         private ICommand _uploadWorksheetCommand;
@@ -983,12 +987,12 @@ namespace MCIFramework.ViewModels
                     if (value == false)
                     {
                         Tab1Message = "Please fill in the required fields";
-                        Tab1MessageColor = "Red";
+                        Tab1MessageColor = Properties.Resources.error_text_color;
                     }
                     else
                     {
                         Tab1Message = "";
-                        Tab1MessageColor = "Green";
+                        Tab1MessageColor = Properties.Resources.processing_text_color;
                     }
                     base.OnPropertyChanged("AllPropertiesValid");
                 }
@@ -1017,6 +1021,45 @@ namespace MCIFramework.ViewModels
                 {
                     _createNewAssessmentVisibility = value;
                     OnPropertyChanged("CreateNewAssessmentTitle");
+                }
+            }
+        }
+
+        public Visibility FacebookLoadingVisible
+        {
+            get { return _facebookLoading; }
+            set
+            {
+                if (_facebookLoading != value)
+                {
+                    _facebookLoading = value;
+                    OnPropertyChanged("FacebookLoadingVisible");
+                }
+            }
+        }
+
+        public Visibility YoutubeLoadingVisible
+        {
+            get { return _youtubeLoading; }
+            set
+            {
+                if (_youtubeLoading != value)
+                {
+                    _youtubeLoading = value;
+                    OnPropertyChanged("YoutubeLoadingVisible");
+                }
+            }
+        }
+
+        public Visibility TwitterLoadingVisible
+        {
+            get { return _twitterLoading; }
+            set
+            {
+                if (_twitterLoading != value)
+                {
+                    _twitterLoading = value;
+                    OnPropertyChanged("TwitterLoadingVisible");
                 }
             }
         }
@@ -1415,7 +1458,7 @@ namespace MCIFramework.ViewModels
                     _context.assessments.Add(_assessment);
                     _context.SaveChanges();
                     Tab1Message = "Assessment added !";
-                    Tab1MessageColor = "Green";
+                    Tab1MessageColor = Properties.Resources.processing_text_color;
                     NewAssessmentCreatedGlobalEvent.Instance.Publish(_assessment);
                 }
                 else
@@ -1423,13 +1466,13 @@ namespace MCIFramework.ViewModels
                     _assessment.UpdatedDate = DateTime.Now;
                     _context.SaveChanges();
                     Tab1Message = "Assessment Details saved !";
-                    Tab1MessageColor = "Green";
+                    Tab1MessageColor = Properties.Resources.processing_text_color;
                 }
             }
             catch (Exception ex)
             {
                 Tab1Message = "We encountered system error. Please try to save again";
-                Tab1MessageColor = "Red";
+                Tab1MessageColor = Properties.Resources.error_text_color;
                 Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
@@ -1466,8 +1509,8 @@ namespace MCIFramework.ViewModels
                 _socialMediaStat.TotalDays = timeSpan.Days;
                 if (!IsFacebook && !IsTwitter && !IsYoutube)
                 {
-                    Tab2FacebookMessage = "Please select at least one social media platform";
-                    Tab2FacebookMessageColor = "Red";
+                    Tab2FacebookMessage = Properties.Resources.confirm_at_least_one_platform;
+                    Tab2FacebookMessageColor = Properties.Resources.error_text_color;
                     IsImportSocialMediaEnabled = true;
                 }
                 else
@@ -1506,12 +1549,21 @@ namespace MCIFramework.ViewModels
             }
             else
             {
-                if (IsFacebook && _facebookAuthenCompleted)
-                    _facebookWorker.RunWorkerAsync();
+                if (IsFacebook )
+                {
+                    TriggerFacebookRun();
+                }
                 else
                 {
-                    if (IsTwitter && _twiterAuthenCompleted)
-                        _twitterWorker.RunWorkerAsync();
+                    if (IsTwitter)
+                    {
+                        TriggerTwitterRun();
+                    }
+                    else
+                    {
+                        IsDownloadSocialMedialEnabled = true;
+                        IsImportSocialMediaEnabled = true;
+                    }
                 }
             }
         }
@@ -1534,8 +1586,8 @@ namespace MCIFramework.ViewModels
 
                 if ((IsWeb && LocationWeb == null) || (IsSocialMedia && LocationSocial == null) || (IsStrategy && LocationStrategy == null))
                 {
-                    Tab3Message = "Please select the required files";
-                    Tab3MessageColor = "Red";
+                    Tab3Message = Properties.Resources.assessment_tab_3_select_required_files;
+                    Tab3MessageColor = Properties.Resources.error_text_color;
                 }
                 if (LocationStrategy != null)
                 {
@@ -1553,8 +1605,8 @@ namespace MCIFramework.ViewModels
 
                     WebClient client = new WebClient();
                     client.UploadData(pathNameXLS + "Strategy Assessment.xlsx", "Post", contents);
-                    Tab3Message = "Upload is completed !";
-                    Tab3MessageColor = "Green";
+                    Tab3Message = Properties.Resources.assessment_tab_3_upload_complete;
+                    Tab3MessageColor = Properties.Resources.processing_text_color;
                 }
                 if (LocationSocial != null)
                 {
@@ -1564,8 +1616,8 @@ namespace MCIFramework.ViewModels
                     fStream.Close();
                     WebClient client = new WebClient();
                     client.UploadData(pathNameXLS + "Social Media Assessment.xlsx", "Post", contents);
-                    Tab3Message = "Upload is completed !";
-                    Tab3MessageColor = "Green";
+                    Tab3Message = Properties.Resources.assessment_tab_3_upload_complete;
+                    Tab3MessageColor = Properties.Resources.processing_text_color;
                 }
                 if (LocationWeb != null)
                 {
@@ -1575,8 +1627,8 @@ namespace MCIFramework.ViewModels
                     fStream.Close();
                     WebClient client = new WebClient();
                     client.UploadData(pathNameXLS + "Website Assessment.xlsx", "Post", contents);
-                    Tab3Message = "Upload is completed !";
-                    Tab3MessageColor = "Green";
+                    Tab3Message = Properties.Resources.assessment_tab_3_upload_complete;
+                    Tab3MessageColor = Properties.Resources.processing_text_color;
                 }
 
                 //TO ADD MESSAGE OR NOTIFY UPLOAD IS COMPLETED
@@ -1586,7 +1638,7 @@ namespace MCIFramework.ViewModels
             catch (Exception ex)
             {
                 Tab3Message = ex.Message;
-                Tab3MessageColor = "Red";
+                Tab3MessageColor = Properties.Resources.error_text_color;
                 Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
 
@@ -1916,7 +1968,7 @@ namespace MCIFramework.ViewModels
                 {
                     oledbConn.Close();
                     //Tab3Message = "Report generation is completed.";
-                    //Tab3MessageColor = "Green";
+                    //Tab3MessageColor = Properties.Resources.processing_text_color;
                     //MessageBox.Show("Report Generation is completed, click ok to start download");
                 }
             }
@@ -2247,6 +2299,29 @@ namespace MCIFramework.ViewModels
                 Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
+
+        private void TriggerFacebookRun()
+        {
+            if (_facebookAuthenCompleted)
+                _facebookWorker.RunWorkerAsync();
+            else
+            {
+                Tab2FacebookMessage =Properties.Resources.assessment_tab_2_fb_auth_failed;
+                Tab2FacebookMessageColor = Properties.Resources.error_text_color;
+            }
+        }
+
+        private void TriggerTwitterRun()
+        {
+            if (_twiterAuthenCompleted)
+                _twitterWorker.RunWorkerAsync();
+            else
+            {
+                Tab2TwitterMessage =Properties.Resources.assessment_tab_2_twitter_auth_failed;
+                Tab2TwitterMessageColor = Properties.Resources.error_text_color;
+                SaveSocialMediaStat();
+            }
+        }
         #endregion
 
         #region Background Workers
@@ -2254,8 +2329,9 @@ namespace MCIFramework.ViewModels
         private void youtubeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2YoutubeMessage = "Processing Youtube data";
-            Tab2YoutubeMessageColor = "Green";
+            Tab2YoutubeMessage = Properties.Resources.assessment_tab_2_processing_youtube;
+            Tab2YoutubeMessageColor = Properties.Resources.processing_text_color;
+            YoutubeLoadingVisible = Visibility.Visible;
             IsDownloadSocialMedialEnabled = false;
             YoutubeImporter youtubeImporter = new YoutubeImporter(_assessment, _socialMediaStat);
             youtubeImporter.Process();
@@ -2272,34 +2348,35 @@ namespace MCIFramework.ViewModels
             //update ui once worker complete his work
             if (e.Error == null)
             {
-                Tab2YoutubeMessage = "Youtube data retrieved successfully";
-                Tab2YoutubeMessageColor = "Green";
-
+                Tab2YoutubeMessage = Properties.Resources.assessment_tab_2_youtube_successful;
+                Tab2YoutubeMessageColor = Properties.Resources.processing_text_color;
+                YoutubeLoadingVisible = Visibility.Hidden;
             }
             else
             {
-                Tab2YoutubeMessage = "Failed to retrieve Youtube data. Please try again";
-                Tab2YoutubeMessageColor = "Red";
+                Tab2YoutubeMessage = Properties.Resources.assessment_tab_2_youtube_failed;
+                Tab2YoutubeMessageColor = Properties.Resources.error_text_color;
+                YoutubeLoadingVisible = Visibility.Hidden;
             }
-            if (IsFacebook && _facebookAuthenCompleted)
-                _facebookWorker.RunWorkerAsync();
-
+            if (IsFacebook)
+            {
+                TriggerFacebookRun();
+            }
             else
             {
-                if (IsTwitter && _twiterAuthenCompleted)
-                    _twitterWorker.RunWorkerAsync();
-                else// No Facebook, no Twitter
-                {
+                if (IsTwitter)
+                    TriggerTwitterRun();
+                else
                     SaveSocialMediaStat();
-                }
             }
         }
 
         private void facebookWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2FacebookMessage = "Processing Facebook data";
-            Tab2FacebookMessageColor = "Green";
+            Tab2FacebookMessage = Properties.Resources.assessment_tab_2_processing_fb;
+            Tab2FacebookMessageColor = Properties.Resources.processing_text_color;
+            FacebookLoadingVisible = Visibility.Visible;
             IsDownloadSocialMedialEnabled = false;
             FacebookImporter facebookImporter = new FacebookImporter(_assessment, _socialMediaStat);
             facebookImporter.Process();
@@ -2317,21 +2394,27 @@ namespace MCIFramework.ViewModels
             //update ui once worker complete his work
             if (e.Error == null)
             {
-                Tab2FacebookMessage = "Facebook data retrieved successfully";
-                Tab2FacebookMessageColor = "Green";
+                Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_successful;
+                Tab2FacebookMessageColor = Properties.Resources.processing_text_color;
+                FacebookLoadingVisible = Visibility.Hidden;
             }
             else
             {
                 if (e.Error.HResult == -2147024864)
-                    Tab2FacebookMessage = "Unable to save result to Excel file. It is being used by another process)";
-                
-                else
-                    Tab2FacebookMessage = "Failed to retrieve Facebook data. Please try again";
-                Tab2FacebookMessageColor = "Red";
-            }
+                {
+                    Tab2FacebookMessage = Properties.Resources.assessment_tab_2_unable_to_save;
+                    FacebookLoadingVisible = Visibility.Hidden;
+                }
 
-            if (IsTwitter && _twiterAuthenCompleted)
-                _twitterWorker.RunWorkerAsync();
+                else
+                {
+                    Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_failed;
+                    FacebookLoadingVisible = Visibility.Hidden;
+                }
+                Tab2FacebookMessageColor = Properties.Resources.error_text_color;
+            }
+            if (IsTwitter)
+                TriggerTwitterRun();
             else// no Twitter
             {
                 SaveSocialMediaStat();
@@ -2342,8 +2425,9 @@ namespace MCIFramework.ViewModels
         private void twitterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2TwitterMessage = "Processing Twitter data";
-            Tab2TwitterMessageColor = "Green";
+            Tab2TwitterMessage = Properties.Resources.assessment_tab_2_processing_twitter;
+            Tab2TwitterMessageColor = Properties.Resources.processing_text_color;
+            TwitterLoadingVisible = Visibility.Visible;
             IsDownloadSocialMedialEnabled = false;
             TwitterImporter twitterImporter = new TwitterImporter(_assessment, _socialMediaStat);
             twitterImporter.Process();
@@ -2361,14 +2445,16 @@ namespace MCIFramework.ViewModels
             //update ui once worker complete his work
             if (e.Error == null)
             {
-                Tab2TwitterMessage = "Twitter data retrieved successfully";
-                Tab2TwitterMessageColor = "Green";
+                Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_successful;
+                Tab2TwitterMessageColor = Properties.Resources.processing_text_color;
+                TwitterLoadingVisible = Visibility.Hidden;
 
             }
             else
             {
-                Tab2TwitterMessage = "Failed to retrieve Twitter data. Please try again";
-                Tab2TwitterMessageColor = "Red";
+                Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_failed;
+                Tab2TwitterMessageColor = Properties.Resources.error_text_color;
+                TwitterLoadingVisible = Visibility.Hidden;
             }
             SaveSocialMediaStat();
         }
@@ -2386,68 +2472,68 @@ namespace MCIFramework.ViewModels
         #region Message Passing
         private void FBAuthenEnd(string msg)
         {
-            if (msg == "FB Authentication completed")
+            if (msg == GlobalConstant.MessagFBAuthenCompleted)
             {
-                Tab2FacebookMessage = msg;
-                Tab2FacebookMessageColor = "Green";
                 _facebookAuthenCompleted = true;
-                if (IsTwitter)
-                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
-                else
-                    StartProcessing();
             }
             else
             {
-                Tab2FacebookMessage = "FB Authentication failed. Please try again";
-                Tab2FacebookMessageColor = "Red";
+                _facebookAuthenCompleted = false;
             }
+            if (IsTwitter)
+                TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+            else
+            {
+                StartProcessing();
+                ToExportWorkSheet.Instance.Publish("");
+            }
+            
         }
 
         private void AuthenCancel(string msg)
         {
-            if (msg == "Cancel")
+            if (msg == GlobalConstant.Cancel)
             {
-                Tab2FacebookMessage = "FB Authentication cancelled";
-                Tab2FacebookMessageColor = "Red";
                 _facebookAuthenCompleted = false;
-                if (IsTwitter)
-                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
-                else
-                    StartProcessing();
             }
             else
             {
-                Tab2FacebookMessage = "FB Authentication failed. Please try again";
-                Tab2FacebookMessageColor = "Red";
                 _facebookAuthenCompleted = false;
                 
+            }
+            if (IsTwitter)
+                TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+            else
+            {
+                StartProcessing();
+                ToExportWorkSheet.Instance.Publish("");
             }
             
         }
 
         private void TwitterAuthenEnd(string msg)
         {
-            if (msg == "Twitter Authentication completed")
+            if (msg == GlobalConstant.MessageTwitterAuthenCompleted)
             {
-                Tab2TwitterMessage = msg;
-                Tab2TwitterMessageColor = "Green";
+                //Tab2TwitterMessage = msg;
+                //Tab2TwitterMessageColor = Properties.Resources.processing_text_color;
                 _twiterAuthenCompleted = true;
                
             }
             else
             {
-                Tab2TwitterMessage = "Twitter Authentication failed. Please try again";
-                Tab2TwitterMessageColor = "Red";
+                //Tab2TwitterMessage = "Twitter Authentication failed. Please try again";
+                //Tab2TwitterMessageColor = Properties.Resources.error_text_color;
                 _twiterAuthenCompleted = false;
             }
             StartProcessing();
         }
         private void TwitterAuthenCancel(string msg)
         {
-            if (msg == "Cancel")
+            if (msg == GlobalConstant.Cancel)
             {
-                Tab2TwitterMessage = "Twitter Authentication cancelled";
-                Tab2TwitterMessageColor = "Red";
+                //Tab2TwitterMessage = "Twitter Authentication cancelled";
+                //Tab2TwitterMessageColor = Properties.Resources.error_text_color;
                 _twiterAuthenCompleted = false;
                 StartProcessing();
             }

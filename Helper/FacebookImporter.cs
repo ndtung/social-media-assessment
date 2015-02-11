@@ -18,7 +18,7 @@ namespace MCIFramework.Helper
 {
     public class FacebookImporter
     {
-        private int _rowPerTime = 100;
+        private int _rowPerTime = 20;
         private int _totalLikes = 0;
         private int _totalComments = 0;
         private int _totalPosts = 0;

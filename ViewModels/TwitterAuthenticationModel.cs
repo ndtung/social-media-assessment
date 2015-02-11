@@ -116,7 +116,7 @@ namespace MCIFramework.ViewModels
         {
             _requestToken = _oau.GetRequestToken(Properties.Resources._api_twitter_consumer_key, Properties.Resources._api_twitter_consumer_secret);
             BrowserUri = new Uri(_oau.GetAuthorizeUrl(_requestToken));
-            Messenger.Default.Register<Uri>(this, "TwitterBrowserChangedURL", MyCallbackMethod);
+            Messenger.Default.Register<Uri>(this, GlobalConstant.MessageTwitterBrowserChangedURL, MyCallbackMethod);
         }
         private void MyCallbackMethod(Uri uri)
         {
@@ -130,7 +130,7 @@ namespace MCIFramework.ViewModels
 
         private void GoBackToAssessmentDetail()
         {
-            TwitterAuthenCancelGlobalEvent.Instance.Publish("Cancel");
+            TwitterAuthenCancelGlobalEvent.Instance.Publish(GlobalConstant.Cancel);
         }
 
         private void PinSubmit()
@@ -139,17 +139,17 @@ namespace MCIFramework.ViewModels
             if (_oau.oauth_error == null)
             {
                 SaveToDB(_oau);
-                TwitterAuthenEndGlobalEvent.Instance.Publish("Twitter Authentication completed");
+                TwitterAuthenEndGlobalEvent.Instance.Publish(GlobalConstant.MessageTwitterAuthenCompleted);
             }
 
             else
-                TwitterAuthenEndGlobalEvent.Instance.Publish("Twitter Authentication failed");
+                TwitterAuthenEndGlobalEvent.Instance.Publish(GlobalConstant.MessageTwitterAuthenFailed);
         }
 
         private void SaveToDB(OAuthHelper accessToken)
         {
-            API token = _dbContext.apis.Where(x => x.Name == "TwitterToken").FirstOrDefault();
-            API tokenSecret = _dbContext.apis.Where(x => x.Name == "TwitterTokenSecret").FirstOrDefault();
+            API token = _dbContext.apis.Where(x => x.Name == GlobalConstant.TwitterToken).FirstOrDefault();
+            API tokenSecret = _dbContext.apis.Where(x => x.Name == GlobalConstant.TwitterTokenSecret).FirstOrDefault();
             if (token != null)
             {
                 token.Value = accessToken.oauth_access_token;
@@ -159,7 +159,7 @@ namespace MCIFramework.ViewModels
             else
             {
                 API newToken = new API();
-                newToken.Name = "TwitterToken";
+                newToken.Name = GlobalConstant.TwitterToken;
                 newToken.Value = accessToken.oauth_access_token;
                 newToken.Created = DateTime.Now;
                 _dbContext.apis.Add(newToken);
@@ -176,7 +176,7 @@ namespace MCIFramework.ViewModels
             else
             {
                 API newTokenSecret = new API();
-                newTokenSecret.Name = "TwitterTokenSecret";
+                newTokenSecret.Name = GlobalConstant.TwitterTokenSecret;
                 newTokenSecret.Value = accessToken.oauth_access_token_secret;
                 newTokenSecret.Created = DateTime.Now;
                 _dbContext.apis.Add(newTokenSecret);

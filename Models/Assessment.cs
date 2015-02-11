@@ -208,7 +208,7 @@ namespace MCIFramework.Models
             else
             {
                 if (String.IsNullOrWhiteSpace(this.FacebookUsername))
-                    return "Facebook username is required.";
+                    return Properties.Resources.model_validation_fb_user_name;
                 else
                     return String.Empty;
             }
@@ -220,7 +220,7 @@ namespace MCIFramework.Models
             else
             {
                 if (String.IsNullOrWhiteSpace(this.TwitterUsername))
-                    return "Twitter username is required.";
+                    return Properties.Resources.model_validation_twitter_user_name;
                 else
                     return String.Empty;
             }
@@ -232,7 +232,7 @@ namespace MCIFramework.Models
             else
             {
                 if (String.IsNullOrWhiteSpace(this.YoutubeId))
-                    return "Youtbe ID is required.";
+                    return Properties.Resources.model_validation_youtube_id;
                 else
                     return String.Empty;
             }
@@ -240,14 +240,14 @@ namespace MCIFramework.Models
         private string ValidateOrganisation()
         {
             if (String.IsNullOrWhiteSpace(this.Organisation))
-                return "Organisation name is required.";
+                return Properties.Resources.model_validation_organisation;
             else
                 return String.Empty;
         }
         private string ValidateTitle()
         {
             if (String.IsNullOrWhiteSpace(this.Title))
-                return "Title is required.";
+                return Properties.Resources.model_validation_title;
             else
                 return String.Empty;
         }
@@ -258,7 +258,7 @@ namespace MCIFramework.Models
             else
             {
                 if (String.IsNullOrWhiteSpace(content))
-                    return "Field cannot be blank.";
+                    return Properties.Resources.model_validation_blank_field;
                 else
                     return String.Empty;
             }
@@ -270,7 +270,7 @@ namespace MCIFramework.Models
             else
             {
                 if (String.IsNullOrWhiteSpace(url))
-                    return "Please provide a valid URL";
+                    return Properties.Resources.model_validation_valid_url;
                 else
                 {
                     return String.Empty;
@@ -284,7 +284,7 @@ namespace MCIFramework.Models
             else
             {
                 if (date==null)
-                    return "Please provide a valid date";
+                    return Properties.Resources.model_validation_valid_date;
                 else
                     return String.Empty;
             }
@@ -296,7 +296,7 @@ namespace MCIFramework.Models
             else
             {
                 if (endTime < StartDate)
-                    return "End date must be after start date";
+                    return Properties.Resources.model_validation_end_date;
                 else
                     return String.Empty;
             }
@@ -310,7 +310,7 @@ namespace MCIFramework.Models
             else
             {
                 if (startTime > EndDate)
-                    return "Start date must be before end date";
+                    return Properties.Resources.model_validation_start_date;
                 else
                     return String.Empty;
             }
