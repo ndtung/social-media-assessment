@@ -94,6 +94,23 @@ namespace MCIFramework
         }
     }
 
+    internal class ToExportWorkSheet : PubSubEvent<String>
+    {
+        private static readonly EventAggregator _eventAggregator;
+        private static readonly ToExportWorkSheet _event;
+
+        static ToExportWorkSheet()
+        {
+            _eventAggregator = new EventAggregator();
+            _event = _eventAggregator.GetEvent<ToExportWorkSheet>();
+        }
+
+        public static ToExportWorkSheet Instance
+        {
+            get { return _event; }
+        }
+    }
+
     internal class FBAuthenGlobalEvent : PubSubEvent<Assessment>
     {
         private static readonly EventAggregator _eventAggregator;
@@ -163,7 +180,7 @@ namespace MCIFramework
         }
     }
 
-    internal class TwitterAuthenEndGlobalEvent : PubSubEvent<String>
+    internal class TwitterAuthenEndGlobalEvent : PubSubEvent<List<String>>
     {
         private static readonly EventAggregator _eventAggregator;
         private static readonly TwitterAuthenEndGlobalEvent _event;

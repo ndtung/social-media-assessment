@@ -11,13 +11,14 @@ using System.Data.OleDb;
 using System.IO;
 using System.Data;
 using OfficeOpenXml;
-
+using System.Reflection;
 
 namespace MCIFramework.Helper
 {
     public class FacebookImporter
     {
-        private int _rowPerTime = 100;
+        private int _rowPerTime = Int32.Parse(Properties.Settings.Default.PartialExcelRowWriting);
+        private int _maxComment = Int32.Parse(Properties.Settings.Default.FbMaxComments);
         private int _totalLikes = 0;
         private int _totalComments = 0;
         private int _totalPosts = 0;
@@ -27,6 +28,8 @@ namespace MCIFramework.Helper
         private Assessment _assessment;
         private SocialMediaStat _socialMediaStat;
         private FacebookClient _client;
+        private string _facebookNameToProcess;
+
         private int _maximumPostComment = Int32.Parse(Properties.Resources._api_facebook_maximum_comments_to_retrieve_of_a_post);
         public FacebookImporter(Assessment assessment, SocialMediaStat socialMediaStat)
         {
@@ -34,6 +37,14 @@ namespace MCIFramework.Helper
             {
                 _assessment = assessment;
                 _socialMediaStat = socialMediaStat;
+                string name = _assessment.FacebookUsername.ToLower();
+                if (name.Contains("https") || name.Contains("facebook.com") || name.Contains("http"))
+                {
+                    String[] splits = name.Split('/');
+                    _facebookNameToProcess = splits[splits.Length - 1];
+                }
+                else
+                    _facebookNameToProcess = _assessment.FacebookUsername;
                 string accesstoken;
                 Database db = new Database();
                 var access = db.apis.Where(x => x.Name == "FBAccessToken").FirstOrDefault();
@@ -51,7 +62,7 @@ namespace MCIFramework.Helper
             }
             catch (Exception e)
             {
-
+                throw e;
             }
         }
 
@@ -60,36 +71,74 @@ namespace MCIFramework.Helper
             try
             {
                 GetPageId();
+                List<FacebookAlbum> actualAlbumPosts = GetAlbumCreatedInPeriod();
                 List<FacebookPost> actualPosts = GetFacebookPosts();
                 GetAllComments(actualPosts);
+                GetAllAlbumComments(actualAlbumPosts);
                 GetFirstReplyFromPage(actualPosts);
-                // Find photo albulms
-                SaveToDB(actualPosts);
+                GetFirstAlbumReplyFromPage(actualAlbumPosts);
+                SaveToDB(actualPosts,actualAlbumPosts);
                 Database db = new Database();
-                SaveToExcel(db.facebookPostComments.Where(x => x.AssessmentId == _assessment.Id).ToList());
+                SaveToExcel(db.facebookPostComments.Where(x => x.AssessmentId == _assessment.Id).OrderByDescending(x=>x.PostTimestamp).ToList());
             }
             catch (Exception ex)
             {
-                Log.LogError("FacebookImporter", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                 throw ex;
             }
         }
 
+
         private void GetPageId()
         {
-            var info = _client.Get(_assessment.FacebookUsername + "/?fields=id,likes").ToString();
+            var info = _client.Get(_facebookNameToProcess + "/?fields=id,likes").ToString();
             FacebookPage pageInfo = JsonConvert.DeserializeObject<FacebookPage>(info);
             _pageId = pageInfo.id;
             _totalFans = pageInfo.likes;
+        }
+
+        private List<FacebookAlbum> GetAlbumCreatedInPeriod()
+        {
+            List<FacebookAlbum> pageAlbums = new List<FacebookAlbum>();
+            // Getting all page posts after assessment start date
+            var albums = _client.Get(_facebookNameToProcess + "/albums?fields=id,likes.summary(true),comments.summary(true).limit(200),sharedposts,name,link&limit=200").ToString();
+            FacebookAlbums result = JsonConvert.DeserializeObject<FacebookAlbums>(albums);
+            if (result.data!=null)
+                pageAlbums.AddRange(result.data);
+
+            if (result.paging != null && result.paging.next != null)
+            {
+                FacebookAlbums pageResult;
+                string nextRequest = result.paging.next;
+                do
+                {
+                    var pageStatus = _client.Get(nextRequest).ToString();
+                    pageResult = JsonConvert.DeserializeObject<FacebookAlbums>(pageStatus);
+                    if (pageResult.data != null)
+                        pageAlbums.AddRange(pageResult.data);
+                    if (pageResult.paging != null && pageResult.paging.next != null)
+                        nextRequest = pageResult.paging.next;
+                    else
+                        break;
+                }
+                while
+                (
+                    ConvertToDateTime(pageResult.data[pageResult.data.Count - 1].created_time) >= _assessment.StartDate
+                );
+            }
+            // Filter albums
+            List<FacebookAlbum> actualPosts = pageAlbums.Where(p => p.name != null && ConvertToDateTime(p.created_time) <= _assessment.EndDate && ConvertToDateTime(p.created_time) >= _assessment.StartDate).ToList();
+            return actualPosts;
         }
 
         private List<FacebookPost> GetFacebookPosts()
         {
             List<FacebookPost> pagePosts = new List<FacebookPost>();
             // Getting all page posts after assessment start date
-            var statuses = _client.Get(_assessment.FacebookUsername + "/posts?fields=id,actions,message,shares,comments.summary(true),likes.summary(true)").ToString();
+            var statuses = _client.Get(_facebookNameToProcess + "/posts?fields=id,actions,message,shares,comments.summary(true).limit(200),likes.summary(true)&limit=200").ToString();
             FacebookPosts result = JsonConvert.DeserializeObject<FacebookPosts>(statuses);
-            pagePosts.AddRange(result.data);
+            if (result.data!=null)
+                pagePosts.AddRange(result.data);
 
             if (result.paging != null && result.paging.next != null)
             {
@@ -99,7 +148,8 @@ namespace MCIFramework.Helper
                 {
                     var pageStatus = _client.Get(nextRequest).ToString();
                     pageResult = JsonConvert.DeserializeObject<FacebookPosts>(pageStatus);
-                    pagePosts.AddRange(pageResult.data);
+                    if (pageResult.data!=null)
+                        pagePosts.AddRange(pageResult.data);
                     if (pageResult.paging != null && pageResult.paging.next != null)
                         nextRequest = pageResult.paging.next;
                     else
@@ -118,9 +168,9 @@ namespace MCIFramework.Helper
         private void GetAllComments(List<FacebookPost> posts)
         {
             if (posts.Count != 0)
-                _totalPosts = posts.Count;
+                _totalPosts += posts.Count;
             else
-                _totalPosts = 0;
+                _totalPosts += 0;
             foreach (FacebookPost post in posts)
             {
                 if (post.comments != null)
@@ -139,23 +189,105 @@ namespace MCIFramework.Helper
                             else
                                 break;
                         }
-                        while (true && post.comments.data.Count < _maximumPostComment);// Get all maximum comments
+                        while (true && post.comments.data.Count < _maxComment);// Get all maximum comments
                     }
                     if (post.shares != null)
                         _totalShares += post.shares.count;
                     if (post.likes != null)
-                        _totalLikes += post.likes.data.Count;
+                        _totalLikes += post.likes.summary.total_count;
                     if (post.comments != null)
-                        _totalComments += post.comments.data.Count;
+                        _totalComments += post.comments.summary.total_count;
                     post.comments.data.OrderBy(x => x.created_time);
                 }
             }
 
         }
 
+        private void GetAllAlbumComments(List<FacebookAlbum> albums)
+        {
+            if (albums.Count != 0)
+                _totalPosts = albums.Count;
+            else
+                _totalPosts = 0;
+            foreach (FacebookAlbum post in albums)
+            {
+                if (post.comments != null)
+                {
+                    FacebookComments commentGroups;
+                    if (post.comments.paging != null && post.comments.paging.next != null)
+                    {
+                        string nextRequest = post.comments.paging.next;
+                        do
+                        {
+                            var nextCommentGroups = _client.Get(nextRequest).ToString();
+                            commentGroups = JsonConvert.DeserializeObject<FacebookComments>(nextCommentGroups);
+                            post.comments.data.AddRange(commentGroups.data);
+                            if (commentGroups.paging != null && commentGroups.paging.next != null)
+                                nextRequest = commentGroups.paging.next;
+                            else
+                                break;
+                        }
+                        while (true && post.comments.data.Count < _maxComment);// Get all maximum comments
+                    }
+                    if (post.sharedposts != null && post.sharedposts.data!=null)
+                        _totalShares += post.sharedposts.data.Count;
+                    if (post.likes != null)
+                        _totalLikes += post.likes.summary.total_count;
+                    if (post.comments != null)
+                        _totalComments += post.comments.summary.total_count;
+                    post.comments.data.OrderBy(x => x.created_time);
+                }
+            }
+        }
+
         private void GetFirstReplyFromPage(List<FacebookPost> posts)
         {
             foreach (FacebookPost post in posts)
+            {
+                if (post.comments != null)
+                {
+                    foreach (FacebookComment comment in post.comments.data)
+                    {
+                        // Get all replies 
+                        List<FacebookComment> allReplies = new List<FacebookComment>();
+                        var data = _client.Get(comment.id + "/comments").ToString();
+                        FacebookComments commentReplies = JsonConvert.DeserializeObject<FacebookComments>(data);
+                        if (commentReplies.data != null)
+                        {
+                            allReplies.AddRange(commentReplies.data.ToList());
+                            FacebookComments nextCommentGroupReplies;
+                            if (commentReplies.paging != null && commentReplies.paging.next != null)
+                            {
+                                string nextRequest = commentReplies.paging.next;
+                                do
+                                {
+                                    var nextCommentGroups = _client.Get(nextRequest).ToString();
+                                    nextCommentGroupReplies = JsonConvert.DeserializeObject<FacebookComments>(nextCommentGroups);
+                                    allReplies.AddRange(nextCommentGroupReplies.data.ToList());
+                                    if (nextCommentGroupReplies.paging != null && nextCommentGroupReplies.paging.next != null)
+                                        nextRequest = nextCommentGroupReplies.paging.next;
+                                    else
+                                        break;
+                                }
+                                while (true);// Get all replies
+                            }
+                        }
+
+                        //At this moment, all replies are stored in allReplies
+                        var firstPageReply = allReplies.OrderBy(x => x.created_time).FirstOrDefault(x => x.from.id == _pageId);
+                        if (firstPageReply != null)
+                        {
+                            comment.first_reply = firstPageReply.message;
+                            comment.first_reply_time = firstPageReply.created_time;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void GetFirstAlbumReplyFromPage(List<FacebookAlbum> actualAlbumPosts)
+        {
+            foreach (FacebookAlbum post in actualAlbumPosts)
             {
                 if (post.comments != null)
                 {
@@ -222,10 +354,8 @@ namespace MCIFramework.Helper
         {
             string assesNo = _assessment.Id.ToString();
             string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
-            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx");
+            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx",_assessment.Organisation+ " "+_assessment.Title+ " Social Media Assessment.xlsx");
 
-            string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=NO;\""))));
-            OleDbConnection oledbConn = new OleDbConnection(CnStr);
             var existingFile = new FileInfo(fileName);
             try
             { // Write a certain number of entries, close, and open again to write to prevent excessive amount of data.
@@ -305,7 +435,8 @@ namespace MCIFramework.Helper
                 }
             }        
         }
-        private void SaveToDB(List<FacebookPost> posts)
+
+        private void SaveToDB(List<FacebookPost> posts,List<FacebookAlbum> albums )
         {
             Database context = new Database();
             // clear all existing postComment of this assessment
@@ -339,6 +470,39 @@ namespace MCIFramework.Helper
                     facebookPostComment.Post = post.message;
                     facebookPostComment.PostTimestamp = post.created_time;
                     facebookPostComment.PostUrl = post.actions[0].link;
+                    context.facebookPostComments.Add(facebookPostComment);
+                }
+            }
+
+            foreach (FacebookAlbum album in albums)
+            {
+                if (album.comments != null)
+                {
+                    foreach (FacebookComment comment in album.comments.data)
+                    {
+                        FacebookPostComment facebookPostComment = new FacebookPostComment();
+                        facebookPostComment.AssessmentId = _assessment.Id;
+                        facebookPostComment.FacebookId = _pageId;
+                        facebookPostComment.Post = album.name;
+                        facebookPostComment.PostComment = comment.message;
+                        facebookPostComment.PostTimestamp = comment.created_time;
+                        facebookPostComment.PostUrl = album.link;
+                        if (comment.first_reply != null)
+                        {
+                            facebookPostComment.Response = comment.first_reply;
+                            facebookPostComment.ResponseTime = comment.first_reply_time;
+                        }
+                        context.facebookPostComments.Add(facebookPostComment);
+                    }
+                }
+                else
+                {
+                    FacebookPostComment facebookPostComment = new FacebookPostComment();
+                    facebookPostComment.AssessmentId = _assessment.Id;
+                    facebookPostComment.FacebookId = _pageId;
+                    facebookPostComment.Post = album.name;
+                    facebookPostComment.PostTimestamp = album.created_time;
+                    facebookPostComment.PostUrl = album.link;
                     context.facebookPostComments.Add(facebookPostComment);
                 }
             }
@@ -397,7 +561,7 @@ namespace MCIFramework.Helper
 
     public class Summary
     {
-        public string total_count { get; set; }
+        public int total_count { get; set; }
         public string order { get; set; }
     }
 
@@ -440,5 +604,28 @@ namespace MCIFramework.Helper
     {
         public string name { get; set; }
         public string link { get; set; }
+    }
+
+    public class FacebookAlbums
+    {
+        public List<FacebookAlbum> data { get; set; }
+        public Paging paging { get; set; }
+    }
+
+    public class FacebookAlbum
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public string link { get; set; }
+        public FacebookComments comments { get; set; }
+        public FacebookLikes likes { get; set; }
+        public SharedPosts sharedposts { get; set; }
+        public string created_time { get; set; }
+        
+    }
+    public class SharedPosts
+    {
+        public List<FacebookPost> data { get; set; }
+        public Paging paging { get; set; }
     }
 }

@@ -1,0 +1,11 @@
+﻿<Window x:Class="MCIFramework.Views.AssessmentCreated"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         Height="130" Width="200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        WindowStyle="ToolWindow" BorderBrush="Green"
+        >
+    <Grid>
+        <Label Content="Assessment added !" HorizontalAlignment="Center"></Label>
+        <Button Grid.Row ="1" Style="{StaticResource GreenButton}" Grid.Column="2" Content="OK" HorizontalAlignment="Right" Margin="0,0,40,20" VerticalAlignment="Bottom" Width="100" Height="40" Foreground="White" BorderBrush="{x:Null}" BorderThickness="0" Click="Button_Click_1"/>
+    </Grid>
+</Window>

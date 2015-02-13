@@ -205,6 +205,24 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Report last generated on .
+        /// </summary>
+        public static string assessment_report_date {
+            get {
+                return ResourceManager.GetString("assessment_report_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No report was generated for this assessment..
+        /// </summary>
+        public static string assessment_report_notgenerated {
+            get {
+                return ResourceManager.GetString("assessment_report_notgenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assessment Details.
         /// </summary>
         public static string assessment_tab_1 {
@@ -394,6 +412,24 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Facebook page name does not exist..
+        /// </summary>
+        public static string assessment_tab_2_alias_not_exist {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_alias_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook Authentication failed. Please try again..
+        /// </summary>
+        public static string assessment_tab_2_authentication_error {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_authentication_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Strategy.
         /// </summary>
         public static string assessment_tab_2_col_1_lbl {
@@ -421,6 +457,42 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Facebook Authentication failed..
+        /// </summary>
+        public static string assessment_tab_2_fb_auth_failed {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_fb_auth_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to retrieve Facebook data. Please try again..
+        /// </summary>
+        public static string assessment_tab_2_fb_failed {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_fb_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook failed. Please allocate more memory or close other applications..
+        /// </summary>
+        public static string assessment_tab_2_fb_out_of_memory {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_fb_out_of_memory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook data retrieved successfully.
+        /// </summary>
+        public static string assessment_tab_2_fb_successful {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_fb_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notes:
         ///
         ///Clicking Import Social Media button will regenerate a new Excel sheet. Previous assessments will be overwritten.
@@ -432,6 +504,159 @@ namespace MCIFramework.Properties {
         public static string assessment_tab_2_notes {
             get {
                 return ResourceManager.GetString("assessment_tab_2_notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing Facebook data.
+        /// </summary>
+        public static string assessment_tab_2_processing_fb {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_processing_fb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing Twitter data.
+        /// </summary>
+        public static string assessment_tab_2_processing_twitter {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_processing_twitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing Twitter data for [.
+        /// </summary>
+        public static string assessment_tab_2_processing_twitter_different_name_1 {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_processing_twitter_different_name_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ] instead of [.
+        /// </summary>
+        public static string assessment_tab_2_processing_twitter_different_name_2 {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_processing_twitter_different_name_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ]..
+        /// </summary>
+        public static string assessment_tab_2_processing_twitter_different_name_3 {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_processing_twitter_different_name_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing Youtube data.
+        /// </summary>
+        public static string assessment_tab_2_processing_youtube {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_processing_youtube", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reaching FB API calls limit. Please try again in 1 hour..
+        /// </summary>
+        public static string assessment_tab_2_reach_limit {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_reach_limit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Authentication failed..
+        /// </summary>
+        public static string assessment_tab_2_twitter_auth_failed {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_auth_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to retrieve Twitter data. Please try again.
+        /// </summary>
+        public static string assessment_tab_2_twitter_failed {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter service is not available at the moment..
+        /// </summary>
+        public static string assessment_tab_2_twitter_not_available {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_not_available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reaching Twitter API calls limit. Please try again in 15 minutes..
+        /// </summary>
+        public static string assessment_tab_2_twitter_reach_limit {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_reach_limit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter data retrieved successfully.
+        /// </summary>
+        public static string assessment_tab_2_twitter_successful {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter data retrieved successfully for [.
+        /// </summary>
+        public static string assessment_tab_2_twitter_successful_different_name_1 {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_successful_different_name_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ]..
+        /// </summary>
+        public static string assessment_tab_2_twitter_successful_different_name_2 {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_twitter_successful_different_name_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to save result to Excel file. It is being used by another proces..
+        /// </summary>
+        public static string assessment_tab_2_unable_to_save {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_unable_to_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to retrieve Youtube data. Please try again.
+        /// </summary>
+        public static string assessment_tab_2_youtube_failed {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_youtube_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Youtube data retrieved successfully.
+        /// </summary>
+        public static string assessment_tab_2_youtube_successful {
+            get {
+                return ResourceManager.GetString("assessment_tab_2_youtube_successful", resourceCulture);
             }
         }
         
@@ -472,11 +697,38 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select the required files.
+        /// </summary>
+        public static string assessment_tab_3_select_required_files {
+            get {
+                return ResourceManager.GetString("assessment_tab_3_select_required_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import Worksheets.
         /// </summary>
         public static string assessment_tab_3_titlle {
             get {
                 return ResourceManager.GetString("assessment_tab_3_titlle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload is completed !.
+        /// </summary>
+        public static string assessment_tab_3_upload_complete {
+            get {
+                return ResourceManager.GetString("assessment_tab_3_upload_complete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter PIN .
+        /// </summary>
+        public static string assessment_twitter_auth_provide_pin {
+            get {
+                return ResourceManager.GetString("assessment_twitter_auth_provide_pin", resourceCulture);
             }
         }
         
@@ -571,6 +823,33 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select at least one social media platform..
+        /// </summary>
+        public static string confirm_at_least_one_platform {
+            get {
+                return ResourceManager.GetString("confirm_at_least_one_platform", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete the assessment?.
+        /// </summary>
+        public static string confirm_delete_assessment {
+            get {
+                return ResourceManager.GetString("confirm_delete_assessment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Delete.
+        /// </summary>
+        public static string confirm_delete_assessment_confirm {
+            get {
+                return ResourceManager.GetString("confirm_delete_assessment_confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search Organisation / Title.
         /// </summary>
         public static string dashboard_search_title {
@@ -598,6 +877,42 @@ namespace MCIFramework.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Red.
+        /// </summary>
+        public static string error_text_color {
+            get {
+                return ResourceManager.GetString("error_text_color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Social Media Assessment.xlsx.
+        /// </summary>
+        public static string excel_social {
+            get {
+                return ResourceManager.GetString("excel_social", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strategy Assessment.xlsx.
+        /// </summary>
+        public static string excel_strategy {
+            get {
+                return ResourceManager.GetString("excel_strategy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website Assessment.xlsx.
+        /// </summary>
+        public static string excel_web {
+            get {
+                return ResourceManager.GetString("excel_web", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Every metric is a score from 0-10. A score of 10 means the ministry/agency is doing as well as can be expected based on best practice and the organisation&apos;s nature..
         /// </summary>
         public static string homeroot_description {
@@ -612,6 +927,143 @@ namespace MCIFramework.Properties {
         public static string homeroot_title {
             get {
                 return ResourceManager.GetString("homeroot_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Authentication completed.
+        /// </summary>
+        public static string message_twiiter_auth_completed {
+            get {
+                return ResourceManager.GetString("message_twiiter_auth_completed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Authentication failed.
+        /// </summary>
+        public static string message_twiiter_auth_failed {
+            get {
+                return ResourceManager.GetString("message_twiiter_auth_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field cannot be blank..
+        /// </summary>
+        public static string model_validation_blank_field {
+            get {
+                return ResourceManager.GetString("model_validation_blank_field", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End date must be after start date.
+        /// </summary>
+        public static string model_validation_end_date {
+            get {
+                return ResourceManager.GetString("model_validation_end_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook Page ID is required..
+        /// </summary>
+        public static string model_validation_fb_user_name {
+            get {
+                return ResourceManager.GetString("model_validation_fb_user_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organisation name is required..
+        /// </summary>
+        public static string model_validation_organisation {
+            get {
+                return ResourceManager.GetString("model_validation_organisation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in the required fields.
+        /// </summary>
+        public static string model_validation_please_fill_fields {
+            get {
+                return ResourceManager.GetString("model_validation_please_fill_fields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date must be before end date.
+        /// </summary>
+        public static string model_validation_start_date {
+            get {
+                return ResourceManager.GetString("model_validation_start_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title is required..
+        /// </summary>
+        public static string model_validation_title {
+            get {
+                return ResourceManager.GetString("model_validation_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter username is required..
+        /// </summary>
+        public static string model_validation_twitter_user_name {
+            get {
+                return ResourceManager.GetString("model_validation_twitter_user_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide a valid date..
+        /// </summary>
+        public static string model_validation_valid_date {
+            get {
+                return ResourceManager.GetString("model_validation_valid_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide a valid URL..
+        /// </summary>
+        public static string model_validation_valid_url {
+            get {
+                return ResourceManager.GetString("model_validation_valid_url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Youtube ID is required..
+        /// </summary>
+        public static string model_validation_youtube_id {
+            get {
+                return ResourceManager.GetString("model_validation_youtube_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Green.
+        /// </summary>
+        public static string processing_text_color {
+            get {
+                return ResourceManager.GetString("processing_text_color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Login to Twitter using assessee&apos;s account to generate authentication PIN. The authentication PIN is required for pulling data from Twitter.
+        ///
+        ///2. Copy the PIN generated by Twitter (after login) and paste it to the text box at the bottom of the page, and then click Submit to proceed..
+        /// </summary>
+        public static string twitter_auth_instructions {
+            get {
+                return ResourceManager.GetString("twitter_auth_instructions", resourceCulture);
             }
         }
         
@@ -639,6 +1091,15 @@ namespace MCIFramework.Properties {
         public static string value_dashboard_page_default_row_count {
             get {
                 return ResourceManager.GetString("value_dashboard_page_default_row_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orange.
+        /// </summary>
+        public static string warning_text_color {
+            get {
+                return ResourceManager.GetString("warning_text_color", resourceCulture);
             }
         }
     }

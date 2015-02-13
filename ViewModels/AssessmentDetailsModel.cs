@@ -18,7 +18,9 @@ using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Net;
 using Ionic.Zip;
-
+using System.Reflection;
+using System.Globalization;
+using OfficeOpenXml;
 
 
 
@@ -31,11 +33,11 @@ namespace MCIFramework.ViewModels
         private SocialMediaStat _socialMediaStat = new SocialMediaStat();
         private Dictionary<string, bool> _validProperties;
         private bool _allPropertiesValid = false;
-        
+
         private Boolean _isNewAssessment;
         private Boolean _isDownloadSocialMedialEnabled;
         private Boolean _isImportSocialMedialEnabled;
-        
+
         private String _tab1Message;
         private String _tab1MessageColor;
         private String _tab3Message;
@@ -47,8 +49,15 @@ namespace MCIFramework.ViewModels
         private String _tab2TwitterMessage;
         private String _tab2TwitterMessageColor;
 
+        private String _reportDate;
+
         private Visibility _newAssessmentVisibility;
         private Visibility _createNewAssessmentVisibility;
+        private Visibility _youtubeLoading = Visibility.Hidden;
+        private Visibility _facebookLoading = Visibility.Hidden;
+        private Visibility _twitterLoading = Visibility.Hidden;
+        private Visibility _twitterWarningLoadingVisible = Visibility.Hidden;
+
         private int _tab;
 
         private ICommand _uploadWorksheetCommand;
@@ -73,9 +82,13 @@ namespace MCIFramework.ViewModels
         private string _locationSocial;
         private string _locationWeb;
 
+        private string _strategyExcelName;
+        private string _socialExcelName;
+        private string _webExcelName;
+
         private Boolean _facebookAuthenCompleted;
         private Boolean _twiterAuthenCompleted;
-
+        private String _loggedInUser;
         #region Constructors
         /// <summary>
         /// Create new assessment details model with default tab
@@ -99,17 +112,26 @@ namespace MCIFramework.ViewModels
 
             var item = _context.assessments.FirstOrDefault(c => c.Id == assessmentID);
             this._validProperties = new Dictionary<string, bool>();
-     
+            
+            
             IsNewAssessment = false;
             DefaultTab = tab;
             CreateNewAssessmentTitle = Visibility.Hidden;
             if (item != null)
             {
                 _assessment = (Assessment)item;
+                _socialExcelName = _assessment.Organisation + " " + _assessment.Title + " "+ Properties.Resources.excel_social;
+                _webExcelName = _assessment.Organisation + " " + _assessment.Title + " " + Properties.Resources.excel_web;
+                _strategyExcelName = _assessment.Organisation + " " + _assessment.Title + " " + Properties.Resources.excel_strategy;
+
                 if (_context.socialMediaStats.FirstOrDefault(x => x.AssessmentId == assessmentID) != null)
                     IsDownloadSocialMedialEnabled = true;
                 if (IsSocialMedia)
                     IsImportSocialMediaEnabled = true;
+                if (_assessment.ReportGenerationDate != null)
+                    ReportDate = Properties.Resources.assessment_report_date + " " + _assessment.ReportGenerationDate;
+                else
+                    ReportDate = Properties.Resources.assessment_report_notgenerated;
             }
             else
             { new AssessmentDetailsModel(); }
@@ -140,6 +162,18 @@ namespace MCIFramework.ViewModels
         }
 
         #region Properties
+        public string ReportDate
+        {
+            get { return _reportDate; }
+            set
+            {
+                if (_reportDate != value)
+                {
+                    _reportDate = value;
+                    OnPropertyChanged("ReportDate");
+                }
+            }
+        }
 
         public string Name
         {
@@ -376,11 +410,11 @@ namespace MCIFramework.ViewModels
                     if (value == true)
                     {
                         IsSocialMedia = true;
-                        IsImportSocialMediaEnabled=true;
+                        IsImportSocialMediaEnabled = true;
                     }
                     OnPropertyChanged("IsFacebook");
                     OnPropertyChanged("FacebookUsername");
-                    
+
                 }
             }
         }
@@ -397,7 +431,7 @@ namespace MCIFramework.ViewModels
                     {
                         IsSocialMedia = true;
                         IsImportSocialMediaEnabled = true;
-                    
+
                     }
                     OnPropertyChanged("IsYoutube");
                     OnPropertyChanged("YoutubeId");
@@ -982,12 +1016,12 @@ namespace MCIFramework.ViewModels
                     if (value == false)
                     {
                         Tab1Message = "Please fill in the required fields";
-                        Tab1MessageColor = "Red";
+                        Tab1MessageColor = Properties.Resources.error_text_color;
                     }
                     else
                     {
                         Tab1Message = "";
-                        Tab1MessageColor = "Green";
+                        Tab1MessageColor = Properties.Resources.processing_text_color;
                     }
                     base.OnPropertyChanged("AllPropertiesValid");
                 }
@@ -1020,6 +1054,57 @@ namespace MCIFramework.ViewModels
             }
         }
 
+        public Visibility FacebookLoadingVisible
+        {
+            get { return _facebookLoading; }
+            set
+            {
+                if (_facebookLoading != value)
+                {
+                    _facebookLoading = value;
+                    OnPropertyChanged("FacebookLoadingVisible");
+                }
+            }
+        }
+
+        public Visibility YoutubeLoadingVisible
+        {
+            get { return _youtubeLoading; }
+            set
+            {
+                if (_youtubeLoading != value)
+                {
+                    _youtubeLoading = value;
+                    OnPropertyChanged("YoutubeLoadingVisible");
+                }
+            }
+        }
+
+        public Visibility TwitterLoadingVisible
+        {
+            get { return _twitterLoading; }
+            set
+            {
+                if (_twitterLoading != value)
+                {
+                    _twitterLoading = value;
+                    OnPropertyChanged("TwitterLoadingVisible");
+                }
+            }
+        }
+
+        public Visibility TwitterWarningLoadingVisible
+        {
+            get { return _twitterWarningLoadingVisible; }
+            set
+            {
+                if (_twitterWarningLoadingVisible != value)
+                {
+                    _twitterWarningLoadingVisible = value;
+                    OnPropertyChanged("TwitterWarningLoadingVisible");
+                }
+            }
+        }
         public Boolean IsNewAssessment
         {
             get { return _isNewAssessment; }
@@ -1414,22 +1499,25 @@ namespace MCIFramework.ViewModels
                     _context.assessments.Add(_assessment);
                     _context.SaveChanges();
                     Tab1Message = "Assessment added !";
-                    Tab1MessageColor = "Green";
+                    Tab1MessageColor = Properties.Resources.processing_text_color;
                     NewAssessmentCreatedGlobalEvent.Instance.Publish(_assessment);
+                    Views.AssessmentCreated form = new Views.AssessmentCreated();
+                    form.Show();
+                    form.Activate();
                 }
                 else
                 {
                     _assessment.UpdatedDate = DateTime.Now;
                     _context.SaveChanges();
                     Tab1Message = "Assessment Details saved !";
-                    Tab1MessageColor = "Green";
+                    Tab1MessageColor = Properties.Resources.processing_text_color;
                 }
             }
             catch (Exception ex)
             {
                 Tab1Message = "We encountered system error. Please try to save again";
-                Tab1MessageColor = "Red";
-                Log.LogError("SaveAndContinue", ex);
+                Tab1MessageColor = Properties.Resources.error_text_color;
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -1462,18 +1550,18 @@ namespace MCIFramework.ViewModels
                 IsImportSocialMediaEnabled = false;
                 _socialMediaStat.AssessmentId = _assessment.Id;
                 TimeSpan timeSpan = (DateTime)_assessment.EndDate - (DateTime)_assessment.StartDate;
-                _socialMediaStat.TotalDays = timeSpan.Days;
+                _socialMediaStat.TotalDays = timeSpan.Days + 1;
                 if (!IsFacebook && !IsTwitter && !IsYoutube)
                 {
-                    Tab2FacebookMessage = "Please select at least one social media platform";
-                    Tab2FacebookMessageColor = "Red";
+                    Tab2FacebookMessage = Properties.Resources.confirm_at_least_one_platform;
+                    Tab2FacebookMessageColor = Properties.Resources.error_text_color;
                     IsImportSocialMediaEnabled = true;
                 }
                 else
                 {
                     CreateFolderAndCopyTemplate();
                     RunAuthenticationProcess();
-                    
+
                 }
             }
         }
@@ -1505,12 +1593,21 @@ namespace MCIFramework.ViewModels
             }
             else
             {
-                if (IsFacebook && _facebookAuthenCompleted)
-                    _facebookWorker.RunWorkerAsync();
+                if (IsFacebook)
+                {
+                    TriggerFacebookRun();
+                }
                 else
                 {
-                    if (IsTwitter && _twiterAuthenCompleted)
-                        _twitterWorker.RunWorkerAsync();
+                    if (IsTwitter)
+                    {
+                        TriggerTwitterRun();
+                    }
+                    else
+                    {
+                        IsDownloadSocialMedialEnabled = true;
+                        IsImportSocialMediaEnabled = true;
+                    }
                 }
             }
         }
@@ -1533,8 +1630,8 @@ namespace MCIFramework.ViewModels
 
                 if ((IsWeb && LocationWeb == null) || (IsSocialMedia && LocationSocial == null) || (IsStrategy && LocationStrategy == null))
                 {
-                    Tab3Message = "Please select the required files";
-                    Tab3MessageColor = "Red";
+                    Tab3Message = Properties.Resources.assessment_tab_3_select_required_files;
+                    Tab3MessageColor = Properties.Resources.error_text_color;
                 }
                 if (LocationStrategy != null)
                 {
@@ -1551,9 +1648,9 @@ namespace MCIFramework.ViewModels
                     //wr.Close();
 
                     WebClient client = new WebClient();
-                    client.UploadData(pathNameXLS + "Strategy Assessment.xlsx", "Post", contents);
-                    Tab3Message = "Upload is completed !";
-                    Tab3MessageColor = "Green";
+                    client.UploadData(pathNameXLS + _strategyExcelName, "Post", contents);
+                    Tab3Message = Properties.Resources.assessment_tab_3_upload_complete;
+                    Tab3MessageColor = Properties.Resources.processing_text_color;
                 }
                 if (LocationSocial != null)
                 {
@@ -1562,9 +1659,9 @@ namespace MCIFramework.ViewModels
                     fStream.Read(contents, 0, (int)fStream.Length);
                     fStream.Close();
                     WebClient client = new WebClient();
-                    client.UploadData(pathNameXLS + "Social Media Assessment.xlsx", "Post", contents);
-                    Tab3Message = "Upload is completed !";
-                    Tab3MessageColor = "Green";
+                    client.UploadData(pathNameXLS + _socialExcelName, "Post", contents);
+                    Tab3Message = Properties.Resources.assessment_tab_3_upload_complete;
+                    Tab3MessageColor = Properties.Resources.processing_text_color;
                 }
                 if (LocationWeb != null)
                 {
@@ -1573,9 +1670,9 @@ namespace MCIFramework.ViewModels
                     fStream.Read(contents, 0, (int)fStream.Length);
                     fStream.Close();
                     WebClient client = new WebClient();
-                    client.UploadData(pathNameXLS + "Website Assessment.xlsx", "Post", contents);
-                    Tab3Message = "Upload is completed !";
-                    Tab3MessageColor = "Green";
+                    client.UploadData(pathNameXLS + _webExcelName, "Post", contents);
+                    Tab3Message = Properties.Resources.assessment_tab_3_upload_complete;
+                    Tab3MessageColor = Properties.Resources.processing_text_color;
                 }
 
                 //TO ADD MESSAGE OR NOTIFY UPLOAD IS COMPLETED
@@ -1584,9 +1681,9 @@ namespace MCIFramework.ViewModels
             }
             catch (Exception ex)
             {
-                Log.LogError("UploadWorksheet", ex);
                 Tab3Message = ex.Message;
-                Tab3MessageColor = "Red";
+                Tab3MessageColor = Properties.Resources.error_text_color;
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
 
         }
@@ -1598,15 +1695,15 @@ namespace MCIFramework.ViewModels
             //set filter
             if (wsName == "Strategy")
             {
-                openFileDialog1.Filter = "Excel (.xlsx)|Strategy Assessment.xlsx";
+                openFileDialog1.Filter = "Excel (.xlsx)|"+_strategyExcelName;
             }
             else if (wsName == "Social")
             {
-                openFileDialog1.Filter = "Excel (.xlsx)|Social Media Assessment.xlsx";
+                openFileDialog1.Filter = "Excel (.xlsx)|"+_socialExcelName;
             }
             else if (wsName == "Web")
             {
-                openFileDialog1.Filter = "Excel (.xlsx)|Website Assessment.xlsx";
+                openFileDialog1.Filter = "Excel (.xlsx)|"+_webExcelName;
             }
 
             openFileDialog1.FilterIndex = 1;
@@ -1646,11 +1743,11 @@ namespace MCIFramework.ViewModels
             }
             if (_assessment.IsWeb == true)
             {
-                strings += "social,";
+                strings += "web,";
             }
             if (_assessment.IsSocialMedia == true)
             {
-                strings += "web";
+                strings += "social";
             }
 
             //check and combine into array
@@ -1658,7 +1755,8 @@ namespace MCIFramework.ViewModels
             List<Result> tempResult = new List<Result>();
             string assesNo = _assessment.Id.ToString();
             string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
-
+            
+            CreateFolderAndCopyTemplate("");
             //loop and generate 
             foreach (string temp in myarray)
             {
@@ -1667,15 +1765,15 @@ namespace MCIFramework.ViewModels
 
                 if (temp == "strategy")
                 {
-                    InputFileName = "Strategy Assessment.xlsx";
+                    InputFileName = _strategyExcelName;
                 }
                 else if (temp == "social")
                 {
-                    InputFileName = "Social Media Assessment.xlsx";
+                    InputFileName = _socialExcelName;
                 }
                 else if (temp == "web")
                 {
-                    InputFileName = "Website Assessment.xlsx";
+                    InputFileName = _webExcelName;
                 }
 
                 //string pathName = "F:\\Projects\\mci\\" + "Resources\\Assessments\\";
@@ -1687,46 +1785,63 @@ namespace MCIFramework.ViewModels
                 string xlsType = "1";
                 string jsonName = "";
 
-                if (InputFileName == "Strategy Assessment.xlsx")
+                if (InputFileName == _strategyExcelName)
                 {
-                    xlsTab = "SELECT * FROM [6 Data for upload$]";
+                    xlsTab = "6 Data for upload";
                     xlsType = "1";
                     jsonName = "strategy.js";
                 }
-                else if (InputFileName == "Social Media Assessment.xlsx")
+                else if (InputFileName == _socialExcelName)
                 {
-                    xlsTab = "SELECT * FROM [10 Data for upload$]";
+                    xlsTab = "10 Data for upload";
                     xlsType = "2";
                     jsonName = "social-media.js";
                 }
-                else if (InputFileName == "Website Assessment.xlsx")
+                else if (InputFileName == _webExcelName)
                 {
-                    xlsTab = "SELECT * FROM [3 Data for upload$]";
+                    xlsTab = "3 Data for upload";
                     xlsType = "2";
                     jsonName = "web.js";
                 }
                 #endregion
-                CreateFolderAndCopyTemplate("");
-                string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=YES;\""))));
-
+                CreateFolderAndCopyTemplate(temp);
+              
                 // Create the connection object 
-                OleDbConnection oledbConn = new OleDbConnection(CnStr);
+                
+                var existingFile = new FileInfo(fileName);
                 try
                 {
-                    // Open connection
-                    oledbConn.Open();
-
-                    // Create OleDbCommand object and select data from worksheet 
-                    OleDbCommand cmd = new OleDbCommand(xlsTab, oledbConn);
-
-                    // Create new OleDbDataAdapter
-                    OleDbDataAdapter oleda = new OleDbDataAdapter();
-
-                    oleda.SelectCommand = cmd;
-                    DataSet ds = new DataSet();
-
                     DataTable dt = new DataTable();
-                    oleda.Fill(dt);
+                    using (var package = new ExcelPackage(existingFile))
+                    {
+                        // Get the work book in the file
+                        var workBook = package.Workbook;
+                        if (workBook != null)
+                        {
+                            if (workBook.Worksheets.Count > 0)
+                            {
+                                // Get the first row
+                                var currentWorksheet = workBook.Worksheets[xlsTab];
+                                currentWorksheet.Cells[2, 1].Value = _socialMediaStat.TotalDays;
+                                bool hasHeader = true;
+                                foreach (var firstRowCell in currentWorksheet.Cells[1, 1, 1, currentWorksheet.Dimension.End.Column])
+                                {
+                                    dt.Columns.Add(hasHeader ? firstRowCell.Text : string.Format("Column {0}", firstRowCell.Start.Column));
+                                }
+                                var startRow = hasHeader ? 2 : 1;
+                                for (var rowNum = startRow; rowNum <= currentWorksheet.Dimension.End.Row; rowNum++)
+                                {
+                                    var wsRow = currentWorksheet.Cells[rowNum, 1, rowNum, currentWorksheet.Dimension.End.Column];
+                                    var row = dt.NewRow();
+                                    foreach (var cell in wsRow)
+                                    {
+                                        row[cell.Start.Column - 1] = cell.Text;
+                                    }
+                                    dt.Rows.Add(row);
+                                }
+                            }
+                        }
+                    }
 
                     RootObject root = new RootObject();
                     RootObject homeroot = new RootObject();
@@ -1752,6 +1867,9 @@ namespace MCIFramework.ViewModels
 
                         if (dr.ItemArray[0].ToString().Length == 1)
                         {
+                            root.organisation = _assessment.Organisation;
+                            root.start_date = _assessment.StartDate == null ? "" : ((DateTime)_assessment.StartDate).ToString("d MMM yyyy", CultureInfo.InvariantCulture); ;
+                            root.end_date = _assessment.EndDate == null ? "" : ((DateTime)_assessment.EndDate).ToString("d MMM yyyy", CultureInfo.InvariantCulture);
                             root.title = (dr.ItemArray[1].ToString());
                             root.score = (dr.ItemArray[2].ToString());
                             root.description = (dr.ItemArray[3].ToString());
@@ -1777,7 +1895,9 @@ namespace MCIFramework.ViewModels
                             homeroot.score = "";
                             homeroot.link = "";
                             //homeroot.results = new List<Result>();
-
+                            homeroot.organisation = _assessment.Organisation;
+                            homeroot.start_date = _assessment.StartDate == null ? "" : ((DateTime)_assessment.StartDate).ToString("d MMM yyyy", CultureInfo.InvariantCulture); ;
+                            homeroot.end_date = _assessment.EndDate == null ? "" : ((DateTime)_assessment.EndDate).ToString("d MMM yyyy", CultureInfo.InvariantCulture);
                             result.title = root.title;
                             result.score = root.score;
                             result.description = root.description;
@@ -1909,19 +2029,12 @@ namespace MCIFramework.ViewModels
 
                 catch (Exception ex)
                 {
-                    Log.LogError("DownloadReport", ex);
-                }
-                finally
-                {
-                    oledbConn.Close();
-                    //Tab3Message = "Report generation is completed.";
-                    //Tab3MessageColor = "Green";
-                    //MessageBox.Show("Report Generation is completed, click ok to start download");
+                    Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                 }
             }
             _assessment.ReportGenerationDate = DateTime.Now;
             _context.SaveChanges();
-
+            ReportDate = Properties.Resources.assessment_report_date + _assessment.ReportGenerationDate;
             //zip folder and ask user to save
             AddToArchive(pathName + assesNo + "\\Report\\");
 
@@ -1961,7 +2074,7 @@ namespace MCIFramework.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Log.LogError("AddToArchive", ex);
+                    Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                 }
 
             }
@@ -1986,21 +2099,24 @@ namespace MCIFramework.ViewModels
             {
                 string templatePathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Templates\\Worksheets\\";
                 string InputFileName = "";
-
+                string AssessmentFile = "";
                 if (fileType == "strategy")
                 {
-                    InputFileName = "Strategy Assessment.xlsx";
+                    InputFileName = Properties.Resources.excel_strategy;
+                    AssessmentFile = _strategyExcelName;
                 }
                 if (fileType == "social")
                 {
-                    InputFileName = "Social Media Assessment.xlsx";
+                    InputFileName = Properties.Resources.excel_social;
+                    AssessmentFile = _socialExcelName;
                 }
                 if (fileType == "web")
                 {
-                    InputFileName = "Website Assessment.xlsx";
+                    InputFileName = Properties.Resources.excel_web;
+                    AssessmentFile = _webExcelName;
                 }
                 string templateFileName = Path.Combine(templatePathName, InputFileName);
-                string assessmentFileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", InputFileName);
+                string assessmentFileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", AssessmentFile);
                 if (!File.Exists(assessmentFileName))
                 {
                     Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx"));
@@ -2015,14 +2131,14 @@ namespace MCIFramework.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        Log.LogError("Failed to save from DB to Web worksheet", ex);
+                        Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
                     }
                 }
 
                 SaveFileDialog dlg = new SaveFileDialog();
                 //set default save location to mydocument
                 dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                dlg.FileName = InputFileName; // Default file name
+                dlg.FileName = AssessmentFile; // Default file name
                 dlg.Filter = "xlsx (.xlsx)|*.xlsx"; // Filter files by extension 
 
                 // Show save file dialog box
@@ -2041,7 +2157,7 @@ namespace MCIFramework.ViewModels
 
             catch (Exception ex)
             {
-                Log.LogError("saveLocation", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
 
         }
@@ -2051,183 +2167,111 @@ namespace MCIFramework.ViewModels
         {
             try
             {
-                //copy whole folder from Resources\Templates\Reports to Resources\Assessments\x\Reports
-                if (!Directory.Exists(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "Report")))
-                {
-                    Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "Report"));
-                    string _SelectedPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Templates\\Reports";
-                    string destinationPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Assessments\\" + _assessment.Id.ToString() + "\\Report";
-                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(_SelectedPath, destinationPath);
-                }
-
                 if (!Directory.Exists(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString())))
                     Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx"));
 
                 if (fileType == "")
                 {
-                    //empty or something else, do nothing but copy report folder if it does not exist
+                    //copy whole folder from Resources\Templates\Reports to Resources\Assessments\x\Reports
+                    Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "Report"));
+                    string _SelectedPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Templates\\Reports";
+                    string destinationPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Assessments\\" + _assessment.Id.ToString() + "\\Report";
+                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(_SelectedPath, destinationPath, true);
                 }
 
                 if (fileType == "strategy")
                 {
-                    File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Strategy Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Strategy Assessment.xlsx"), true);
+                    if (!File.Exists(Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _strategyExcelName)))
+                        File.Copy(Path.Combine("Resources", "Templates", "Worksheets", Properties.Resources.excel_strategy), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _strategyExcelName), true);
                 }
                 if (fileType == "social")
                 {
-                    File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Social Media Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx"), true);
+                    if (!File.Exists(Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _socialExcelName)))
+                        File.Copy(Path.Combine("Resources", "Templates", "Worksheets", Properties.Resources.excel_social), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _socialExcelName), true);
                 }
                 if (fileType == "web")
                 {
-                    File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Website Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Website Assessment.xlsx"), true);
+                    if (!File.Exists(Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _webExcelName)))
+                        File.Copy(Path.Combine("Resources", "Templates", "Worksheets", Properties.Resources.excel_web), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _webExcelName), true);
                 }
 
             }
             catch (Exception ex)
             {
-                Log.LogError("CreateFolderAndCopyTemplate", ex);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
 
         private void SaveDataToWebWorkSheet(string file)
         {
-            string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (file + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=NO;\""))));
-            OleDbConnection oledbConn = new OleDbConnection(CnStr);
             try
             {
-                oledbConn.Open();
-                OleDbCommand command = oledbConn.CreateCommand();
-                OleDbTransaction myTransaction = oledbConn.BeginTransaction();
-                command.Transaction = myTransaction;
+                var existingFile = new FileInfo(file);
+                using (var package = new ExcelPackage(existingFile))
+                {
+                    // Get the work book in the file
+                    var workBook = package.Workbook;
+                    if (workBook != null)
+                    {
+                        if (workBook.Worksheets.Count > 0)
+                        {
+                            // Get the first row
+                            var currentWorksheet = workBook.Worksheets["0 Assessment parameters"];
+                            currentWorksheet.Cells[2, 2].Value = _assessment.Organisation;
+                            
+                            currentWorksheet.Cells[5, 1].Value = _assessment.Audience1;
+                            currentWorksheet.Cells[5, 2].Value = _assessment.Audience1Scenario1;
+                            currentWorksheet.Cells[5, 3].Value = _assessment.Audience1Keyword1;
+                            
+                            currentWorksheet.Cells[6, 1].Value = _assessment.Audience1;
+                            currentWorksheet.Cells[6, 2].Value = _assessment.Audience1Scenario2;
+                            currentWorksheet.Cells[6, 3].Value = _assessment.Audience1Keyword2;
 
-                #region hardcoded
-                // First Row
-                command.CommandText = "UPDATE [0 Assessment parameters$A2:B2] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", String.Empty);
-                command.Parameters.AddWithValue("@2", _assessment.Organisation);
-                command.ExecuteNonQuery();
+                            currentWorksheet.Cells[7, 1].Value = _assessment.Audience1;
+                            currentWorksheet.Cells[7, 2].Value = _assessment.Audience1Scenario3;
+                            currentWorksheet.Cells[7, 3].Value = _assessment.Audience1Keyword3;
 
+                            currentWorksheet.Cells[8, 1].Value = _assessment.Audience2;
+                            currentWorksheet.Cells[8, 2].Value = _assessment.Audience2Scenario1;
+                            currentWorksheet.Cells[8, 3].Value = _assessment.Audience2Keyword1;
 
-                // Audience1 Kw1
-                command.CommandText = "UPDATE [0 Assessment parameters$A5:C5] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience1);
-                command.Parameters.AddWithValue("@2", _assessment.Audience1Scenario1);
-                command.Parameters.AddWithValue("@3", _assessment.Audience1Keyword1);
-                command.ExecuteNonQuery();
+                            currentWorksheet.Cells[9, 1].Value = _assessment.Audience2;
+                            currentWorksheet.Cells[9, 2].Value = _assessment.Audience2Scenario2;
+                            currentWorksheet.Cells[9, 3].Value = _assessment.Audience2Keyword2;
 
-                // Audience1 Kw2
-                command.CommandText = "UPDATE [0 Assessment parameters$A6:C6] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience1);
-                command.Parameters.AddWithValue("@2", _assessment.Audience1Scenario2);
-                command.Parameters.AddWithValue("@3", _assessment.Audience1Keyword2);
-                command.ExecuteNonQuery();
+                            currentWorksheet.Cells[10, 1].Value = _assessment.Audience2;
+                            currentWorksheet.Cells[10, 2].Value = _assessment.Audience2Scenario3;
+                            currentWorksheet.Cells[11, 3].Value = _assessment.Audience2Keyword3;
+                            
+                            currentWorksheet.Cells[12, 1].Value = _assessment.Audience3;
+                            currentWorksheet.Cells[12, 2].Value = _assessment.Audience3Scenario2;
+                            currentWorksheet.Cells[12, 3].Value = _assessment.Audience3Keyword2;
 
-                // Audience1 kw 3
-                command.CommandText = "UPDATE [0 Assessment parameters$A7:C7] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience1);
-                command.Parameters.AddWithValue("@2", _assessment.Audience1Scenario3);
-                command.Parameters.AddWithValue("@3", _assessment.Audience1Keyword3);
-                command.ExecuteNonQuery();
+                            currentWorksheet.Cells[13, 1].Value = _assessment.Audience3;
+                            currentWorksheet.Cells[13, 2].Value = _assessment.Audience3Scenario3;
+                            currentWorksheet.Cells[13, 3].Value = _assessment.Audience3Keyword3;
 
-
-                // Audience2 Kw1
-                command.CommandText = "UPDATE [0 Assessment parameters$A8:C8] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience2);
-                command.Parameters.AddWithValue("@2", _assessment.Audience2Scenario1);
-                command.Parameters.AddWithValue("@3", _assessment.Audience2Keyword1);
-                command.ExecuteNonQuery();
-
-                // Audience2 Kw2
-                command.CommandText = "UPDATE [0 Assessment parameters$A9:C9] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience2);
-                command.Parameters.AddWithValue("@2", _assessment.Audience2Scenario2);
-                command.Parameters.AddWithValue("@3", _assessment.Audience2Keyword2);
-                command.ExecuteNonQuery();
-
-                // Audience2 kw 3
-                command.CommandText = "UPDATE [0 Assessment parameters$A10:C10] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience2);
-                command.Parameters.AddWithValue("@2", _assessment.Audience2Scenario3);
-                command.Parameters.AddWithValue("@3", _assessment.Audience2Keyword3);
-                command.ExecuteNonQuery();
-
-                // Audience3 Kw1
-                command.CommandText = "UPDATE [0 Assessment parameters$A11:C11] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience3);
-                command.Parameters.AddWithValue("@2", _assessment.Audience3Scenario1);
-                command.Parameters.AddWithValue("@3", _assessment.Audience3Keyword1);
-                command.ExecuteNonQuery();
-
-                // Audience3 Kw2
-                command.CommandText = "UPDATE [0 Assessment parameters$A12:C12] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience3);
-                command.Parameters.AddWithValue("@2", _assessment.Audience3Scenario2);
-                command.Parameters.AddWithValue("@3", _assessment.Audience3Keyword2);
-                command.ExecuteNonQuery();
-
-                // Audience3 kw 3
-                command.CommandText = "UPDATE [0 Assessment parameters$A13:C13] SET F1=@1, F2=@2, F3=@3";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.Audience3);
-                command.Parameters.AddWithValue("@2", _assessment.Audience3Scenario3);
-                command.Parameters.AddWithValue("@3", _assessment.Audience3Keyword3);
-                command.ExecuteNonQuery();
-
-                // Top pages
-                command.CommandText = "UPDATE [0 Assessment parameters$A16:B16] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", "Homepage");
-                command.Parameters.AddWithValue("@2", _assessment.WebUrl);
-                command.ExecuteNonQuery();
-
-                command.CommandText = "UPDATE [0 Assessment parameters$A17:B17] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.TopPage1);
-                command.Parameters.AddWithValue("@2", _assessment.TopPageUrl1);
-                command.ExecuteNonQuery();
-
-                command.CommandText = "UPDATE [0 Assessment parameters$A18:B18] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.TopPage2);
-                command.Parameters.AddWithValue("@2", _assessment.TopPageUrl2);
-                command.ExecuteNonQuery();
-
-                command.CommandText = "UPDATE [0 Assessment parameters$A19:B19] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.TopPage3);
-                command.Parameters.AddWithValue("@2", _assessment.TopPageUrl3);
-                command.ExecuteNonQuery();
-
-                command.CommandText = "UPDATE [0 Assessment parameters$A20:B20] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.TopPage4);
-                command.Parameters.AddWithValue("@2", _assessment.TopPageUrl4);
-                command.ExecuteNonQuery();
-
-                command.CommandText = "UPDATE [0 Assessment parameters$A21:B21] SET F1=@1, F2=@2";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@1", _assessment.TopPage5);
-                command.Parameters.AddWithValue("@2", _assessment.TopPageUrl5);
-                command.ExecuteNonQuery();
-
-
-                #endregion
-
-                myTransaction.Commit();
-                oledbConn.Close();
+                            currentWorksheet.Cells[16, 2].Value = _assessment.WebUrl;
+                            currentWorksheet.Cells[17, 1].Value = _assessment.TopPage1;
+                            currentWorksheet.Cells[17, 2].Value = _assessment.TopPageUrl1;
+                            currentWorksheet.Cells[18, 1].Value = _assessment.TopPage2;
+                            currentWorksheet.Cells[18, 2].Value = _assessment.TopPageUrl2;
+                            currentWorksheet.Cells[19, 1].Value = _assessment.TopPage3;
+                            currentWorksheet.Cells[19, 2].Value = _assessment.TopPageUrl4;
+                            currentWorksheet.Cells[20, 1].Value = _assessment.TopPage4;
+                            currentWorksheet.Cells[20, 2].Value = _assessment.TopPageUrl4;
+                            currentWorksheet.Cells[21, 1].Value = _assessment.TopPage5;
+                            currentWorksheet.Cells[21, 2].Value = _assessment.TopPageUrl5;
+                            package.Save();
+                        }
+                    }
+                }
             }
-            catch (Exception e)
+                        
+            catch (Exception ex)
             {
-                Log.LogError("Failed to update data to web worksheet", e);
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
             }
         }
 
@@ -2239,11 +2283,34 @@ namespace MCIFramework.ViewModels
             {
                 if (!Directory.Exists(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString())))
                     Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx"));
-                File.Copy(Path.Combine("Resources", "Templates", "Worksheets", "Social Media Assessment.xlsx"), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx"), true);
+                File.Copy(Path.Combine("Resources", "Templates", "Worksheets", Properties.Resources.excel_social), Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _socialExcelName), true);
             }
-            catch
+            catch (Exception ex)
             {
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
+            }
+        }
 
+        private void TriggerFacebookRun()
+        {
+            if (_facebookAuthenCompleted)
+                _facebookWorker.RunWorkerAsync();
+            else
+            {
+                Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_auth_failed;
+                Tab2FacebookMessageColor = Properties.Resources.error_text_color;
+            }
+        }
+
+        private void TriggerTwitterRun()
+        {
+            if (_twiterAuthenCompleted)
+                _twitterWorker.RunWorkerAsync();
+            else
+            {
+                Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_auth_failed;
+                Tab2TwitterMessageColor = Properties.Resources.error_text_color;
+                SaveSocialMediaStat();
             }
         }
         #endregion
@@ -2253,8 +2320,9 @@ namespace MCIFramework.ViewModels
         private void youtubeWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2YoutubeMessage = "Processing Youtube data";
-            Tab2YoutubeMessageColor = "Green";
+            Tab2YoutubeMessage = Properties.Resources.assessment_tab_2_processing_youtube;
+            Tab2YoutubeMessageColor = Properties.Resources.processing_text_color;
+            YoutubeLoadingVisible = Visibility.Visible;
             IsDownloadSocialMedialEnabled = false;
             YoutubeImporter youtubeImporter = new YoutubeImporter(_assessment, _socialMediaStat);
             youtubeImporter.Process();
@@ -2271,34 +2339,35 @@ namespace MCIFramework.ViewModels
             //update ui once worker complete his work
             if (e.Error == null)
             {
-                Tab2YoutubeMessage = "Youtube data retrieved successfully";
-                Tab2YoutubeMessageColor = "Green";
-
+                Tab2YoutubeMessage = Properties.Resources.assessment_tab_2_youtube_successful;
+                Tab2YoutubeMessageColor = Properties.Resources.processing_text_color;
+                YoutubeLoadingVisible = Visibility.Hidden;
             }
             else
             {
-                Tab2YoutubeMessage = "Failed to retrieve Youtube data. Please try again";
-                Tab2YoutubeMessageColor = "Red";
+                Tab2YoutubeMessage = Properties.Resources.assessment_tab_2_youtube_failed;
+                Tab2YoutubeMessageColor = Properties.Resources.error_text_color;
+                YoutubeLoadingVisible = Visibility.Hidden;
             }
-            if (IsFacebook && _facebookAuthenCompleted)
-                _facebookWorker.RunWorkerAsync();
-
+            if (IsFacebook)
+            {
+                TriggerFacebookRun();
+            }
             else
             {
-                if (IsTwitter && _twiterAuthenCompleted)
-                    _twitterWorker.RunWorkerAsync();
-                else// No Facebook, no Twitter
-                {
+                if (IsTwitter)
+                    TriggerTwitterRun();
+                else
                     SaveSocialMediaStat();
-                }
             }
         }
 
         private void facebookWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2FacebookMessage = "Processing Facebook data";
-            Tab2FacebookMessageColor = "Green";
+            Tab2FacebookMessage = Properties.Resources.assessment_tab_2_processing_fb;
+            Tab2FacebookMessageColor = Properties.Resources.processing_text_color;
+            FacebookLoadingVisible = Visibility.Visible;
             IsDownloadSocialMedialEnabled = false;
             FacebookImporter facebookImporter = new FacebookImporter(_assessment, _socialMediaStat);
             facebookImporter.Process();
@@ -2316,21 +2385,51 @@ namespace MCIFramework.ViewModels
             //update ui once worker complete his work
             if (e.Error == null)
             {
-                Tab2FacebookMessage = "Facebook data retrieved successfully";
-                Tab2FacebookMessageColor = "Green";
+                Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_successful;
+                Tab2FacebookMessageColor = Properties.Resources.processing_text_color;
+                FacebookLoadingVisible = Visibility.Hidden;
             }
             else
             {
                 if (e.Error.HResult == -2147024864)
-                    Tab2FacebookMessage = "Unable to save result to Excel file. It is being used by another process)";
-                
-                else
-                    Tab2FacebookMessage = "Failed to retrieve Facebook data. Please try again";
-                Tab2FacebookMessageColor = "Red";
-            }
+                {
+                    Tab2FacebookMessage = Properties.Resources.assessment_tab_2_unable_to_save;
+                }
+                else if (e.Error is System.OutOfMemoryException)
+                {
+                    Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_out_of_memory;
+                }
+                else if (e.Error is Facebook.FacebookOAuthException)
+                {
+                    int errorCode = ((Facebook.FacebookOAuthException)e.Error).ErrorCode;
+                    if (errorCode == 803)
+                    {
+                        Tab2FacebookMessage = Properties.Resources.assessment_tab_2_alias_not_exist;
+                    }
+                    else if (errorCode == 341 || errorCode == 4 || errorCode == 17 || errorCode == 2)
+                    {
+                        Tab2FacebookMessage = Properties.Resources.assessment_tab_2_reach_limit;
+                    }
+                    else if (errorCode == 463 || errorCode == 467 || errorCode == 460 || errorCode == 458)
+                    {
+                        Tab2FacebookMessage = Properties.Resources.assessment_tab_2_authentication_error;
+                    }
+                    else
+                    {
+                        Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_failed;
+                    }
+                }
 
-            if (IsTwitter && _twiterAuthenCompleted)
-                _twitterWorker.RunWorkerAsync();
+                else
+                {
+                    Tab2FacebookMessage = Properties.Resources.assessment_tab_2_fb_failed;
+                    FacebookLoadingVisible = Visibility.Hidden;
+                }
+                FacebookLoadingVisible = Visibility.Hidden;
+                Tab2FacebookMessageColor = Properties.Resources.error_text_color;
+            }
+            if (IsTwitter)
+                TriggerTwitterRun();
             else// no Twitter
             {
                 SaveSocialMediaStat();
@@ -2341,10 +2440,22 @@ namespace MCIFramework.ViewModels
         private void twitterWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here
-            Tab2TwitterMessage = "Processing Twitter data";
-            Tab2TwitterMessageColor = "Green";
+            if (_loggedInUser == _assessment.TwitterUsername)
+            {
+                Tab2TwitterMessage = Properties.Resources.assessment_tab_2_processing_twitter;
+                Tab2TwitterMessageColor = Properties.Resources.processing_text_color;
+                TwitterLoadingVisible = Visibility.Visible;
+            }
+            else
+            {
+                Tab2TwitterMessage = Properties.Resources.assessment_tab_2_processing_twitter_different_name_1 + _loggedInUser + Properties.Resources.assessment_tab_2_processing_twitter_different_name_2
+                    + _assessment.TwitterUsername + Properties.Resources.assessment_tab_2_processing_twitter_different_name_3; 
+                Tab2TwitterMessageColor = Properties.Resources.warning_text_color;
+                TwitterWarningLoadingVisible = Visibility.Visible;
+            }
+
             IsDownloadSocialMedialEnabled = false;
-            TwitterImporter twitterImporter = new TwitterImporter(_assessment, _socialMediaStat);
+            TwitterImporter twitterImporter = new TwitterImporter(_assessment, _socialMediaStat,_loggedInUser);
             twitterImporter.Process();
 
             SocialMediaStat socialStat = twitterImporter.GetDataToStore();
@@ -2360,14 +2471,33 @@ namespace MCIFramework.ViewModels
             //update ui once worker complete his work
             if (e.Error == null)
             {
-                Tab2TwitterMessage = "Twitter data retrieved successfully";
-                Tab2TwitterMessageColor = "Green";
+                if (_loggedInUser==_assessment.TwitterUsername)
+                    Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_successful;
+                else
+                    Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_successful_different_name_1+_loggedInUser+Properties.Resources.assessment_tab_2_twitter_successful_different_name_2;
+                
+                Tab2TwitterMessageColor = Properties.Resources.processing_text_color;
+                TwitterLoadingVisible = Visibility.Hidden;
+                TwitterWarningLoadingVisible = Visibility.Hidden;
 
             }
             else
             {
-                Tab2TwitterMessage = "Failed to retrieve Twitter data. Please try again";
-                Tab2TwitterMessageColor = "Red";
+                if (e.Error is LinqToTwitter.TwitterQueryException)
+                {
+                    int code = ((LinqToTwitter.TwitterQueryException)e.Error).ErrorCode;
+                    if (code == 429)
+                        Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_reach_limit;
+                    else if (code == 500 || code == 502 || code == 503 || code == 504)
+                        Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_not_available;
+                    else
+                        Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_failed;
+                }
+                    
+                Tab2TwitterMessage = Properties.Resources.assessment_tab_2_twitter_failed;
+                Tab2TwitterMessageColor = Properties.Resources.error_text_color;
+                TwitterLoadingVisible = Visibility.Hidden;
+                TwitterWarningLoadingVisible = Visibility.Hidden;
             }
             SaveSocialMediaStat();
         }
@@ -2385,68 +2515,68 @@ namespace MCIFramework.ViewModels
         #region Message Passing
         private void FBAuthenEnd(string msg)
         {
-            if (msg == "FB Authentication completed")
+            if (msg == GlobalConstant.MessagFBAuthenCompleted)
             {
-                Tab2FacebookMessage = msg;
-                Tab2FacebookMessageColor = "Green";
                 _facebookAuthenCompleted = true;
-                if (IsTwitter)
-                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
-                else
-                    StartProcessing();
             }
             else
             {
-                Tab2FacebookMessage = "FB Authentication failed. Please try again";
-                Tab2FacebookMessageColor = "Red";
+                _facebookAuthenCompleted = false;
             }
+            if (IsTwitter)
+                TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+            else
+            {
+                StartProcessing();
+                ToExportWorkSheet.Instance.Publish("");
+            }
+
         }
 
         private void AuthenCancel(string msg)
         {
-            if (msg == "Cancel")
+            if (msg == GlobalConstant.Cancel)
             {
-                Tab2FacebookMessage = "FB Authentication cancelled";
-                Tab2FacebookMessageColor = "Red";
                 _facebookAuthenCompleted = false;
-                if (IsTwitter)
-                    TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
-                else
-                    StartProcessing();
             }
             else
             {
-                Tab2FacebookMessage = "FB Authentication failed. Please try again";
-                Tab2FacebookMessageColor = "Red";
                 _facebookAuthenCompleted = false;
-                
+
             }
-            
+            if (IsTwitter)
+                TwitterAuthenGlobalEvent.Instance.Publish(_assessment);
+            else
+            {
+                StartProcessing();
+                ToExportWorkSheet.Instance.Publish("");
+            }
+
         }
 
-        private void TwitterAuthenEnd(string msg)
+        private void TwitterAuthenEnd(List<string> msg)
         {
-            if (msg == "Twitter Authentication completed")
+            if (msg.Count==2)
             {
-                Tab2TwitterMessage = msg;
-                Tab2TwitterMessageColor = "Green";
+                //Tab2TwitterMessage = msg;
+                //Tab2TwitterMessageColor = Properties.Resources.processing_text_color;
                 _twiterAuthenCompleted = true;
-               
+                _loggedInUser = msg[1];
             }
             else
             {
-                Tab2TwitterMessage = "Twitter Authentication failed. Please try again";
-                Tab2TwitterMessageColor = "Red";
+                //Tab2TwitterMessage = "Twitter Authentication failed. Please try again";
+                //Tab2TwitterMessageColor = Properties.Resources.error_text_color;
                 _twiterAuthenCompleted = false;
             }
             StartProcessing();
         }
         private void TwitterAuthenCancel(string msg)
         {
-            if (msg == "Cancel")
+            if (msg == GlobalConstant.Cancel)
             {
-                Tab2TwitterMessage = "Twitter Authentication cancelled";
-                Tab2TwitterMessageColor = "Red";
+                //Tab2TwitterMessage = "Twitter Authentication cancelled";
+                //Tab2TwitterMessageColor = Properties.Resources.error_text_color;
                 _twiterAuthenCompleted = false;
                 StartProcessing();
             }

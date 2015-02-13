@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using log4net;
+using MCIFramework.Helper;
 
 namespace MCIFramework
 {
@@ -21,6 +23,7 @@ namespace MCIFramework
     {
         public MainWindow()
         {
+            log4net.Config.XmlConfigurator.Configure();
             InitializeComponent();
         }
     }
