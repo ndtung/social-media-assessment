@@ -180,7 +180,7 @@ namespace MCIFramework
         }
     }
 
-    internal class TwitterAuthenEndGlobalEvent : PubSubEvent<String>
+    internal class TwitterAuthenEndGlobalEvent : PubSubEvent<List<String>>
     {
         private static readonly EventAggregator _eventAggregator;
         private static readonly TwitterAuthenEndGlobalEvent _event;

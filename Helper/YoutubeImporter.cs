@@ -14,6 +14,7 @@ using System.Data.OleDb;
 using System.Data;
 using System.IO;
 using System.Reflection;
+using OfficeOpenXml;
 
 namespace MCIFramework.Helper
 {
@@ -36,7 +37,17 @@ namespace MCIFramework.Helper
             {
                 _assessment = assessment;
                 _socialMediaStat = socialMediaStat;
-                _channelId = assessment.YoutubeId;
+                string name = assessment.YoutubeId;
+                if (name.Contains("https") || name.Contains("youtube.com") || name.Contains("http"))
+                {
+                    String[] splits = name.Split('/');
+                    _channelId = splits[splits.Length - 1];
+                }
+                else
+                {
+                    _channelId = name;
+                }
+
                 _youtube = new YouTubeService(new BaseClientService.Initializer()
                 {
                     ApplicationName = "rrmciframework",
@@ -125,7 +136,7 @@ namespace MCIFramework.Helper
                 }
 
                 // Save to Excel
-                SaveToExcel();
+                SaveToExcelPackage();
                
             }
             catch (Exception ex)
@@ -136,12 +147,11 @@ namespace MCIFramework.Helper
 
         }
 
-
         private void SaveToExcel()
         {
             string assesNo = _assessment.Id.ToString();
             string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
-            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", "Social Media Assessment.xlsx");
+            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx",_assessment.Organisation+" "+_assessment.Title+ " Social Media Assessment.xlsx");
 
             string CnStr = ("Provider=Microsoft.ACE.OLEDB.12.0;" + ("Data Source=" + (fileName + (";" + "Extended Properties=\"Excel 12.0 Xml;HDR=NO;\""))));
             OleDbConnection oledbConn = new OleDbConnection(CnStr);
@@ -162,6 +172,44 @@ namespace MCIFramework.Helper
 
                 myTransaction.Commit();
                 oledbConn.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.LogError(this.GetType().Name + " - " + MethodBase.GetCurrentMethod().Name, ex);
+                throw ex;
+            }
+        }
+
+        private void SaveToExcelPackage()
+        {
+
+            string assesNo = _assessment.Id.ToString();
+            string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
+            string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _assessment.Organisation + " " + _assessment.Title + " Social Media Assessment.xlsx");
+
+            try
+            {
+                var existingFile = new FileInfo(fileName);
+                using (var package = new ExcelPackage(existingFile))
+                {
+                    // Get the work book in the file
+                    var workBook = package.Workbook;
+                    if (workBook != null)
+                    {
+                        if (workBook.Worksheets.Count > 0)
+                        {
+                            // Get the first row
+                            var currentWorksheet = workBook.Worksheets["9 YouTube raw data"];
+                            currentWorksheet.Cells[2, 1].Value = _socialMediaStat.TotalDays;
+                            currentWorksheet.Cells[2, 2].Value = _subscribers;
+                            currentWorksheet.Cells[2, 3].Value = _totalVideos;
+                            currentWorksheet.Cells[2, 4].Value = _totalViews;
+                            currentWorksheet.Cells[2, 5].Value = _totalLikes;
+                            currentWorksheet.Cells[2, 6].Value = _totalDislikes;
+                            package.Save();
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

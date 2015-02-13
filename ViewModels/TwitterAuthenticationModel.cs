@@ -136,14 +136,22 @@ namespace MCIFramework.ViewModels
         private void PinSubmit()
         {
             _oau.GetUserTwAccessToken(_requestToken,Pin,Properties.Resources._api_twitter_consumer_key, Properties.Resources._api_twitter_consumer_secret);
+            List<String> result = new List<String>();
             if (_oau.oauth_error == null)
             {
                 SaveToDB(_oau);
-                TwitterAuthenEndGlobalEvent.Instance.Publish(GlobalConstant.MessageTwitterAuthenCompleted);
+               
+                result.Add(GlobalConstant.MessageTwitterAuthenCompleted);
+                result.Add(_oau.screen_name);
+                TwitterAuthenEndGlobalEvent.Instance.Publish(result);
             }
 
             else
-                TwitterAuthenEndGlobalEvent.Instance.Publish(GlobalConstant.MessageTwitterAuthenFailed);
+            {
+                result.Add(GlobalConstant.MessageTwitterAuthenFailed);
+                TwitterAuthenEndGlobalEvent.Instance.Publish(result);
+            }
+                
         }
 
         private void SaveToDB(OAuthHelper accessToken)

@@ -167,7 +167,7 @@ namespace MCIFramework.ViewModels
             CurrentPageViewModel = PageViewModels[3];
         }
 
-        private void TwitterAuthenEnd(String msg)
+        private void TwitterAuthenEnd(List<String> msg)
         {
             CurrentPageViewModel = PageViewModels[1];
         }

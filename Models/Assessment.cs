@@ -376,6 +376,9 @@ namespace MCIFramework.Models
 
     public class RootObject
     {
+        public string organisation { get; set; }
+        public string start_date { get; set; }
+        public string end_date { get; set; }
         public string title { get; set; }
         public string score { get; set; }
         public string description { get; set; }

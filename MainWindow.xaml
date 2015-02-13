@@ -5,7 +5,7 @@
         xmlns:viewmodel ="clr-namespace:MCIFramework.ViewModels"
         xmlns:prop="clr-namespace:MCIFramework.Properties"
         Title="{x:Static prop:Resources.app_header}" Height="1005" Width="1280" MinWidth="1000" MinHeight="650"
-        Top="0" Left="0"
+        Top="0" Left="0" WindowState="Maximized"
         ResizeMode="CanResizeWithGrip">
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewmodel:DashboardModel}">
