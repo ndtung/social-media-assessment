@@ -37,7 +37,7 @@ namespace MCIFramework.ViewModels
         public FBAuthenticationModel()
         {
             BrowserUri = new Uri("https://graph.facebook.com/oauth/authorize?client_id=" + Properties.Resources._api_facebook_app_id + "&redirect_uri=http://www.facebook.com/connect/login_success.html&type=user_agent");
-            Messenger.Default.Register<Uri>(this, GlobalConstant.BrowserChangedURL, MyCallbackMethod);
+            Messenger.Default.Register<Uri>(this, "BrowserChangedURL", MyCallbackMethod);
         }
 
         public ICommand CancelAuthCommand
@@ -71,8 +71,7 @@ namespace MCIFramework.ViewModels
                 {
                     string accessToken = uri.Fragment.Split('&')[0].Replace("#access_token=", "");
                     SaveToDB(accessToken);
-
-                    FBAuthenEndGlobalEvent.Instance.Publish(GlobalConstant.MessagFBAuthenCompleted);
+                    FBAuthenEndGlobalEvent.Instance.Publish("FB Authentication completed");
                 }
                 
                 
@@ -81,7 +80,7 @@ namespace MCIFramework.ViewModels
 
         private void GoBackToAssessmentDetail()
         {
-            FBAuthenCancelGlobalEvent.Instance.Publish(GlobalConstant.Cancel);
+            FBAuthenCancelGlobalEvent.Instance.Publish("Cancel");
         }
 
         private void SaveToDB(string accessToken)

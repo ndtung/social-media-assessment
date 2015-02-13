@@ -1,4 +1,4 @@
-/*! MCI-Framework 2015-02-12 */
+/*! MCI-Framework 2015-01-21 */
 //! moment.js
 //! version : 2.8.4
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors

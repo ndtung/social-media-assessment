@@ -34,7 +34,7 @@ namespace MCIFramework.Views
             //string url_as_string = url.ToString();
 
             // SEND TO VIEWMODEL USING MVVM LIGHT
-            Messenger.Default.Send<Uri>(url, GlobalConstant.BrowserChangedURL);
+            Messenger.Default.Send<Uri>(url, "BrowserChangedURL");
         }
     }
 }

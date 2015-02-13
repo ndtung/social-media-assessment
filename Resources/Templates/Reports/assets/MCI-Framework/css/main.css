@@ -973,23 +973,17 @@ header {
         font-size: 1.6em;
         padding: 0 20px; }
 
+#primary-nav ul li:first-child a, #primary-nav ul li:first-child span {
+  padding-left: 0; }
 #primary-nav ul li:last-child a, #primary-nav ul li:last-child span {
   border-right: 0;
   padding-right: 0; }
 #primary-nav ul li a,
 #primary-nav ul li span {
   color: #fff;
-  border-left: 1px solid #044174; }
+  border-right: 1px solid #044174; }
 #primary-nav ul li .icon {
   margin-right: 5px; }
-#primary-nav .pull-left li:first-child a, #primary-nav .pull-left li:first-child span {
-  border-left: 0;
-  padding-left: 0; }
-#primary-nav .org,
-#primary-nav .date {
-  border-left: 0;
-  font-size: initial;
-  padding: 0; }
 
 #secondary-nav ul li {
   border-bottom: 4px solid transparent; }
@@ -1091,66 +1085,57 @@ header {
     background: #f7f7f7;
     display: none;
     padding: 5px 0; }
-  #main .bar, #main .standard-bar {
+  #main .bar {
     zoom: 1;
     /* For IE 6/7 (trigger hasLayout) */
     background: #d2d4d7;
     margin: 25px auto 0;
     width: 100%;
     padding: 25px; }
-    #main .bar:before, #main .bar:after, #main .standard-bar:before, #main .standard-bar:after {
+    #main .bar:before, #main .bar:after {
       content: "";
       display: table; }
-    #main .bar:after, #main .standard-bar:after {
+    #main .bar:after {
       clear: both; }
-    #main .bar.active .icon-toggle:before, #main .standard-bar.active .icon-toggle:before {
+    #main .bar.active .icon-toggle:before {
       -webkit-transform: rotate(0deg);
       -ms-transform: rotate(0deg);
       transform: rotate(0deg); }
     #main .bar h2,
-    #main .bar h3, #main .standard-bar h2,
-    #main .standard-bar h3 {
+    #main .bar h3 {
       float: left; }
-    #main .bar .btn-bar,
-    #main .bar .btn-bar-about, #main .standard-bar .btn-bar,
-    #main .standard-bar .btn-bar-about {
+    #main .bar .btn-bar {
       zoom: 1;
       /* For IE 6/7 (trigger hasLayout) */
       cursor: pointer; }
-      #main .bar .btn-bar:before, #main .bar .btn-bar:after,
-      #main .bar .btn-bar-about:before,
-      #main .bar .btn-bar-about:after, #main .standard-bar .btn-bar:before, #main .standard-bar .btn-bar:after,
-      #main .standard-bar .btn-bar-about:before,
-      #main .standard-bar .btn-bar-about:after {
+      #main .bar .btn-bar:before, #main .bar .btn-bar:after {
         content: "";
         display: table; }
-      #main .bar .btn-bar:after,
-      #main .bar .btn-bar-about:after, #main .standard-bar .btn-bar:after,
-      #main .standard-bar .btn-bar-about:after {
+      #main .bar .btn-bar:after {
         clear: both; }
-    #main .bar .wrap, #main .standard-bar .wrap {
+    #main .bar .wrap {
       width: 100%; }
-    #main .bar .control, #main .standard-bar .control {
+    #main .bar .control {
       zoom: 1;
       /* For IE 6/7 (trigger hasLayout) */
       float: right;
       line-height: 1; }
-      #main .bar .control:before, #main .bar .control:after, #main .standard-bar .control:before, #main .standard-bar .control:after {
+      #main .bar .control:before, #main .bar .control:after {
         content: "";
         display: table; }
-      #main .bar .control:after, #main .standard-bar .control:after {
+      #main .bar .control:after {
         clear: both; }
-      #main .bar .control .rate, #main .standard-bar .control .rate {
+      #main .bar .control .rate {
         border-right: 1px solid rgba(0, 0, 0, 0.2);
         font-size: 2.4em;
         font-family: "allerbold";
         margin-right: 15px;
         padding-right: 15px; }
-        #main .bar .control .rate .icon, #main .standard-bar .control .rate .icon {
+        #main .bar .control .rate .icon {
           float: none;
           margin: 0;
           top: -10px; }
-      #main .bar .control a, #main .bar .control button, #main .standard-bar .control a, #main .standard-bar .control button {
+      #main .bar .control a, #main .bar .control button {
         display: inline-block;
         *display: inline;
         zoom: 1;
@@ -1162,7 +1147,7 @@ header {
         float: right;
         height: 20px;
         width: 20px; }
-        #main .bar .control a:focus, #main .bar .control a:active, #main .bar .control button:focus, #main .bar .control button:active, #main .standard-bar .control a:focus, #main .standard-bar .control a:active, #main .standard-bar .control button:focus, #main .standard-bar .control button:active {
+        #main .bar .control a:focus, #main .bar .control a:active, #main .bar .control button:focus, #main .bar .control button:active {
           outline: 0; }
   #main .note {
     zoom: 1;
@@ -1181,8 +1166,6 @@ header {
       float: left;
       margin-bottom: 0;
       width: 94%; }
-    #main .note > .col:first-child, #main .note > .col.first {
-      padding-left: 25px; }
     #main .note .col {
       padding: 25px 0; }
       #main .note .col:first-child, #main .note .col.first {
@@ -1200,7 +1183,6 @@ header {
       margin: 0;
       min-width: initial;
       max-width: initial;
-      padding: 0;
       width: auto; }
       #main .comments .wrap:before, #main .comments .wrap:after {
         content: "";
@@ -1211,8 +1193,6 @@ header {
         background: #dfe0e2;
         border-bottom: 2px solid #f7f7f7;
         border-top: 1px solid #fff; }
-        #main .comments .wrap:first-child > .col:first-child, #main .comments .wrap:first-child > .col.first, #main .comments .wrap.first > .col:first-child, #main .comments .wrap.first > .col.first {
-          padding-left: 25px; }
       #main .comments .wrap:last-child, #main .comments .wrap.last {
         background: #fff;
         padding: 25px; }
@@ -1302,8 +1282,7 @@ header {
       padding: 0; }
   #main .standard-bar {
     background: none; }
-    #main .standard-bar .btn-bar,
-    #main .standard-bar .btn-bar-about {
+    #main .standard-bar .btn-bar {
       background: #d2d4d7; }
     #main .standard-bar .control {
       padding: 23px 35px 0; }

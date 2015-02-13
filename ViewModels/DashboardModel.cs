@@ -337,8 +337,8 @@ namespace MCIFramework.ViewModels
                         param =>
                         {
                             var result = MessageBox.Show(
-                            Properties.Resources.confirm_delete_assessment,
-                            Properties.Resources.confirm_delete_assessment_confirm, MessageBoxButton.OKCancel);
+                            "Are you sure you want to delete the assessment?",
+                            "Confirm Delete", MessageBoxButton.OKCancel);
 
                             if (result.Equals(MessageBoxResult.OK))
                             {
@@ -416,6 +416,30 @@ namespace MCIFramework.ViewModels
             GenerateReportGlobalEvent.Instance.Publish(SelectedItem);
         }
 
+        private void ShowDialog()
+        {
+            _confirmationInteractionRequest.Raise(
+                new Confirmation
+                {
+                    Title = "Confirm",
+                    Content = "Are you sure you want to delete the selected assessment?"
+                }, OnDialogClosed);
+        }
+
+        private void OnDialogClosed(Confirmation confirmation)
+        {
+            if (confirmation.Confirmed)
+            {
+                _context.assessments.Remove(SelectedItem);
+                _context.SaveChanges();
+                RefreshAssessments();
+            }
+            else
+            {
+
+            }
+        }
+        
         public bool CanDelete
         {
             get { return SelectedItem != null; }
