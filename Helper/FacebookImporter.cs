@@ -206,9 +206,9 @@ namespace MCIFramework.Helper
         private void GetAllAlbumComments(List<FacebookAlbum> albums)
         {
             if (albums.Count != 0)
-                _totalPosts = albums.Count;
+                _totalPosts += albums.Count;
             else
-                _totalPosts = 0;
+                _totalPosts += 0;
             foreach (FacebookAlbum post in albums)
             {
                 if (post.comments != null)

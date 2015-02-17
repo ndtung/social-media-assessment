@@ -2173,6 +2173,7 @@ namespace MCIFramework.ViewModels
                 if (fileType == "")
                 {
                     //copy whole folder from Resources\Templates\Reports to Resources\Assessments\x\Reports
+                    
                     Directory.CreateDirectory(System.IO.Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "Report"));
                     string _SelectedPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Templates\\Reports";
                     string destinationPath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Assessments\\" + _assessment.Id.ToString() + "\\Report";
@@ -2406,7 +2407,7 @@ namespace MCIFramework.ViewModels
                     {
                         Tab2FacebookMessage = Properties.Resources.assessment_tab_2_alias_not_exist;
                     }
-                    else if (errorCode == 341 || errorCode == 4 || errorCode == 17 || errorCode == 2)
+                    else if (errorCode == 341 || errorCode == 4 || errorCode == 17)
                     {
                         Tab2FacebookMessage = Properties.Resources.assessment_tab_2_reach_limit;
                     }
