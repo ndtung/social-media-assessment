@@ -371,6 +371,7 @@ namespace MCIFramework.Helper
             string pathName = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Assessments\\";
             string fileName = Path.Combine("Resources", "Assessments", _assessment.Id.ToString(), "xlsx", _assessment.Organisation + " " + _assessment.Title + " Social Media Assessment.xlsx");
             var existingFile = new FileInfo(fileName);
+            WriteFormulaCells(4, entries.Count, fileName);
             try
             { // Write a certain number of entries, close, and open again to write to prevent excessive amount of data.
                 using (var package = new ExcelPackage(existingFile))
@@ -449,6 +450,43 @@ namespace MCIFramework.Helper
                         package.Save();
                     }
                 }
+            }
+        }
+
+        private void WriteFormulaCells(int startRow, int entries, String fileName)
+        {
+            try
+            {
+                var existingFile = new FileInfo(fileName);
+                using (var package = new ExcelPackage(existingFile))
+                {
+                    var workBook = package.Workbook;
+                    if (workBook != null)
+                    {
+                        if (workBook.Worksheets.Count > 0)
+                        {
+                            // Get the first row
+                            var currentWorksheet = workBook.Worksheets["3 Twitter responding"];
+                            for (int i = 0; i < entries; i++)
+                            {
+                                int row = i + startRow;
+                                currentWorksheet.Cells[row, 1].FormulaR1C1 = currentWorksheet.Cells[3, 1].FormulaR1C1;
+                                currentWorksheet.Cells[row, 3].FormulaR1C1 = currentWorksheet.Cells[3, 3].FormulaR1C1;
+
+                                currentWorksheet.Cells[row, 4].FormulaR1C1 = currentWorksheet.Cells[3, 4].FormulaR1C1;
+                                currentWorksheet.Cells[row, 7].FormulaR1C1 = currentWorksheet.Cells[3, 7].FormulaR1C1;
+                                currentWorksheet.Cells[row, 8].FormulaR1C1 = currentWorksheet.Cells[3, 8].FormulaR1C1;
+                                currentWorksheet.Cells[row, 9].FormulaR1C1 = currentWorksheet.Cells[3, 9].FormulaR1C1;
+                                
+                            }
+                            package.Save();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 
