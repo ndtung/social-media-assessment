@@ -8,5 +8,14 @@
     <Setting Name="FbMaxComments" Type="System.String" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
+    <Setting Name="GraphAPICommentPerRequest" Type="System.String" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="GraphAPIPostPerRequest" Type="System.String" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="GraphAPIAlbumPerRequest" Type="System.String" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

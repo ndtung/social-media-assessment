@@ -46,5 +46,41 @@ namespace MCIFramework.Properties {
                 this["FbMaxComments"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        public string GraphAPICommentPerRequest {
+            get {
+                return ((string)(this["GraphAPICommentPerRequest"]));
+            }
+            set {
+                this["GraphAPICommentPerRequest"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public string GraphAPIPostPerRequest {
+            get {
+                return ((string)(this["GraphAPIPostPerRequest"]));
+            }
+            set {
+                this["GraphAPIPostPerRequest"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        public string GraphAPIAlbumPerRequest {
+            get {
+                return ((string)(this["GraphAPIAlbumPerRequest"]));
+            }
+            set {
+                this["GraphAPIAlbumPerRequest"] = value;
+            }
+        }
     }
 }
