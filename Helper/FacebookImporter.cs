@@ -19,6 +19,9 @@ namespace MCIFramework.Helper
     {
         private int _rowPerTime = Int32.Parse(Properties.Settings.Default.PartialExcelRowWriting);
         private int _maxComment = Int32.Parse(Properties.Settings.Default.FbMaxComments);
+        private string _commentsPerRequest = Properties.Settings.Default.GraphAPICommentPerRequest;
+        private string _postsPerRequest = Properties.Settings.Default.GraphAPIPostPerRequest;
+        private string _albumPerRequest = Properties.Settings.Default.GraphAPIAlbumPerRequest;
         private int _totalLikes = 0;
         private int _totalComments = 0;
         private int _totalPosts = 0;
@@ -101,7 +104,7 @@ namespace MCIFramework.Helper
         {
             List<FacebookAlbum> pageAlbums = new List<FacebookAlbum>();
             // Getting all page posts after assessment start date
-            var albums = _client.Get(_facebookNameToProcess + "/albums?fields=id,likes.summary(true),comments.summary(true).limit(200),sharedposts,name,link&limit=200").ToString();
+            var albums = _client.Get(_facebookNameToProcess + "/albums?fields=id,likes.summary(true),comments.summary(true).limit(" + _commentsPerRequest + "),sharedposts,name,link&limit=" + _albumPerRequest).ToString();
             FacebookAlbums result = JsonConvert.DeserializeObject<FacebookAlbums>(albums);
             if (result.data!=null)
                 pageAlbums.AddRange(result.data);
@@ -135,7 +138,7 @@ namespace MCIFramework.Helper
         {
             List<FacebookPost> pagePosts = new List<FacebookPost>();
             // Getting all page posts after assessment start date
-            var statuses = _client.Get(_facebookNameToProcess + "/posts?fields=id,actions,message,shares,comments.summary(true).limit(200),likes.summary(true)&limit=200").ToString();
+            var statuses = _client.Get(_facebookNameToProcess + "/posts?fields=id,actions,message,shares,comments.summary(true).limit("+_commentsPerRequest+"),likes.summary(true)&limit="+_postsPerRequest).ToString();
             FacebookPosts result = JsonConvert.DeserializeObject<FacebookPosts>(statuses);
             if (result.data!=null)
                 pagePosts.AddRange(result.data);
